@@ -19,7 +19,7 @@
     <modules>
         <module>tsen.context</module>
         <module>tsen.regulation</module>
-        <module>ihm</module>
+        <module>tsen.ihm</module>
         <module>tsen.lob</module>
     </modules>
 
