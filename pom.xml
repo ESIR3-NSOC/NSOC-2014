@@ -16,6 +16,14 @@
         <jdk.target>1.7</jdk.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+        </dependency>
+    </dependencies>
+
     <modules>
         <module>tsen.context</module>
         <module>tsen.regulation</module>
@@ -23,16 +31,11 @@
         <module>tsen.lob</module>
     </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.2</version>
-        </dependency>
-    </dependencies>
+
 
 
     <developers>
+
         <developer>
             <name>jezequel quentin</name>
             <id>jezequel.quentin</id>
@@ -85,17 +88,9 @@
         </developer>
     </developers>
 
-<!--
+
 
     <build>
-        <extensions>
-             Enabling the use of FTP
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ssh</artifactId>
-                <version>1.0</version>
-            </extension>
-        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -111,7 +106,6 @@
                 </executions>
             </plugin>
         </plugins>
-
-    </build>   -->
+    </build>
 
 </project>
