@@ -116,19 +116,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.kevoree.modeling</groupId>
-                <artifactId>org.kevoree.modeling.kotlin.generator.mavenplugin</artifactId>
-                <version>1.9.2</version>
-                <extensions>true</extensions>
-                <executions><execution>
-                    <id>ModelGen</id>
-                    <goals><goal>generate</goal></goals>
-                    <configuration>
-                        <!-- optionS here -->
-                    </configuration>
-                </execution></executions>
-            </plugin>
         </plugins>
     </build>
 
