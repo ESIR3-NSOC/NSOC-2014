@@ -40,6 +40,7 @@
         <module>tsen.regulation</module>
         <module>tsen.ihm</module>
         <module>tsen.lob</module>
+        <module>tsen.ade</module>
     </modules>
 
 
