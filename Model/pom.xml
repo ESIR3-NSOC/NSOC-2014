@@ -15,7 +15,7 @@
     <name>TSEN :: Model</name>
 
     <properties>
-        <metamodel.ecore>src/nSOC_TSEN.ecore</metamodel.ecore>
+        <metaModel.ecore>nSOC_TSEN.ecore</metaModel.ecore>
     </properties>
 
 
@@ -41,7 +41,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <ecore>${metamodel.ecore}</ecore>
+                            <ecore>${metaModel.ecore}</ecore>
                             <persistence>true</persistence>
                             <timeAware>true</timeAware>
                             <events>true</events>
