@@ -15,8 +15,10 @@
     <name>TSEN :: Model</name>
 
     <properties>
-        <metamodel.ecore>src/model.ecore</metamodel.ecore>
+        <metamodel.ecore>src/nSOC_TSEN.ecore</metamodel.ecore>
     </properties>
+
+
     <dependencies>
         <dependency>
             <groupId>org.kevoree.modeling</groupId>
