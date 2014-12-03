@@ -35,12 +35,12 @@
     </dependencies>
 
     <modules>
-        <module>tsen.context</module>
         <module>tsen.regulation</module>
         <module>tsen.ihm</module>
         <module>tsen.lob</module>
         <module>tsen.ade</module>
         <module>Model</module>
+        <module>tsen.context</module>
     </modules>
 
 
