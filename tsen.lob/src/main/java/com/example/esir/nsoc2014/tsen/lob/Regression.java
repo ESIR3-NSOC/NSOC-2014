@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+
+import com.example.esir.nsoc2014.tsen.lob.generator.ArffGenerator;
 
 import weka.core.DenseInstance;
 import weka.core.Instance;
@@ -15,36 +18,67 @@ public class Regression {
 
 	static Instances data;
 	static Instances newData;
+	static LinearRegression model;
+	static ArrayList<String> students = new ArrayList<String>();
 
 	public static void main(String args[]) throws Exception {
+		students.add("Jojo");
+		students.add("Toto");
+		students.add("Rojo");
+		students.add("iono");
+		students.add("oooo");
+		for (String item : students) {
+			String[] arg0 = { item };
+			ArffGenerator.main(arg0);
+			if (executeModel("./data/" + item + ".arff")) {
+				if (addInputs(3550, 9401, 3, 0, 1)) {
+					// classify the last instance
+					Instance myHouse = newData.lastInstance(); // load the last
+																// instance
+					double price = model.classifyInstance(myHouse); // use the
+																	// model
+																	// on
+																	// the last
+																	// instance
+					System.out.println("My house (" + myHouse + "): " + price);
+					newData.lastInstance().setValue(
+							newData.attribute("sellingPrice"), price); // set
+																		// the
+																		// value
+																		// of
+																		// the
+																		// missing
+																		// attribute
+																		// that
+																		// we
+																		// are
+																		// looking
+																		// for
+					System.out.println(newData);
+
+					if (saveInstancesInArffFile(newData, item))
+						System.out.println("save success !");
+				}
+			}
+		}
+	}
+
+	public static boolean executeModel(String pathArff) throws Exception {
 		// load data from arff file
-		BufferedReader reader = new BufferedReader(new FileReader(
-				"./data/housing.arff"));
+		BufferedReader reader = new BufferedReader(new FileReader(pathArff));
 		data = new Instances(reader);
 		data.setClassIndex(data.numAttributes() - 1); // checks for the
 														// attributes except the
 														// last
 		// build a model
-		LinearRegression model = new LinearRegression();
-		model.buildClassifier(data); // the last instance with a missing value is
+		model = new LinearRegression();
+		model.buildClassifier(data); // the last instance with a missing value
+										// is
 										// not used
 		System.out.println(model);
 		reader.close();
 
-		if (addInputs(3550, 9401, 3, 0, 1)) {
-			// classify the last instance
-			Instance myHouse = newData.lastInstance(); // load the last instance
-			double price = model.classifyInstance(myHouse); // use the model on
-															// the last instance
-			System.out.println("My house (" + myHouse + "): " + price);
-			newData.lastInstance().setValue(newData.attribute("sellingPrice"),
-					price); // set the value of the missing attribute that we
-							// are looking for
-			System.out.println(newData);
-
-			if (saveInstancesInArffFile(newData))
-				System.out.println("save success !");
-		}
+		return true;
 	}
 
 	static Instance instance = new DenseInstance(6);
@@ -89,11 +123,11 @@ public class Regression {
 	 * @return true
 	 * @throws IOException
 	 */
-	public static boolean saveInstancesInArffFile(Instances dataSet)
+	public static boolean saveInstancesInArffFile(Instances dataSet, String name)
 			throws IOException {
 		ArffSaver saver = new ArffSaver();
 		saver.setInstances(dataSet);
-		saver.setFile(new File("./data/housing.arff"));
+		saver.setFile(new File("./data/" + name + ".arff"));
 		saver.writeBatch();
 
 		return true;
