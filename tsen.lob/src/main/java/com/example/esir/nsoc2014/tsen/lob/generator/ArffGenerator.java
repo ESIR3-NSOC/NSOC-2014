@@ -48,15 +48,14 @@ public class ArffGenerator {
 			System.out.println("arff file created");
 	}
 
-	public static boolean addData(double att1, double att2, double att3,
-			double att4, double att5, double att6) {
+	public static boolean addData(double...att) {
 		instance = new DenseInstance(6);
-		instance.setValue(data.attribute("houseSize"), att1);
-		instance.setValue(data.attribute("lotSize"), att2);
-		instance.setValue(data.attribute("bedrooms"), att3);
-		instance.setValue(data.attribute("granite"), att4);
-		instance.setValue(data.attribute("bathroom"), att5);
-		instance.setValue(data.attribute("sellingPrice"), att6);
+		instance.setValue(data.attribute("houseSize"), att[0]);
+		instance.setValue(data.attribute("lotSize"), att[1]);
+		instance.setValue(data.attribute("bedrooms"), att[2]);
+		instance.setValue(data.attribute("granite"), att[3]);
+		instance.setValue(data.attribute("bathroom"), att[4]);
+		instance.setValue(data.attribute("sellingPrice"), att[5]);
 
 		data.add(instance);
 

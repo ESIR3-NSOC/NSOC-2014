@@ -99,16 +99,15 @@ public class Regression {
 	 *            : fifth attribute
 	 * @return true if success else false
 	 */
-	public static boolean addInputs(double att1, double att2, double att3,
-			double att4, double att5) {
+	public static boolean addInputs(double...att) {
 		newData = new Instances(data); // copy the instances of the arff file
 										// (needed to be modified)
 		System.out.println(newData);
-		instance.setValue(newData.attribute("houseSize"), att1);
-		instance.setValue(newData.attribute("lotSize"), att2);
-		instance.setValue(newData.attribute("bedrooms"), att3);
-		instance.setValue(newData.attribute("granite"), att4);
-		instance.setValue(newData.attribute("bathroom"), att5);
+		instance.setValue(newData.attribute("houseSize"), att[0]);
+		instance.setValue(newData.attribute("lotSize"), att[1]);
+		instance.setValue(newData.attribute("bedrooms"), att[2]);
+		instance.setValue(newData.attribute("granite"), att[3]);
+		instance.setValue(newData.attribute("bathroom"), att[4]);
 
 		newData.add(instance);
 		System.out.println(newData);
