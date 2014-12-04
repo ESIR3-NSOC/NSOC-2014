@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -27,7 +26,7 @@ public class Regression {
 														// last
 		// build a model
 		LinearRegression model = new LinearRegression();
-		model.buildClassifier(data); // the last instance with missing class is
+		model.buildClassifier(data); // the last instance with a missing value is
 										// not used
 		System.out.println(model);
 		reader.close();
