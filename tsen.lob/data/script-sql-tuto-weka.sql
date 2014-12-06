@@ -1,0 +1,13 @@
+DROP database nsoc;
+CREATE database nsoc;
+USE nsoc;
+CREATE TABLE tuto_tab(houseSize DOUBLE NOT NULL, lotSize DOUBLE NOT NULL, bedrooms DOUBLE NOT NULL, granite DOUBLE NOT NULL, bathroom DOUBLE NOT NULL, sellingPrice DOUBLE);
+INSERT INTO tuto_tab (houseSize,lotSize,bedrooms, granite, bathroom, sellingPrice) VALUES (3529, 9191, 6, 0, 0, 205000);
+INSERT INTO tuto_tab (houseSize,lotSize,bedrooms, granite, bathroom, sellingPrice) VALUES (3247, 10061, 5, 1, 1, 224900);
+INSERT INTO tuto_tab (houseSize,lotSize,bedrooms, granite, bathroom, sellingPrice) VALUES (4032, 10150, 5, 0, 1, 197900);
+INSERT INTO tuto_tab (houseSize,lotSize,bedrooms, granite, bathroom, sellingPrice) VALUES (2397, 14156, 4, 1, 0, 189900);
+INSERT INTO tuto_tab (houseSize,lotSize,bedrooms, granite, bathroom, sellingPrice) VALUES (2200, 9600, 4, 0, 1, 195000);
+INSERT INTO tuto_tab (houseSize,lotSize,bedrooms, granite, bathroom, sellingPrice) VALUES (3536, 19994, 6, 1, 1, 325000);
+INSERT INTO tuto_tab (houseSize,lotSize,bedrooms, granite, bathroom, sellingPrice) VALUES (2983, 9365, 5, 0, 1, 230000);
+INSERT INTO tuto_tab (houseSize,lotSize,bedrooms, granite, bathroom, sellingPrice) VALUES (9596, 15005, 6, 1, 3, 651000);
+INSERT INTO tuto_tab (houseSize,lotSize,bedrooms, granite, bathroom, sellingPrice) VALUES (5030, 11520, 4, 1, 2, 460500);

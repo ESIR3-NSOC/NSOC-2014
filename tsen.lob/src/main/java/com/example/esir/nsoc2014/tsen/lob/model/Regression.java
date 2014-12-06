@@ -1,4 +1,4 @@
-package com.example.esir.nsoc2014.tsen.lob;
+package com.example.esir.nsoc2014.tsen.lob.model;
 
 import java.io.BufferedReader;
 import java.io.File;
