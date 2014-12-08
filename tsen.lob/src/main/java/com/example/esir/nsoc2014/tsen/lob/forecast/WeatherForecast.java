@@ -1,6 +1,8 @@
 package com.example.esir.nsoc2014.tsen.lob.forecast;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -16,7 +18,7 @@ public class WeatherForecast {
 
 	public static void main(String[] args) throws ClientProtocolException,
 			IOException {
-
+		// set config to ignore cookies
 		RequestConfig globalConfig = RequestConfig.custom()
 				.setCookieSpec(CookieSpecs.BEST_MATCH).build();
 		CloseableHttpClient client = HttpClients.custom()
@@ -34,10 +36,23 @@ public class WeatherForecast {
 
 		getRequest.setConfig(localConfig);
 		CloseableHttpResponse response = client.execute(target, getRequest);
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			throw new RuntimeException("Failed : HTTP error code : "
+					+ response.getStatusLine().getStatusCode());
+		}
 		try {
 			HttpEntity entity = response.getEntity();
-			if (entity != null)
-				System.out.println(response.getStatusLine().toString());
+			if (entity != null) {
+				BufferedReader br = new BufferedReader(new InputStreamReader(
+						(entity.getContent())));
+
+				String output;
+				System.out.println("Output from Server .... \n");
+				while ((output = br.readLine()) != null) {
+					System.out.println(output);
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
