@@ -1,3 +1,8 @@
+/*
+ * Generate arff files used in regression.java 
+ * 
+ */
+
 package com.example.esir.nsoc2014.tsen.lob.generator;
 
 import java.io.File;

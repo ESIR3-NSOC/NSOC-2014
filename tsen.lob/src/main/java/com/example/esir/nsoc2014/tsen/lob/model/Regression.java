@@ -1,3 +1,10 @@
+/*
+ * Use a linear regression model on data from arff files
+ * Test class, don't use
+ * 
+ * 
+ */
+
 package com.example.esir.nsoc2014.tsen.lob.model;
 
 import java.io.BufferedReader;
@@ -68,8 +75,7 @@ public class Regression {
 		BufferedReader reader = new BufferedReader(new FileReader(pathArff));
 		data = new Instances(reader);
 		data.setClassIndex(data.numAttributes() - 1); // checks for the
-														// attributes except the
-														// last
+														// attributes
 		// build a model
 		model = new LinearRegression();
 		model.buildClassifier(data); // the last instance with a missing value
