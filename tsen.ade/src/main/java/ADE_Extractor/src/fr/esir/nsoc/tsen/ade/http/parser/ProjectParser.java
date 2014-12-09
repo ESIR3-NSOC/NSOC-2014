@@ -1,4 +1,4 @@
-package fr.esir.nsoc.tsen.ade.http.parser;
+package ADE_Extractor.src.fr.esir.nsoc.tsen.ade.http.parser;
 
 import java.util.HashMap;
 

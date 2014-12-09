@@ -1,4 +1,4 @@
-package com.esir3.nsoc2014.ade;
+package ADE_ical4j.src.com.esir3.nsoc2014.ade;
 
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Property;

@@ -1,4 +1,4 @@
-package fr.esir.nsoc.tsen.ade.core;
+package ADE_Extractor.src.fr.esir.nsoc.tsen.ade.core;
 
 import java.util.HashMap;
 import java.util.Iterator;

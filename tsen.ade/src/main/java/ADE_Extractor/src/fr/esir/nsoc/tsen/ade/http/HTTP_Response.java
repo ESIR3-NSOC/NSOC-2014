@@ -1,4 +1,4 @@
-package fr.esir.nsoc.tsen.ade.http;
+package ADE_Extractor.src.fr.esir.nsoc.tsen.ade.http;
 
 public class HTTP_Response {
 	
