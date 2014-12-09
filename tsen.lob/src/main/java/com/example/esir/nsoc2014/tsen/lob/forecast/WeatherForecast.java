@@ -1,6 +1,7 @@
 package com.example.esir.nsoc2014.tsen.lob.forecast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -26,31 +27,31 @@ public class WeatherForecast {
 		this.temp = 0;
 		this.time = 0;
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
-	public double getHumidity(){
+	public double getHumidity() {
 		return humidity;
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
-	public double getTemp(){
+	public double getTemp() {
 		return temp;
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
-	public int getTime(){
+	public int getTime() {
 		return time;
 	}
-	
+
 	/**
 	 * 
 	 * @param start_hour
@@ -94,9 +95,22 @@ public class WeatherForecast {
 				JSONArray weather = data.getJSONArray("weather");
 				JSONArray hourly = weather.getJSONObject(0).getJSONArray(
 						"hourly");
-				System.out.println(hourly.getJSONObject(0).getDouble("tempC"));
-				System.out.println(hourly.getJSONObject(0)
-						.getDouble("humidity"));
+				ArrayList<Integer> list = new ArrayList<Integer>();
+				list.add(1);
+				list.add(4);
+				list.add(7);
+				list.add(10);
+				list.add(13);
+				list.add(16);
+				list.add(19);
+				list.add(22);
+				int pos = closest(start_hour, list)/3 + 1;
+				temp = hourly.getJSONObject(pos).getDouble("tempC");
+				humidity = hourly.getJSONObject(pos)
+						.getDouble("humidity");
+				System.out.println(temp);
+				System.out.println(humidity);
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -118,7 +132,7 @@ public class WeatherForecast {
 	 * @param in
 	 * @return
 	 */
-	public int closest(int of, List<Integer> in) {
+	public static int closest(int of, List<Integer> in) {
 		int min = Integer.MAX_VALUE;
 		int closest = of;
 
