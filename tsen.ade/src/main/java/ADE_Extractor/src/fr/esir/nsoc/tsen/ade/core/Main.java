@@ -6,10 +6,12 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
-import fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
-import fr.esir.nsoc.tsen.ade.http.HTTP_Response;
-import fr.esir.nsoc.tsen.ade.http.parser.ProjectParser;
+import ADE_Extractor.src.fr.esir.nsoc.tsen.ade.database.SQLiteDB;
+import ADE_Extractor.src.fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
+import ADE_Extractor.src.fr.esir.nsoc.tsen.ade.http.HTTP_Response;
+import ADE_Extractor.src.fr.esir.nsoc.tsen.ade.http.parser.ProjectParser;
+
+
 
 public class Main {
 
