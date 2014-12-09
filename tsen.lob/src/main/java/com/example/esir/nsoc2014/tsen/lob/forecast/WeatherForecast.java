@@ -1,8 +1,7 @@
 package com.example.esir.nsoc2014.tsen.lob.forecast;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -13,10 +12,52 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class WeatherForecast {
+	private double humidity;
+	private double temp;
+	private int time;
 
-	public static void main(String[] args) throws ClientProtocolException,
+	public WeatherForecast() {
+		this.humidity = 0;
+		this.temp = 0;
+		this.time = 0;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getHumidity(){
+		return humidity;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getTemp(){
+		return temp;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int getTime(){
+		return time;
+	}
+	
+	/**
+	 * 
+	 * @param start_hour
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public void executeSearch(int start_hour) throws ClientProtocolException,
 			IOException {
 		// set config to ignore cookies
 		RequestConfig globalConfig = RequestConfig.custom()
@@ -44,14 +85,18 @@ public class WeatherForecast {
 		try {
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
-				BufferedReader br = new BufferedReader(new InputStreamReader(
-						(entity.getContent())));
-
-				String output;
-				System.out.println("Output from Server .... \n");
-				while ((output = br.readLine()) != null) {
-					System.out.println(output);
-				}
+				String retSrc = EntityUtils.toString(entity);
+				System.out.println(retSrc);
+				// parsing JSON
+				JSONObject result = new JSONObject(retSrc); // Convert String to
+															// JSON Object
+				JSONObject data = result.getJSONObject("data");
+				JSONArray weather = data.getJSONArray("weather");
+				JSONArray hourly = weather.getJSONObject(0).getJSONArray(
+						"hourly");
+				System.out.println(hourly.getJSONObject(0).getDouble("tempC"));
+				System.out.println(hourly.getJSONObject(0)
+						.getDouble("humidity"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -65,5 +110,27 @@ public class WeatherForecast {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * @param of
+	 * @param in
+	 * @return
+	 */
+	public int closest(int of, List<Integer> in) {
+		int min = Integer.MAX_VALUE;
+		int closest = of;
+
+		for (int v : in) {
+			final int diff = Math.abs(v - of);
+
+			if (diff < min) {
+				min = diff;
+				closest = v;
+			}
+		}
+
+		return closest;
 	}
 }
