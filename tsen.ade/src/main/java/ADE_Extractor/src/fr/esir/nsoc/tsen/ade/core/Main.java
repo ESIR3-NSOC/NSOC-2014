@@ -14,6 +14,7 @@ import fr.esir.nsoc.tsen.ade.http.parser.ProjectParser;
 public class Main {
 
 	private final static String ADE_SERVER_URL = "http://plannings.univ-rennes1.fr/";
+	private final static String ADE_SERVER_URL_S = "https://plannings.univ-rennes1.fr/";
 	private final static String ADE_PROJECT_PATH = "ade/standard/projects.jsp";
 	private final static String ADE_INTERFACE_PATH = "ade/standard/gui/interface.jsp";
 	private final static boolean DEBUG = true;
@@ -40,6 +41,7 @@ public class Main {
 		
 		// test ADE JSESSION ID
 		HTTP_Requester httpReq = new HTTP_Requester(ADE_SERVER_URL, jSessionId);
+		HTTP_Requester httpsReq = new HTTP_Requester(ADE_SERVER_URL_S, jSessionId);
 		HTTP_Response httpResp = httpReq.sendGet(ADE_PROJECT_PATH);
 		if (DEBUG) System.out.println(httpResp.isOk() ? httpResp.getCode() : "err");
 		status = ((httpResp.isOk() ? httpResp.getCode() : 0) == 200);
@@ -72,13 +74,14 @@ public class Main {
 				projectId = stdin.nextInt();
 			} while (false); // TODO check the project id
 			try {
-				httpResp = httpReq.sendPost(ADE_INTERFACE_PATH, "projectId=" + projectId);
+				httpResp = httpsReq.sendPost(ADE_INTERFACE_PATH, "projectId=" + projectId);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 		}
+		
+		// 
 		
 		
 		// exit
