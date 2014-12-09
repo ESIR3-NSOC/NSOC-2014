@@ -9,6 +9,7 @@ import java.util.Set;
 import ADE_Extractor.src.fr.esir.nsoc.tsen.ade.database.SQLiteDB;
 import ADE_Extractor.src.fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
 import ADE_Extractor.src.fr.esir.nsoc.tsen.ade.http.HTTP_Response;
+import ADE_Extractor.src.fr.esir.nsoc.tsen.ade.http.parser.CategoryParser;
 import ADE_Extractor.src.fr.esir.nsoc.tsen.ade.http.parser.ProjectParser;
 
 
@@ -19,6 +20,13 @@ public class Main {
 	private final static String ADE_SERVER_URL_S = "https://plannings.univ-rennes1.fr/";
 	private final static String ADE_PROJECT_PATH = "ade/standard/projects.jsp";
 	private final static String ADE_INTERFACE_PATH = "ade/standard/gui/interface.jsp";
+	private final static String ADE_TREE_PATH = "ade/standard/gui/tree.jsp";
+
+	private final static String ADE_STUD_CATEGORY = "trainee";
+	private final static String ADE_ROOM_CATEGORY = "room";
+	private final static String ADE_PROF_CATEGORY = "instructor";
+	
+	
 	private final static boolean DEBUG = true;
 			
 			
@@ -27,6 +35,7 @@ public class Main {
 		// setup
 		Scanner stdin = new Scanner(System.in);
 		boolean status = true; // OK
+		int projectID = 0;
 		
 		// connect to local DB
 		SQLiteDB db = new SQLiteDB("test1.db");
@@ -59,7 +68,7 @@ public class Main {
 			// Get an iterator
 			Iterator i = set.iterator();
 			// Display elements
-			while(i.hasNext()) {
+			while(i.hasNext() && DEBUG) {
 				Map.Entry me = (Map.Entry)i.next();
 				System.out.print(me.getKey() + ": ");
 				System.out.println(me.getValue());
@@ -70,20 +79,40 @@ public class Main {
 		// select an ADE project
 		if (status)
 		{
-			int projectId = 0;
 			do {
 				System.out.print("Enter a project ID: ");
-				projectId = stdin.nextInt();
+				projectID = stdin.nextInt();
 			} while (false); // TODO check the project id
 			try {
-				httpResp = httpsReq.sendPost(ADE_INTERFACE_PATH, "projectId=" + projectId);
+				httpResp = httpsReq.sendPost(ADE_INTERFACE_PATH, "projectId=" + projectID);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				status = false;
 			}
 		}
 		
-		// 
+		// list & store category
+		if (status)
+		{
+			httpResp = httpReq.sendGet(ADE_TREE_PATH);
+			
+			CategoryParser cp = new CategoryParser(httpResp.getContent());
+			HashMap<String, String> projectList = cp.Parse();
+			
+			// Get a set of the entries
+			Set set = projectList.entrySet();
+			// Get an iterator
+			Iterator i = set.iterator();
+			// Display elements
+			while(i.hasNext() && DEBUG) {
+				Map.Entry me = (Map.Entry)i.next();
+				System.out.print(me.getKey() + "> ");
+				System.out.println(me.getValue());
+			}
+			db.FillCategory(set, projectID);
+			status = false;
+		}
 		
 		
 		// exit

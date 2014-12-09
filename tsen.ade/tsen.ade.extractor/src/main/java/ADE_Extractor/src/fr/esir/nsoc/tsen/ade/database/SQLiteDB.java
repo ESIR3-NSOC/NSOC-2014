@@ -41,6 +41,39 @@ public class SQLiteDB {
 		}
 	}
 
+	public void CreateCategoryTable() {
+		if (ExistTable("category"))
+			DropTable("category");
+		Statement stmt = null;
+		try {
+			stmt = _connection.createStatement();
+			String sql = "CREATE TABLE category "
+					+ "(ID          TEXT   NOT NULL,"
+					+ " NAME        TEXT   NOT NULL,"
+					+ " PROJECT_ID  INT    NOT NULL)";
+			stmt.executeUpdate(sql);
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void CreateBrancheTable() {
+		if (ExistTable("project"))
+			DropTable("project");
+		Statement stmt = null;
+		try {
+			stmt = _connection.createStatement();
+			String sql = "CREATE TABLE project "
+					+ "(ID INT PRIMARY KEY     NOT NULL,"
+					+ " NAME           TEXT    NOT NULL)";
+			stmt.executeUpdate(sql);
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void DropTable(String name) {
 		Statement stmt = null;
 		try {
@@ -80,6 +113,25 @@ public class SQLiteDB {
 				stmt = _connection.createStatement();
 				String sql = "INSERT INTO 'project' (ID,NAME) " + "VALUES ("
 						+ me.getKey() + ", '" + me.getValue() + "');";
+				stmt.executeUpdate(sql);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void FillCategory(Set set, int projectID) {
+		CreateCategoryTable();
+		// Get an iterator
+		Iterator i = set.iterator();
+		// Display elements
+		while (i.hasNext()) {
+			Map.Entry me = (Map.Entry) i.next();
+			Statement stmt;
+			try {
+				stmt = _connection.createStatement();
+				String sql = "INSERT INTO 'category' (ID,NAME,PROJECT_ID) " + "VALUES ('"
+						+ me.getKey() + "', '" + me.getValue() + "', " + projectID + ");";
 				stmt.executeUpdate(sql);
 			} catch (SQLException e) {
 				e.printStackTrace();
