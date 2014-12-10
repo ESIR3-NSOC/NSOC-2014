@@ -14,7 +14,7 @@
     <name>TSEN :: ADE</name>
     <modules>
         <module>extractor</module>
-        <module>tsen.ade.calendarManager</module>
+        <module>calendarManager</module>
     </modules>
 
 
