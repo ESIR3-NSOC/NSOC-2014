@@ -1,3 +1,4 @@
+package com.esir.nsoc.ade.parser;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Property;
 
@@ -26,7 +27,7 @@ public class Cal {
 				}
 			}*/
 			//Now Parsing an iCalendar file
-			  FileInputStream fin = new FileInputStream("C:\\Users\\Quentin25\\Documents\\NSOC\\Workspace\\ICAL_Parser\\src\\com\\esir3\\nsoc2014\\ade\\ADECal.ics");
+			  FileInputStream fin = new FileInputStream("C:\\Users\\Quentin25\\Documents\\NSOC\\Github\\NSOC-2014\\tsen.ade\\calendarManager\\src\\main\\java\\Cal.ics");
 
 			  CalendarBuilder builder = new CalendarBuilder();
 
@@ -54,11 +55,5 @@ public class Cal {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-			
-	}
-	
-	public static void main(String[] args){
-		Cal cal = new Cal();
 	}
 }

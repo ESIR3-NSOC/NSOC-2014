@@ -12,8 +12,6 @@ import fr.esir.nsoc.tsen.ade.http.HTTP_Response;
 import fr.esir.nsoc.tsen.ade.http.parser.CategoryParser;
 import fr.esir.nsoc.tsen.ade.http.parser.ProjectParser;
 
-
-
 public class Main {
 
 	private final static String ADE_SERVER_URL = "http://plannings.univ-rennes1.fr/";
