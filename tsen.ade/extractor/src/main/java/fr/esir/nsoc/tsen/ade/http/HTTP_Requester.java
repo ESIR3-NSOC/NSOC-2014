@@ -1,4 +1,4 @@
-package ADE_Extractor.src.fr.esir.nsoc.tsen.ade.http;
+package fr.esir.nsoc.tsen.ade.http;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

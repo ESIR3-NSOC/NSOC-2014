@@ -1,4 +1,4 @@
-package ADE_Extractor.src.fr.esir.nsoc.tsen.ade.database;
+package fr.esir.nsoc.tsen.ade.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

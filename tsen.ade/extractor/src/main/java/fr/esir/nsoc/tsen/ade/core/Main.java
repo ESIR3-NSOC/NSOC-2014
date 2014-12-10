@@ -1,4 +1,4 @@
-package ADE_Extractor.src.fr.esir.nsoc.tsen.ade.core;
+package fr.esir.nsoc.tsen.ade.core;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-import ADE_Extractor.src.fr.esir.nsoc.tsen.ade.database.SQLiteDB;
-import ADE_Extractor.src.fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
-import ADE_Extractor.src.fr.esir.nsoc.tsen.ade.http.HTTP_Response;
-import ADE_Extractor.src.fr.esir.nsoc.tsen.ade.http.parser.CategoryParser;
-import ADE_Extractor.src.fr.esir.nsoc.tsen.ade.http.parser.ProjectParser;
+import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
+import fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
+import fr.esir.nsoc.tsen.ade.http.HTTP_Response;
+import fr.esir.nsoc.tsen.ade.http.parser.CategoryParser;
+import fr.esir.nsoc.tsen.ade.http.parser.ProjectParser;
 
 
 

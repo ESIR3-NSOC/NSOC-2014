@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
     <name>TSEN :: ADE</name>
     <modules>
-        <module>tsen.ade.extractor</module>
+        <module>extractor</module>
         <module>tsen.ade.calendarManager</module>
     </modules>
 
