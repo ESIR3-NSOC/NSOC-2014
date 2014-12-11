@@ -15,7 +15,7 @@
     <name>TSEN :: Model</name>
 
     <properties>
-        <metaModel.ecore>nSOC_TSEN.ecore</metaModel.ecore>
+        <metaModel.ecore>src/nSOC_TSEN.ecore</metaModel.ecore>
     </properties>
 
 
