@@ -51,7 +51,7 @@ public class Main {
 		// test ADE JSESSION ID
 		HTTP_Requester httpReq = new HTTP_Requester(ADE_SERVER_URL, jSessionId);
 		HTTP_Requester httpsReq = new HTTP_Requester(ADE_SERVER_URL_S, jSessionId);
-		HTTP_Response httpResp = httpReq.sendGet(ADE_PROJECT_PATH);
+		HTTP_Response httpResp = httpReq.sendGet(ADE_PROJECT_PATH, "");
 		if (DEBUG) System.out.println(httpResp.isOk() ? httpResp.getCode() : "err");
 		status = ((httpResp.isOk() ? httpResp.getCode() : 0) == 200);
 		
@@ -93,7 +93,7 @@ public class Main {
 		// list & store category
 		if (status)
 		{
-			httpResp = httpReq.sendGet(ADE_TREE_PATH);
+			httpResp = httpReq.sendGet(ADE_TREE_PATH, "");
 			
 			CategoryParser cp = new CategoryParser(httpResp.getContent());
 			HashMap<String, String> projectList = cp.Parse();
