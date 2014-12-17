@@ -15,7 +15,6 @@ public class SQLiteDB {
 
 	private Connection _connection = null;
 	private boolean _connected = false;
-
 	public SQLiteDB(String name) {
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -27,13 +26,13 @@ public class SQLiteDB {
 		_connected = true;
 	}
 
-	public void CreateExtractTable() {
+	public void CreateEventTable() {
 		if (ExistTable("extract"))
 			DropTable("extract");
 		Statement stmt = null;
 		try {
 			stmt = _connection.createStatement();
-			String sql = "CREATE TABLE extract "
+			String sql = "CREATE TABLE event "
 					+ "(UID INT UNIQUE PRIMARY KEY     NOT NULL,"
 					+ " PROJECTID           INTEGER    NOT NULL,"
 					+ " DTSTART           DATE    NOT NULL,"
@@ -75,11 +74,9 @@ public class SQLiteDB {
 		return exist;
 	}
 
-	public void FillExtract(Set<ADE_Event> set, int projectid) {
-		if (ExistTable("extract")){
-			
-		} else{
-			CreateExtractTable();
+	public boolean FillEvent(Set<ADE_Event> set, int projectid) {
+		if (!ExistTable("event")){
+			CreateEventTable();
 		}
 		
 		// Get an iterator
@@ -87,25 +84,35 @@ public class SQLiteDB {
 		// Display elements
 		while (i.hasNext()) {
 			ADE_Event adeEvent = (ADE_Event)i.next();
-			PreparedStatement stmt;
+			
+			PreparedStatement stmtUpdate;
 
 			try {
 
-				String sql = "INSERT INTO 'extract' (UID, PROJECTID, DTSTART, DTEND, SUMMARY, LOCATION, DESCRIPTION) " + "VALUES ('"
-						+ adeEvent.getUid() + "', '" + projectid + "', '" + adeEvent.getDtstart() + "', '"
-						+ adeEvent.getDtend() + "', ?, ?, ?);";
-				stmt = _connection.prepareStatement(sql);
-				//Evite d'utiliser les caractères spéciaux ex : "'"
-				stmt.setString(1, adeEvent.getSummary());
-				stmt.setString(2, adeEvent.getLocation());
-				stmt.setString(3, adeEvent.getDescription());			
+				Statement stmtQuery = _connection.createStatement();
+	            ResultSet rs = stmtQuery.executeQuery("SELECT UID FROM 'event' WHERE UID = '" +adeEvent.getUid()+"'");
 
-				stmt.executeUpdate();
+	            if(!rs.next()){
+	            	String sql = "INSERT INTO 'event' (UID, PROJECTID, DTSTART, DTEND, SUMMARY, LOCATION, DESCRIPTION) " + "VALUES ('"
+							+ adeEvent.getUid() + "', '" + projectid + "', '" + adeEvent.getDtstart() + "', '"
+							+ adeEvent.getDtend() + "', ?, ?, ?);";
+					stmtUpdate = _connection.prepareStatement(sql);
+					//Evite d'utiliser les caractères spéciaux ex : "'"
+					stmtUpdate.setString(1, adeEvent.getSummary());
+					stmtUpdate.setString(2, adeEvent.getLocation());
+					stmtUpdate.setString(3, adeEvent.getDescription());			
 
+					stmtUpdate.executeUpdate();
+					
+	            }
 			} catch (SQLException e) {
 				e.printStackTrace();
+				return false;
 			}
+			
 		}
+		close();
+		return true;
 	}
 
 	public Connection getConnection() {
