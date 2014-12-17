@@ -1,12 +1,14 @@
 package fr.esir.nsoc.tsen.ade.core;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
 import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
+import fr.esir.nsoc.tsen.ade.http.HTTP_Parameter;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Response;
 import fr.esir.nsoc.tsen.ade.http.parser.CategoryParser;
@@ -23,11 +25,9 @@ public class Main {
 	private final static String ADE_STUD_CATEGORY = "trainee";
 	private final static String ADE_ROOM_CATEGORY = "room";
 	private final static String ADE_PROF_CATEGORY = "instructor";
-	
-	
+
 	private final static boolean DEBUG = true;
-			
-			
+
 	public static void main(String[] args) {
 		
 		// setup
@@ -51,9 +51,9 @@ public class Main {
 		// test ADE JSESSION ID
 		HTTP_Requester httpReq = new HTTP_Requester(ADE_SERVER_URL, jSessionId);
 		HTTP_Requester httpsReq = new HTTP_Requester(ADE_SERVER_URL_S, jSessionId);
-		HTTP_Response httpResp = httpReq.sendGet(ADE_PROJECT_PATH, "");
-		if (DEBUG) System.out.println(httpResp.isOk() ? httpResp.getCode() : "err");
-		status = ((httpResp.isOk() ? httpResp.getCode() : 0) == 200);
+		HTTP_Response httpResp = httpReq.sendGet(ADE_PROJECT_PATH, null);
+		if (DEBUG) System.out.println(httpResp.getCode());
+		status = httpResp.getCode() == 200;
 		
 		// list & store ADE projects
 		if (status)
@@ -82,7 +82,9 @@ public class Main {
 				projectID = stdin.nextInt();
 			} while (false); // TODO check the project id
 			try {
-				httpResp = httpsReq.sendPost(ADE_INTERFACE_PATH, "projectId=" + projectID);
+				HashSet<HTTP_Parameter> parameters = new HashSet<HTTP_Parameter>();
+				parameters.add(new HTTP_Parameter("projectId", Integer.toString(projectID)));
+				httpResp = httpsReq.sendPost(ADE_INTERFACE_PATH, parameters);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -93,7 +95,7 @@ public class Main {
 		// list & store category
 		if (status)
 		{
-			httpResp = httpReq.sendGet(ADE_TREE_PATH, "");
+			httpResp = httpReq.sendGet(ADE_TREE_PATH, null);
 			
 			CategoryParser cp = new CategoryParser(httpResp.getContent());
 			HashMap<String, String> projectList = cp.Parse();
@@ -117,18 +119,17 @@ public class Main {
 		stdin.close();
 		System.exit(0);
 	}
-	
+
 	private static boolean isHexNumber(String input) {
 		try {
-			while (input.length() > 8)
-			{
+			while (input.length() > 8) {
 				Long.parseLong(input.substring(0, 7), 16);
 				input = input.substring(8, input.length());
 			}
 			Long.parseLong(input, 16);
 			return true;
 		} catch (NumberFormatException e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			return false;
 		}
 	}

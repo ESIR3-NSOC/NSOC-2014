@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -21,11 +23,18 @@ public class HTTP_Requester {
 		this._jSessionId = jSessionId;
 	}
 
-	public HTTP_Response sendGet(String path, String parameters) {
+	public HTTP_Response sendGet(String path, HashSet<HTTP_Parameter> parameters) {
 		URL url;
 		try {
-			if (parameters != null && parameters.length() > 0) {
-				url = new URL(_adeServerUrl + path + "?" + parameters);
+			if (parameters != null && parameters.size() > 0) {
+				StringBuilder sbParameters = new StringBuilder();
+				Iterator<HTTP_Parameter> i = parameters.iterator();
+				while(i.hasNext()) {
+					HTTP_Parameter hp = i.next();
+					sbParameters.append(sbParameters.length() == 0 ? "?" : "&");
+					sbParameters.append(hp.getName() + "=" + hp.getValue());
+				}
+				url = new URL(_adeServerUrl + path + sbParameters);
 			} else {
 				url = new URL(_adeServerUrl + path);
 			}
@@ -51,12 +60,13 @@ public class HTTP_Requester {
 				StringBuffer response = new StringBuffer();
 				while ((inputLine = in.readLine()) != null) {
 					response.append(inputLine);
+					response.append("\r\n");
 				}
 				in.close();
 				content = response.toString();
 			}
 
-			return new HTTP_Response(_adeServerUrl + path, "GET", code, content);
+			return new HTTP_Response(_adeServerUrl + path, "GET", code, content, parameters);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return new HTTP_Response(_adeServerUrl + path, "GET");
@@ -65,7 +75,7 @@ public class HTTP_Requester {
 	}
 
 	// HTTP POST request
-	public HTTP_Response sendPost(String path, String parameters)
+	public HTTP_Response sendPost(String path, HashSet<HTTP_Parameter> parameters)
 			throws Exception {
 		URL url;
 		try {
@@ -82,7 +92,16 @@ public class HTTP_Requester {
 			// Send post request
 			con.setDoOutput(true);
 			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-			wr.writeBytes(parameters);
+			if (parameters != null && parameters.size() > 0) {
+				StringBuilder sbParameters = new StringBuilder();
+				Iterator<HTTP_Parameter> i = parameters.iterator();
+				while(i.hasNext()) {
+					HTTP_Parameter hp = i.next();
+					sbParameters.append(sbParameters.length() == 0 ? "" : "&");
+					sbParameters.append(hp.getName() + "=" + hp.getValue());
+				}
+				wr.writeBytes(sbParameters.toString());
+			}
 			wr.flush();
 			wr.close();
 
@@ -97,13 +116,14 @@ public class HTTP_Requester {
 				StringBuffer response = new StringBuffer();
 				while ((inputLine = in.readLine()) != null) {
 					response.append(inputLine);
+					response.append("\r\n");
 				}
 				in.close();
 				content = response.toString();
 			}
 
 			return new HTTP_Response(_adeServerUrl + path, "POST", code,
-					content);
+					content, parameters);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return new HTTP_Response(_adeServerUrl + path, "POST");
