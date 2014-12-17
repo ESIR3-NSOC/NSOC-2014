@@ -16,6 +16,7 @@
 
     <modules>
         <module>kmf</module>
+        <module>contextManager</module>
     </modules>
 
     <dependencies>

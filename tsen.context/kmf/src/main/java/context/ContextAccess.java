@@ -1,6 +1,8 @@
 package context;
 
 import reference.Reference;
+import tsen.factory.TsenTransactionManager;
+
 
 /**
  * Created by mathi_000 on 02/12/2014.
@@ -8,8 +10,11 @@ import reference.Reference;
 public class ContextAccess {
 
     private String _name = Reference.CTX_ACCESS;
+    private TsenTransactionManager manager;
 
     public ContextAccess(){
+
+
 
     }
 
