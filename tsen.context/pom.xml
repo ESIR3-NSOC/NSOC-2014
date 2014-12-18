@@ -15,15 +15,24 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>kmf</module>
         <module>contextManager</module>
     </modules>
 
     <dependencies>
         <dependency>
             <groupId>tsen</groupId>
-            <artifactId>tsen.model</artifactId>
+            <artifactId>Model</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.modeling</groupId>
+            <artifactId>org.kevoree.modeling.microframework</artifactId>
+            <version>3.5.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>0.9.976</version>
         </dependency>
     </dependencies>
 

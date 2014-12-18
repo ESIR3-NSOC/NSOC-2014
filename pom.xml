@@ -14,6 +14,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.target>1.8</jdk.target>
+        <kmf.version>3.5.12</kmf.version>
+        <kotlin.version>0.8.11</kotlin.version>
     </properties>
 
     <dependencies>
@@ -30,12 +32,12 @@
     </dependencies>
 
     <modules>
+        <module>Model</module>
+        <module>tsen.context</module>
         <module>tsen.regulation</module>
         <module>tsen.ihm</module>
         <module>tsen.lob</module>
         <module>tsen.ade</module>
-        <module>Model</module>
-        <module>tsen.context</module>
     </modules>
 
 
