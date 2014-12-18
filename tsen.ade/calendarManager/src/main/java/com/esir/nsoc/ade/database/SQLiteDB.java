@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -27,13 +28,14 @@ public class SQLiteDB {
 	}
 
 	public void CreateEventTable() {
-		if (ExistTable("extract"))
-			DropTable("extract");
+		if (ExistTable("event_"+getDayOfYear()))
+			DropTable("event_"+getDayOfYear());
 		Statement stmt = null;
+				
 		try {
 			stmt = _connection.createStatement();
-			String sql = "CREATE TABLE event "
-					+ "(UID INT UNIQUE PRIMARY KEY     NOT NULL,"
+			String sql = "CREATE TABLE event_" + getDayOfYear()
+					+ " (UID INT UNIQUE PRIMARY KEY     NOT NULL,"
 					+ " PROJECTID           INTEGER    NOT NULL,"
 					+ " DTSTART           DATE    NOT NULL,"
 					+ " DTEND           DATE    NOT NULL,"
@@ -75,7 +77,7 @@ public class SQLiteDB {
 	}
 
 	public boolean FillEvent(Set<ADE_Event> set, int projectid) {
-		if (!ExistTable("event")){
+		if (!ExistTable("event_"+getDayOfYear())){
 			CreateEventTable();
 		}
 		
@@ -90,10 +92,10 @@ public class SQLiteDB {
 			try {
 
 				Statement stmtQuery = _connection.createStatement();
-	            ResultSet rs = stmtQuery.executeQuery("SELECT UID FROM 'event' WHERE UID = '" +adeEvent.getUid()+"'");
+	            ResultSet rs = stmtQuery.executeQuery("SELECT UID FROM 'event_"+getDayOfYear()+"' WHERE UID = '" +adeEvent.getUid()+"'");
 
 	            if(!rs.next()){
-	            	String sql = "INSERT INTO 'event' (UID, PROJECTID, DTSTART, DTEND, SUMMARY, LOCATION, DESCRIPTION) " + "VALUES ('"
+	            	String sql = "INSERT INTO 'event_"+getDayOfYear()+"' (UID, PROJECTID, DTSTART, DTEND, SUMMARY, LOCATION, DESCRIPTION) " + "VALUES ('"
 							+ adeEvent.getUid() + "', '" + projectid + "', '" + adeEvent.getDtstart() + "', '"
 							+ adeEvent.getDtend() + "', ?, ?, ?);";
 					stmtUpdate = _connection.prepareStatement(sql);
@@ -121,6 +123,13 @@ public class SQLiteDB {
 
 	public boolean isConnected() {
 		return _connected;
+	}
+	
+	public int getDayOfYear(){
+		//Get day of year
+		Calendar calendar = Calendar.getInstance();
+		int dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);  
+		return dayOfYear;
 	}
 
 	public void close() {

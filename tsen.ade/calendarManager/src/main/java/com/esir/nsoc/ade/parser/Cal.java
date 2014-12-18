@@ -32,6 +32,7 @@ public class Cal {
 
 			Calendar calendar = builder.build(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
 			//Calendar calendar = builder.build(fin);
+			
 
 			set = new HashSet<ADE_Event>();
 
@@ -50,6 +51,7 @@ public class Cal {
 						break;
 					case "DTSTART":
 						DateTime dtstart;
+
 						try {
 							dtstart = new DateTime(property.getValue().toString());
 							java.text.SimpleDateFormat sdf = 
