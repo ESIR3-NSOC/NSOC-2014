@@ -1,12 +1,24 @@
 package com.esir.nsoc.ade.core;
 
-import com.esir.nsoc.ade.parser.Cal;
-
 public class Main {
-
+	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-			Cal cal = new Cal();
+		Boolean ok=false;
+		ICSExtractor extract = new ICSExtractor();
+		/*for(int i=6414 ; i<6428 ; i++){
+			ok=extract.extractICS(i, "2014-12-14", "2014-12-20", 22);
+			System.out.println(ok ? "Extraction done !" : "Extraction failed !");
+		}*/
+		
+		ok=extract.extractICS(359, "2014-10-01", "2015-05-28", 22);
+		System.out.println(ok ? "Extraction done !" : "Extraction failed !");
+		
 	}
-
 }
+
+
+/*
+
+
+
+*/

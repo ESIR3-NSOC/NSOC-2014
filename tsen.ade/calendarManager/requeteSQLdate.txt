@@ -1,0 +1,1 @@
+select * from extract where `DTSTART` > date('now', '-3 day')
