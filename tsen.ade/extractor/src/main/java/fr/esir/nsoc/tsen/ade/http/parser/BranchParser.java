@@ -8,25 +8,27 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import fr.esir.nsoc.tsen.ade.object.Category;
+import fr.esir.nsoc.tsen.ade.object.Branch;
 
-public class CategoryParser {
+public class BranchParser {
 	
 	private String _html;
 	private int projectID;
+	private String category;
 
-	public CategoryParser(String _html, int projectID) {
+	public BranchParser(String _html, int projectID, String category) {
 		super();
 		this._html = _html;
 		this.projectID = projectID;
+		this.category = category;
 	}
 
-	public HashSet<Category> Parse()
+	public HashSet<Branch> Parse()
 	{
 		Document doc = Jsoup.parse(_html);
 		Elements list = doc.select("div.treeline");
 		
-		HashSet<Category> hs = new HashSet<Category>();
+		HashSet<Branch> hs = new HashSet<Branch>();
 		
 		for (Element e1 : list)
 		{
@@ -34,8 +36,8 @@ public class CategoryParser {
 			{
 				Element e2 = e1.select("a[href*=\"javascript:checkCategory\"]").first();
 				System.out.println(e2.attr("href").split("'")[1] + " > " + e2.text());
-				Category c = new Category(e2.attr("href").split("'")[1], e2.text(), projectID);
-				hs.add(c);
+//				Branch b = new Branch(e2.attr("href").split("'")[1], e2.text(), projectID);
+//				hs.add(b);
 			}
 		}
 		return hs;
@@ -48,5 +50,10 @@ public class CategoryParser {
 	public int getProjectID() {
 		return projectID;
 	}
+
+	public String getCategory() {
+		return category;
+	}
+	
 	
 }

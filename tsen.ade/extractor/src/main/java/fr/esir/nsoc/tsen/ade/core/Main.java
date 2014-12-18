@@ -1,29 +1,31 @@
 package fr.esir.nsoc.tsen.ade.core;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
+import fr.esir.nsoc.tsen.ade.browser.CategoryBrowser;
 import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Parameter;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Response;
 import fr.esir.nsoc.tsen.ade.http.parser.CategoryParser;
 import fr.esir.nsoc.tsen.ade.http.parser.ProjectParser;
+import fr.esir.nsoc.tsen.ade.object.Category;
+import fr.esir.nsoc.tsen.ade.object.Project;
 
 public class Main {
 
-	private final static String ADE_SERVER_URL = "http://plannings.univ-rennes1.fr/";
-	private final static String ADE_SERVER_URL_S = "https://plannings.univ-rennes1.fr/";
+	private final static String ADE_SERVER_URL = "https://plannings.univ-rennes1.fr/";
 	private final static String ADE_PROJECT_PATH = "ade/standard/projects.jsp";
 	private final static String ADE_INTERFACE_PATH = "ade/standard/gui/interface.jsp";
 	private final static String ADE_TREE_PATH = "ade/standard/gui/tree.jsp";
 
+	@SuppressWarnings("unused")
 	private final static String ADE_STUD_CATEGORY = "trainee";
+	@SuppressWarnings("unused")
 	private final static String ADE_ROOM_CATEGORY = "room";
+	@SuppressWarnings("unused")
 	private final static String ADE_PROF_CATEGORY = "instructor";
 
 	private final static boolean DEBUG = true;
@@ -50,7 +52,6 @@ public class Main {
 		
 		// test ADE JSESSION ID
 		HTTP_Requester httpReq = new HTTP_Requester(ADE_SERVER_URL, jSessionId);
-		HTTP_Requester httpsReq = new HTTP_Requester(ADE_SERVER_URL_S, jSessionId);
 		HTTP_Response httpResp = httpReq.sendGet(ADE_PROJECT_PATH, null);
 		if (DEBUG) System.out.println(httpResp.getCode());
 		status = httpResp.getCode() == 200;
@@ -59,19 +60,16 @@ public class Main {
 		if (status)
 		{
 			ProjectParser pp = new ProjectParser(httpResp.getContent());
-			HashMap<Integer, String> projectList = pp.Parse();
+			HashSet<Project> projectList = pp.Parse();
 			
-			// Get a set of the entries
-			Set set = projectList.entrySet();
 			// Get an iterator
-			Iterator i = set.iterator();
+			Iterator<Project> i = projectList.iterator();
 			// Display elements
 			while(i.hasNext() && DEBUG) {
-				Map.Entry me = (Map.Entry)i.next();
-				System.out.print(me.getKey() + ": ");
-				System.out.println(me.getValue());
+				Project p = i.next();
+				System.out.println(p.getId() + ": " + p.getName());
 			}
-			db.FillProject(set);
+			db.FillProject(projectList);
 		}
 		
 		// select an ADE project
@@ -84,7 +82,7 @@ public class Main {
 			try {
 				HashSet<HTTP_Parameter> parameters = new HashSet<HTTP_Parameter>();
 				parameters.add(new HTTP_Parameter("projectId", Integer.toString(projectID)));
-				httpResp = httpsReq.sendPost(ADE_INTERFACE_PATH, parameters);
+				httpResp = httpReq.sendPost(ADE_INTERFACE_PATH, parameters);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -97,20 +95,15 @@ public class Main {
 		{
 			httpResp = httpReq.sendGet(ADE_TREE_PATH, null);
 			
-			CategoryParser cp = new CategoryParser(httpResp.getContent());
-			HashMap<String, String> projectList = cp.Parse();
-			
-			// Get a set of the entries
-			Set set = projectList.entrySet();
-			// Get an iterator
-			Iterator i = set.iterator();
-			// Display elements
-			while(i.hasNext() && DEBUG) {
-				Map.Entry me = (Map.Entry)i.next();
-				System.out.print(me.getKey() + "> ");
-				System.out.println(me.getValue());
+			CategoryParser cp = new CategoryParser(httpResp.getContent(), projectID);
+
+			Iterator<Category> i = cp.Parse().iterator();
+			while(i.hasNext()) {
+				Category cat = i.next();
+				if (DEBUG) System.out.println(cat.getId() + "> " + cat.getName());
+				cat.store(db);
+				new CategoryBrowser(cat, projectID, httpReq, db).browse();
 			}
-			db.FillCategory(set, projectID);
 			status = false;
 		}
 		
