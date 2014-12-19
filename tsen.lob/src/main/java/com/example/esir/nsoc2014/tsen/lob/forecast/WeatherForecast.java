@@ -87,7 +87,7 @@ public class WeatherForecast {
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
 				String retSrc = EntityUtils.toString(entity);
-				System.out.println(retSrc);
+				//System.out.println(retSrc);
 				// parsing JSON
 				JSONObject result = new JSONObject(retSrc); // Convert String to
 															// JSON Object
