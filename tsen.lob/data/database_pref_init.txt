@@ -1,8 +1,8 @@
-INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (?,85,17,22.5);
-INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (?,43,21,21);
-INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (?,62,19,21.5);
-INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (?,24,24,20);
-INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (?,50,20,20.5);
-INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (?,59,20,20.5);
-INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (?,93,4,24);
-INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (?,70,6,23.5);
+INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (X,85,17,22.5);
+INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (X,43,21,21);
+INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (X,62,19,21.5);
+INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (X,24,24,20);
+INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (X,50,20,20.5);
+INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (X,59,20,20.5);
+INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (X,93,4,24);
+INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (X,70,6,23.5);

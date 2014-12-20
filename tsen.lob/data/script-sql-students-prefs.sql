@@ -6,6 +6,7 @@ INSERT INTO students(student_id,class_name) VALUES (1100,"dom");
 INSERT INTO students(student_id,class_name) VALUES (1101,"dom");
 INSERT INTO students(student_id,class_name) VALUES (1110,"dom");
 INSERT INTO students(student_id,class_name) VALUES (1111,"dom");
+INSERT INTO students(student_id,class_name) VALUES (10000,"dom");
 
 CREATE TABLE preference_student(student_id SMALLINT NOT NULL,humidity_ext DOUBLE NOT NULL, temp_ext DOUBLE NOT NULL, temp_int_consigne DOUBLE);
 INSERT INTO preference_student(student_id,humidity_ext,temp_ext,temp_int_consigne) VALUES (1100,85,17,22.5);

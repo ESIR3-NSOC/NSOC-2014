@@ -1,0 +1,5 @@
+tres chaud:1
+chaud:0,5
+bon:0
+froid:-0.5
+tres froid:-1
