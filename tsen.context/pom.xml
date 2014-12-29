@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>tsen</artifactId>
+        <artifactId>tsen.root</artifactId>
         <groupId>tsen</groupId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -15,24 +15,19 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>contextManager</module>
+        <!--<module>contextManager</module>-->
     </modules>
 
     <dependencies>
         <dependency>
-            <groupId>tsen</groupId>
-            <artifactId>Model</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.kevoree.modeling</groupId>
-            <artifactId>org.kevoree.modeling.microframework</artifactId>
-            <version>3.5.11</version>
+            <artifactId>org.kevoree.modeling.microframework.databases.leveldb</artifactId>
+            <version>4.5.1</version>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-            <version>0.9.976</version>
+            <groupId>tsen</groupId>
+            <artifactId>tsen.model</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

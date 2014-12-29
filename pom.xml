@@ -5,16 +5,16 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>tsen</groupId>
-    <artifactId>tsen</artifactId>
+    <artifactId>tsen.root</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>TSEN</name>
+    <name>TSEN :: Root</name>
     <description>TSEN</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.target>1.8</jdk.target>
-        <kmf.version>3.5.12</kmf.version>
+        <kmf.version>4.5.1</kmf.version>
         <kotlin.version>0.8.11</kotlin.version>
     </properties>
 

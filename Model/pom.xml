@@ -3,22 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>tsen</artifactId>
         <groupId>tsen</groupId>
+        <artifactId>tsen.root</artifactId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>tsen</groupId>
-    <artifactId>Model</artifactId>
+    <artifactId>tsen.model</artifactId>
     <name>TSEN :: Model</name>
-
-    <properties>
-        <metaModel.ecore>src/tsen.ecore</metaModel.ecore>
-    </properties>
-
 
     <dependencies>
         <dependency>
@@ -26,27 +19,14 @@
             <artifactId>org.kevoree.modeling.microframework</artifactId>
             <version>${kmf.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.api</artifactId>
-            <version>5.1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-            <version>${kotlin.version}</version>
-        </dependency>
-
-
-
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.kevoree.modeling</groupId>
-                <artifactId>org.kevoree.modeling.kotlin.generator.mavenplugin</artifactId>
-                <version>3.5.12</version>
+                <artifactId>org.kevoree.modeling.generator.mavenplugin</artifactId>
+                <version>${kmf.version}</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -55,46 +35,12 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <ecore>${metaModel.ecore}</ecore>
-                            <persistence>true</persistence>
-                            <timeAware>true</timeAware>
-                            <events>true</events>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
-                <version>${kotlin.version}</version>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <source>target/generated-sources/kmf</source>
-                            </sourceDirs>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>test-compile</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirs></sourceDirs>
+                            <metaModelFile>src/tsen.mm</metaModelFile>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-
-
 
 </project>
