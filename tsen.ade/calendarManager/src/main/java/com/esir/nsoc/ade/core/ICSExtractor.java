@@ -1,5 +1,9 @@
 package com.esir.nsoc.ade.core;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Set;
 
 import com.esir.nsoc.ade.database.SQLiteDB;
@@ -17,30 +21,47 @@ public class ICSExtractor {
 		
 	}
 
-	public boolean extractICS(int ADE_ID, String FIRST_DATE, String LAST_DATE, int PROJECT_ID){
-
-		Cal cal = new Cal(getICS(ADE_ID, FIRST_DATE, LAST_DATE, PROJECT_ID));
+	public boolean extractICS(int ADE_ID, String FIRST_DATE, int PROJECT_ID){
 		
-		//connect to local DB
+		//Récupération de l'ICS
+		Cal cal = new Cal(getICS(ADE_ID, FIRST_DATE, PROJECT_ID));
+		
+		//Create and/or connect to local DB
 		SQLiteDB db = new SQLiteDB("test1.db");
-		System.out.println(db.isConnected() ? "ok" : "nok");
+		System.out.println(db.isConnected() ? "Connection DB ok" : "Connection DB nok");
 
 		// Get a set of the entries
 		Set set = cal.getSet();
+		//Test si l'ICS à bien été interprété
+		if(set!=null){
+			ok=db.FillEvent(set, PROJECT_ID, FIRST_DATE);
+			db.FillUid(set, ADE_ID, PROJECT_ID, FIRST_DATE);
+		}
+		else ok=false;
 
-		ok=db.FillEvent(set, PROJECT_ID);
-		
 		return ok;
 	}
 	
-	private String getICS(int adeID, String firstDate, String lastDate, int projectID){
+	
+	private String getICS(int adeID, String firstDate, int projectID){
 		HTTP_Requester httpReq = new HTTP_Requester(ADE_SERVER_URL);
-		HTTP_Response httpResp = httpReq.sendGet("ade/custom/modules/plannings/direct_cal.jsp?resources="+adeID+"&calType=ical&firstDate="+firstDate+"&lastDate="+lastDate+"&login=cal&password=visu&projectId="+projectID);
+		HTTP_Response httpResp = httpReq.sendGet("ade/custom/modules/plannings/direct_cal.jsp?resources="+adeID+"&calType=ical&firstDate="+addOneDay(firstDate)+"&lastDate="+addOneDay(firstDate)+"&login=cal&password=visu&projectId="+projectID);
 		if (DEBUG) System.out.println(httpResp.isOk() ? httpResp.getCode() : "err");
 		return httpResp.getContent();
 	}
-
 	
-	
-	
+	private String addOneDay(String firstDate){
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = null;
+		try {
+			date = formatter.parse(firstDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Calendar c = Calendar.getInstance();    
+		c.setTime(date);
+		c.add(Calendar.DATE, 1);
+		return formatter.format(c.getTime()).toString();
+	}
 }
