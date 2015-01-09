@@ -1,8 +1,7 @@
-package tsen;
-
 import org.kevoree.modeling.api.Callback;
 import org.kevoree.modeling.api.KObject;
 import org.kevoree.modeling.databases.leveldb.LevelDbDataBase;
+import tsen.*;
 
 import java.io.File;
 import java.io.IOException;

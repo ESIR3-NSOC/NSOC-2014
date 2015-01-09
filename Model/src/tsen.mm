@@ -8,6 +8,8 @@ class tsen.Room  {
     @contained
     temperatureSensor : tsen.IndoorTemperature
     @contained
+    airQualitySensor : tsen.CO2
+    @contained
     valves : tsen.Heater
     @contained
     lesson : tsen.Activity[0,*]
@@ -16,6 +18,11 @@ class tsen.Room  {
 class tsen.Humidity  {
     name : String
     value : Double
+}
+
+class tsen.CO2 {
+    name : String
+    value :Double
 }
 
 class tsen.IndoorTemperature  {
