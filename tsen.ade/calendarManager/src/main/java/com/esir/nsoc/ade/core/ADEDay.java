@@ -5,10 +5,10 @@ public class ADEDay {
 	private int ADE_ID;
 	private String date;
 
-	public ADEDay(int projectID, int aDE_ID, String date) {
+	public ADEDay(int aDE_ID, String date, int projectID) {
 		super();
 		this.projectID = projectID;
-		ADE_ID = aDE_ID;
+		this.ADE_ID = aDE_ID;
 		this.date = date;
 	}
 
