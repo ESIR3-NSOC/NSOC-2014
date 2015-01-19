@@ -83,15 +83,15 @@ public class SQLiteDB {
 					stmtUpdate.setString(3, adeEvent.getDescription());			
 
 					stmtUpdate.executeUpdate();
-					
+					stmtUpdate.close();
 	            }
+	            stmtQuery.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 				return false;
 			}
 			
 		}
-		//close();
 		return true;
 	}
 
@@ -138,15 +138,14 @@ public class SQLiteDB {
 					stmtUpdate = _connection.prepareStatement(sql);
 
 					stmtUpdate.executeUpdate();
-					
+					stmtUpdate.close();
 	            }
+	            stmtQuery.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 				return false;
 			}
-			
 		}
-		close();
 		return true;
 	}	
 	
