@@ -175,7 +175,7 @@ public class SQLiteDB implements DataBase {
 			stmt = _connection.prepareStatement(sql);
 			stmt.setString(1, category.getId());
 			stmt.setString(2, category.getName());
-			stmt.setLong(3, category.getProjectID());		
+			stmt.setLong(3, category.getProject().getId());		
 			stmt.executeUpdate();
 			stmt.close();
 		} catch (SQLException e) {

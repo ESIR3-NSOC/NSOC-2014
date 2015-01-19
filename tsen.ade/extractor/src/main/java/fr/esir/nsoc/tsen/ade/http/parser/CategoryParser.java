@@ -9,16 +9,17 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import fr.esir.nsoc.tsen.ade.object.Category;
+import fr.esir.nsoc.tsen.ade.object.Project;
 
 public class CategoryParser {
 	
 	private String _html;
-	private int projectID;
+	private Project project;
 
-	public CategoryParser(String _html, int projectID) {
+	public CategoryParser(String _html, Project project) {
 		super();
 		this._html = _html;
-		this.projectID = projectID;
+		this.project = project;
 	}
 
 	public HashSet<Category> Parse()
@@ -34,7 +35,7 @@ public class CategoryParser {
 			{
 				Element e2 = e1.select("a[href*=\"javascript:checkCategory\"]").first();
 				System.out.println(e2.attr("href").split("'")[1] + " > " + e2.text());
-				Category c = new Category(e2.attr("href").split("'")[1], e2.text(), projectID);
+				Category c = new Category(e2.attr("href").split("'")[1], e2.text(), project);
 				hs.add(c);
 			}
 		}
@@ -45,8 +46,8 @@ public class CategoryParser {
 		return _html;
 	}
 
-	public int getProjectID() {
-		return projectID;
+	public Project getProject() {
+		return project;
 	}
 	
 }

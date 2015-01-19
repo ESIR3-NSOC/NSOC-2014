@@ -16,7 +16,7 @@ public class TreeParser {
 	private String html;
 	private Project project;
 
-	private final static boolean DEBUG = true;
+	private final static boolean DEBUG = false;
 	private final static int TREE_INDENTATION = 3;
 	
 	
@@ -63,8 +63,10 @@ public class TreeParser {
 					(category ? "category" : "") +
 					": \"" + name + "\", level:" + level/3 + 
 					", id: \"" + id + "\"");
+			
+			String type = (leaf ? "leaf" : "") + (branch ? "branch" : "") + (category ? "category" : "");
 		
-			TreeObject to = new TreeObject(project, level/TREE_INDENTATION, name, id, leaf, branch, category);
+			TreeObject to = new TreeObject(project, level/TREE_INDENTATION, name, id, type);
 			hs.add(to);
 		}
 		

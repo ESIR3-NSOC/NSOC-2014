@@ -32,84 +32,104 @@ public class Main {
 	private final static boolean DEBUG = true;
 
 	public static void main(String[] args) {
-		
+
 		// setup
 		Scanner stdin = new Scanner(System.in);
 		boolean status = true; // OK
-		int projectID = 0;
-		
+		Project project = null;
 		// connect to local DB
 		SQLiteDB db = new SQLiteDB("test1.db");
 		System.out.println(db.isConnected() ? "ok" : "nok");
-		
+
 		// get a valid ADE JSESSION ID
 		String jSessionId = "";
 		do {
 			System.out.print("Enter a valid JSESSION ID: ");
 			jSessionId = stdin.next();
-			if (DEBUG) System.out.println(jSessionId.length());
-			if (DEBUG) System.out.println(isHexNumber(jSessionId) ? "ok" : "nok");
+			if (DEBUG)
+				System.out.println(jSessionId.length());
+			if (DEBUG)
+				System.out.println(isHexNumber(jSessionId) ? "ok" : "nok");
 		} while (!((jSessionId.length() == 32) && (isHexNumber(jSessionId))));
-		
+
 		// test ADE JSESSION ID
 		HTTP_Requester httpReq = new HTTP_Requester(ADE_SERVER_URL, jSessionId);
 		HTTP_Response httpResp = httpReq.sendGet(ADE_PROJECT_PATH, null);
-		if (DEBUG) System.out.println(httpResp.getCode());
+		if (DEBUG)
+			System.out.println(httpResp.getCode());
 		status = httpResp.getCode() == 200;
-		
+
 		// list & store ADE projects
-		if (status)
-		{
+		if (status) {
 			ProjectParser pp = new ProjectParser(httpResp.getContent());
 			HashSet<Project> projectList = pp.Parse();
-			
+
 			// Get an iterator
 			Iterator<Project> i = projectList.iterator();
 			// Display elements
-			while(i.hasNext() && DEBUG) {
+			while (i.hasNext() && DEBUG) {
 				Project p = i.next();
 				System.out.println(p.getId() + ": " + p.getName());
 			}
+			
 			db.FillProject(projectList);
-		}
-		
-		// select an ADE project
-		if (status)
-		{
+			
+
+			boolean loop = true;
 			do {
 				System.out.print("Enter a project ID: ");
-				projectID = stdin.nextInt();
-			} while (false); // TODO check the project id
+				int pId = stdin.nextInt();
+
+				i = projectList.iterator();
+				while (i.hasNext() && DEBUG) {
+					Project p = i.next();
+					if (p.getId() == pId)
+					{
+						project = p;
+						loop = false;
+					}
+				}
+
+			} while (loop); // TODO check the project id if is in the list
+		}
+
+		// select an ADE project
+
+		if (status) {
+
 			try {
 				HashSet<HTTP_Parameter> parameters = new HashSet<HTTP_Parameter>();
-				parameters.add(new HTTP_Parameter("projectId", Integer.toString(projectID)));
+				parameters.add(new HTTP_Parameter("projectId", Integer
+						.toString(project.getId())));
 				httpResp = httpReq.sendPost(ADE_INTERFACE_PATH, parameters);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				status = false;
 			}
 		}
+
+		
 		
 		
 		// list & store category
-		if (status)
-		{
+		if (status) {
 			httpResp = httpReq.sendGet(ADE_TREE_PATH, null);
-			
-			CategoryParser cp = new CategoryParser(httpResp.getContent(), projectID);
+
+			CategoryParser cp = new CategoryParser(httpResp.getContent(),
+					project);
 
 			Iterator<Category> i = cp.Parse().iterator();
-			while(i.hasNext()) {
+			while (i.hasNext()) {
 				Category cat = i.next();
-				if (DEBUG) System.out.println(cat.getId() + "> " + cat.getName());
+				if (DEBUG)
+					System.out.println(cat.getId() + "> " + cat.getName());
 				cat.store(db);
-				new BranchBrowser(new Branch(0, cat.getName(), 0, cat, false), httpReq, db).browse();
+				new BranchBrowser(new Branch(0, cat.getName(), 0, cat, false),
+						httpReq, db).browse();
 			}
 			status = false;
 		}
-		
-		
+		 
 		// exit
 		stdin.close();
 		System.exit(0);

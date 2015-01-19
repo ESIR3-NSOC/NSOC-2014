@@ -6,13 +6,13 @@ public class Category {
 
 	private String id;
 	private String name;
-	private int projectID;
+	private Project project;
 
-	public Category(String id, String name, int projectID) {
+	public Category(String id, String name, Project project) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.projectID = projectID;
+		this.project = project;
 	}
 
 	public String getId() {
@@ -23,11 +23,11 @@ public class Category {
 		return name;
 	}
 
-	public int getProjectID() {
-		return projectID;
+	public Project getProject() {
+		return project;
 	}
-	
-	public boolean store(DataBase db){
+
+	public boolean store(DataBase db) {
 		return db.addCategory(this);
 	}
 
