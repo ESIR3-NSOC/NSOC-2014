@@ -9,17 +9,16 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import fr.esir.nsoc.tsen.ade.object.Branch;
+import fr.esir.nsoc.tsen.ade.object.Category;
 
 public class BranchParser {
 	
 	private String _html;
-	private int projectID;
-	private String category;
+	private Category category;
 
-	public BranchParser(String _html, int projectID, String category) {
+	public BranchParser(String _html, Category category) {
 		super();
 		this._html = _html;
-		this.projectID = projectID;
 		this.category = category;
 	}
 
@@ -36,6 +35,9 @@ public class BranchParser {
 			{
 				Element e2 = e1.select("a[href*=\"javascript:checkCategory\"]").first();
 				System.out.println(e2.attr("href").split("'")[1] + " > " + e2.text());
+				
+				
+				// todo 
 //				Branch b = new Branch(e2.attr("href").split("'")[1], e2.text(), projectID);
 //				hs.add(b);
 			}
@@ -47,13 +49,7 @@ public class BranchParser {
 		return _html;
 	}
 
-	public int getProjectID() {
-		return projectID;
-	}
-
-	public String getCategory() {
+	public Category getCategory() {
 		return category;
 	}
-	
-	
 }

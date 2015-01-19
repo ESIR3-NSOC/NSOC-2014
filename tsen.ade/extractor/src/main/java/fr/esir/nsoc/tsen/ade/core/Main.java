@@ -4,13 +4,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Scanner;
 
-import fr.esir.nsoc.tsen.ade.browser.CategoryBrowser;
+import fr.esir.nsoc.tsen.ade.browser.BranchBrowser;
 import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Parameter;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Response;
 import fr.esir.nsoc.tsen.ade.http.parser.CategoryParser;
 import fr.esir.nsoc.tsen.ade.http.parser.ProjectParser;
+import fr.esir.nsoc.tsen.ade.object.Branch;
 import fr.esir.nsoc.tsen.ade.object.Category;
 import fr.esir.nsoc.tsen.ade.object.Project;
 
@@ -90,6 +91,7 @@ public class Main {
 			}
 		}
 		
+		
 		// list & store category
 		if (status)
 		{
@@ -102,7 +104,7 @@ public class Main {
 				Category cat = i.next();
 				if (DEBUG) System.out.println(cat.getId() + "> " + cat.getName());
 				cat.store(db);
-				new CategoryBrowser(cat, projectID, httpReq, db).browse();
+				new BranchBrowser(new Branch(0, cat.getName(), 0, cat, false), httpReq, db).browse();
 			}
 			status = false;
 		}
