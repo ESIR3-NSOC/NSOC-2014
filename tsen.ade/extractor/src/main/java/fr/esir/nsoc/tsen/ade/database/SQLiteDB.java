@@ -164,4 +164,35 @@ public class SQLiteDB implements DataBase {
 		return exist;
 	}
 
+	@Override
+	public HashSet<TreeObject> getTreeObjectChildren(TreeObject treeObject) {
+		Statement stmt = null;
+		
+		int level;
+		String name;
+		String id;
+		String parentId;
+		String type;
+		
+		HashSet<TreeObject> TreeObjectChildren = new HashSet<TreeObject>();
+		try {
+			stmt = _connection.createStatement();
+			ResultSet rs = stmt
+					.executeQuery("SELECT * FROM tree_object WHERE PARENT_ID=" + treeObject.getId()+";");
+			
+			while(rs.next()){
+				id=rs.getString(1);
+				name=rs.getString(2);
+				level=rs.getInt(3);
+				parentId=rs.getString(4);
+				type=rs.getString(5);
+				Project project=new Project(rs.getInt(6),"");
+				TreeObjectChildren.add(new TreeObject(project, level, name, parentId, type));
+			}
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return TreeObjectChildren;
+	}
 }
