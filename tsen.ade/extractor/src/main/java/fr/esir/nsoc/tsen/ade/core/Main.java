@@ -23,14 +23,6 @@ public class Main {
 	private final static String ADE_SERVER_URL = "https://plannings.univ-rennes1.fr/";
 	private final static String ADE_PROJECT_PATH = "ade/standard/projects.jsp";
 	private final static String ADE_INTERFACE_PATH = "ade/standard/gui/interface.jsp";
-	private final static String ADE_TREE_PATH = "ade/standard/gui/tree.jsp";
-
-	@SuppressWarnings("unused")
-	private final static String ADE_STUD_CATEGORY = "trainee";
-	@SuppressWarnings("unused")
-	private final static String ADE_ROOM_CATEGORY = "room";
-	@SuppressWarnings("unused")
-	private final static String ADE_PROF_CATEGORY = "instructor";
 
 	private final static boolean DEBUG = true;
 

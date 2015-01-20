@@ -9,7 +9,6 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import fr.esir.nsoc.tsen.ade.object.Category;
 import fr.esir.nsoc.tsen.ade.object.Project;
 import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
