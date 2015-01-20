@@ -39,7 +39,6 @@ public class TreeBrowser {
 
 
 	public boolean browse() {
-		//if ((!treeObject.getType().equals("branch")) || (!treeObject.getType().equals("category"))) return false;
 		HTTP_Response httpResp = null;
 		
 		if (treeObject.getLevel() == -1) // starting the tree
@@ -121,30 +120,8 @@ public class TreeBrowser {
 			// close
 			httpResp = httpReq.sendGet(ADE_TREE_PATH, parameters);
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		/*
-		try {
-			//HashSet<HTTP_Parameter> parameters = new HashSet<HTTP_Parameter>();
 
-			//parameters.add(new HTTP_Parameter("category", branch.getCategory().getId()));
-			
-			//httpResp = httpReq.sendGet(ADE_TREE_PATH, parameters);
-		} catch (Exception e) {
-			if (DEBUG) e.printStackTrace();
-			return false;
-		}
-		*/
-
-		return false; // to finish
+		return true; // to finish
 	}
 	
 	
