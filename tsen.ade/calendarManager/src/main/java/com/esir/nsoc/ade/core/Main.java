@@ -84,7 +84,7 @@ public class Main {
 		taches.add(tache19);
 		taches.add(tache20);
 			
-		ExecutorService executor = Executors.newFixedThreadPool(20);
+		ExecutorService executor = Executors.newFixedThreadPool(10);
 		
 		resoudre(executor, taches);
 	}

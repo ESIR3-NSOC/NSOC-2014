@@ -116,28 +116,10 @@ public class Main {
 		}
 		
 		
-		/*
 		
-		// list & store category
-		if (status) {
-			httpResp = httpReq.sendGet(ADE_TREE_PATH, null);
-
-			CategoryParser cp = new CategoryParser(httpResp.getContent(),
-					project);
-
-			Iterator<Category> i = cp.Parse().iterator();
-			while (i.hasNext()) {
-				Category cat = i.next();
-				if (DEBUG)
-					System.out.println(cat.getId() + "> " + cat.getName());
-				cat.store(db);
-				new BranchBrowser(new Branch(0, cat.getName(), 0, cat, false),
-						httpReq, db).browse();
-			}
-			status = false;
-		}
-		 
-		 */
+		
+		// example
+		// db.getTreeObjectChildren(new TreeObject(project, -1, "", "7748", "", ""));
 		 
 		 
 		 

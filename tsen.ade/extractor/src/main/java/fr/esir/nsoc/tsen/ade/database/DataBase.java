@@ -15,5 +15,6 @@ public interface DataBase {
 	
 	public void CreateTreeObjectTable();
 	public boolean addTreeObject(TreeObject treeObject);
+	public HashSet<TreeObject> getTreeObjectChildren(TreeObject treeObject);
 
 }
