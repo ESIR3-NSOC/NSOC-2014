@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 
 
+
 import fr.esir.nsoc.tsen.ade.browser.TreeBrowser;
 import fr.esir.nsoc.tsen.ade.database.DataBase;
 import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
@@ -32,15 +33,22 @@ public class Main {
 		if (DEBUG) System.out.println(db.isConnected() ? "ok" : "nok");
 		
 		// brows ADE Tree
-		ADE_Tree at = new ADE_Tree(db);
-		at.browseTree();
+		//ADE_Tree at = new ADE_Tree(db);
+		//at.browseTree();
 		
 		
 		// example
-		// db.getTreeObjectChildren(new TreeObject(project, -1, "", "7748", "", ""));
-		 
-		 
-		 
+		HashSet<TreeObject> tos = db.getTreeObjectChildren(new TreeObject(new Project(22, ""), -1, "", "7748", "", ""));
+		Iterator<TreeObject> i = tos.iterator();
+		while (i.hasNext()) {
+			TreeObject to = i.next();
+			
+				if (true) System.out.println(to.getType() + ": \"" + to.getName() + "\", id: \"" + to.getId() + "\", level:" + to.getLevel());
+
+				
+				
+			}
+
 		// exit
 		System.exit(0);
 	}
