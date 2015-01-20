@@ -1,7 +1,6 @@
 package fr.esir.nsoc.tsen.ade.browser;
 
 import java.util.HashSet;
-import java.util.Iterator;
 
 import fr.esir.nsoc.tsen.ade.database.DataBase;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Parameter;
@@ -9,9 +8,6 @@ import fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Response;
 import fr.esir.nsoc.tsen.ade.http.parser.BranchParser;
 import fr.esir.nsoc.tsen.ade.object.Branch;
-import fr.esir.nsoc.tsen.ade.object.Category;
-import fr.esir.nsoc.tsen.ade.object.Leaf;
-
 public class BranchBrowser {
 
 	private final static String ADE_TREE_PATH = "ade/standard/gui/tree.jsp";

@@ -26,9 +26,9 @@ public class Category {
 	public Project getProject() {
 		return project;
 	}
-
+/*
 	public boolean store(DataBase db) {
 		return db.addCategory(this);
-	}
+	}*/
 
 }

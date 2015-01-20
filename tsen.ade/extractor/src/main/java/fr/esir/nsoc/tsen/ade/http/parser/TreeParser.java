@@ -49,22 +49,24 @@ public class TreeParser {
 			String id = "";
 			if (level > 0)
 			{
-				if (leaf) name = e1.text().replace("\u00a0", "").substring(2);
-				else name = e1.text().replace("\u00a0", "").substring(1);
+				name = e1.text().replace("\u00a0", "");
+				name = leaf ? (name.length()>=2 ? name.substring(2) : name) : (name.length()>=2 ? name.substring(1) : name);
+				
+				
+				//if (leaf) name = e1.text().replace("\u00a0", "").substring(2);
+				//else name = e1.text().replace("\u00a0", "").substring(1);
 				id = e2.attr("href").split("[\\(||,||//)]")[1];
 			} else {
 				name = e1.text().replace("\u00a0", "");
 				id = e2.attr("href").split("[\\(||,||//)]")[1].split("'")[1];
 			}
 			
-			if (DEBUG) System.out.println(
-					(leaf ? "leaf" : "") + 
-					(branch ? "branch" : "") + 
-					(category ? "category" : "") +
+			String type = (leaf ? "leaf" : "") + (branch ? "branch" : "") + (category ? "category" : "");
+			
+			if (DEBUG) System.out.println(type +
 					": \"" + name + "\", level:" + level/3 + 
 					", id: \"" + id + "\"");
 			
-			String type = (leaf ? "leaf" : "") + (branch ? "branch" : "") + (category ? "category" : "");
 		
 			TreeObject to = new TreeObject(project, level/TREE_INDENTATION, name, id, type);
 			hs.add(to);

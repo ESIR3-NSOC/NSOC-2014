@@ -4,16 +4,19 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Scanner;
 
-import fr.esir.nsoc.tsen.ade.browser.BranchBrowser;
+
+
+
+
+import fr.esir.nsoc.tsen.ade.browser.TreeBrowser;
+import fr.esir.nsoc.tsen.ade.database.DataBase;
 import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Parameter;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Response;
-import fr.esir.nsoc.tsen.ade.http.parser.CategoryParser;
 import fr.esir.nsoc.tsen.ade.http.parser.ProjectParser;
-import fr.esir.nsoc.tsen.ade.object.Branch;
-import fr.esir.nsoc.tsen.ade.object.Category;
 import fr.esir.nsoc.tsen.ade.object.Project;
+import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
 public class Main {
 
@@ -38,7 +41,7 @@ public class Main {
 		boolean status = true; // OK
 		Project project = null;
 		// connect to local DB
-		SQLiteDB db = new SQLiteDB("test1.db");
+		DataBase db = new SQLiteDB("test1.db");
 		System.out.println(db.isConnected() ? "ok" : "nok");
 
 		// get a valid ADE JSESSION ID
@@ -59,7 +62,7 @@ public class Main {
 			System.out.println(httpResp.getCode());
 		status = httpResp.getCode() == 200;
 
-		// list & store ADE projects
+		// list, select & store ADE projects
 		if (status) {
 			ProjectParser pp = new ProjectParser(httpResp.getContent());
 			HashSet<Project> projectList = pp.Parse();
@@ -72,6 +75,7 @@ public class Main {
 				System.out.println(p.getId() + ": " + p.getName());
 			}
 			
+			db.CreateProjectTable();
 			db.FillProject(projectList);
 			
 
@@ -89,9 +93,10 @@ public class Main {
 						loop = false;
 					}
 				}
-
-			} while (loop); // TODO check the project id if is in the list
+			} while (loop);
 		}
+		
+
 
 		// select an ADE project
 
@@ -107,9 +112,19 @@ public class Main {
 				status = false;
 			}
 		}
-
 		
 		
+		// start browsing ADE tree
+		
+		if (status)
+		{
+			db.CreateTreeObjectTable();
+			TreeBrowser tb = new TreeBrowser(new TreeObject(project, -1, "root", "", "root"), httpReq, db);
+			tb.browse();
+		}
+		
+		
+		/*
 		
 		// list & store category
 		if (status) {
@@ -129,6 +144,10 @@ public class Main {
 			}
 			status = false;
 		}
+		 
+		 */
+		 
+		 
 		 
 		// exit
 		stdin.close();

@@ -29,14 +29,12 @@ public class TreeObject {
 		this.level = level;
 		this.name = name;
 		this.id = id;
+		this.parentId = "";
 		this.type = type;
 	}
 
 	public boolean store(DataBase db) {
-
-		// todo
-
-		return false;
+		return db.addTreeObject(this);
 	}
 
 	public Project getProject() {

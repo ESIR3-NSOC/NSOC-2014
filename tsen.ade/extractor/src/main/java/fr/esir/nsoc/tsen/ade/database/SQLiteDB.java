@@ -11,6 +11,7 @@ import java.util.Iterator;
 
 import fr.esir.nsoc.tsen.ade.object.Category;
 import fr.esir.nsoc.tsen.ade.object.Project;
+import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
 public class SQLiteDB implements DataBase {
 
@@ -30,6 +31,25 @@ public class SQLiteDB implements DataBase {
 		_connected = true;
 	}
 
+	@Override
+	public boolean isConnected() {
+		return _connected;
+	}
+
+	public Connection getConnection() {
+		return _connection;
+	}
+
+	public void close() {
+		try {
+			_connection.close();
+		} catch (SQLException e) {
+			// e.printStackTrace();
+		}
+		_connected = false;
+	}
+
+	@Override
 	public void CreateProjectTable() {
 		if (ExistTable("project"))
 			DropTable("project");
@@ -46,58 +66,79 @@ public class SQLiteDB implements DataBase {
 		}
 	}
 
-	public void CreateBranchTable() {
-		if (ExistTable("branch"))
-			DropTable("branch");
-		Statement stmt = null;
+	@Override
+	public boolean addProject(Project project) {
+		PreparedStatement stmt;
 		try {
-			stmt = _connection.createStatement();
-			String sql = "CREATE TABLE branch "
-					+ "(ID             INT     NOT NULL,"
-					+ " PROJECT_ID     INT     NOT NULL,"
-					+ " NAME           TEXT    NOT NULL,"
-					+ " LEVEL          INT     NOT NULL)";
-			stmt.executeUpdate(sql);
+			String sql = "INSERT INTO 'project' (ID,NAME) " + "VALUES (?, ?);";
+			stmt = _connection.prepareStatement(sql);
+			stmt.setLong(1, project.getId());
+			stmt.setString(2, project.getName());
+			stmt.executeUpdate();
 			stmt.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			if (DEBUG)
+				e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public void FillProject(HashSet<Project> projects) {
+		Iterator<Project> i = projects.iterator();
+		while (i.hasNext()) {
+			addProject(i.next());
 		}
 	}
 
-	public void CreateCategoryTable() {
-		if (ExistTable("category"))
-			DropTable("category");
+	@Override
+	public void CreateTreeObjectTable() {
+		if (ExistTable("tree_object"))
+			DropTable("tree_object");
 		Statement stmt = null;
 		try {
 			stmt = _connection.createStatement();
-			String sql = "CREATE TABLE category "
+			String sql = "CREATE TABLE tree_object "
 					+ "(ID          TEXT   NOT NULL,"
 					+ " NAME        TEXT   NOT NULL,"
+					+ " LEVEL       INT    NOT NULL,"
+					+ " PARENT_ID   TEXT   NOT NULL,"
+					+ " TYPE        TEXT   NOT NULL,"
 					+ " PROJECT_ID  INT    NOT NULL)";
 			stmt.executeUpdate(sql);
 			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 	}
 
-	public void CreateBrancheTable() {
-		if (ExistTable("project"))
-			DropTable("project");
-		Statement stmt = null;
+	@Override
+	public boolean addTreeObject(TreeObject treeObject) {
+		PreparedStatement stmt;
 		try {
-			stmt = _connection.createStatement();
-			String sql = "CREATE TABLE project "
-					+ "(ID INT PRIMARY KEY     NOT NULL,"
-					+ " NAME           TEXT    NOT NULL)";
-			stmt.executeUpdate(sql);
+			String sql = "INSERT INTO 'tree_object' (ID,NAME,LEVEL,PARENT_ID,TYPE,PROJECT_ID) "
+					+ "VALUES (?, ?, ?, ?, ?, ?);";
+			stmt = _connection.prepareStatement(sql);
+			stmt.setString(1, treeObject.getId());
+			stmt.setString(2, treeObject.getName());
+			stmt.setLong(3, treeObject.getLevel());
+			stmt.setString(4, treeObject.getParentId());
+			stmt.setString(5, treeObject.getType());
+			stmt.setLong(6, treeObject.getProject().getId());
+			stmt.executeUpdate();
 			stmt.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			if (DEBUG)
+				e.printStackTrace();
+			return false;
+
 		}
+		return true;
 	}
 
-	public void DropTable(String name) {
+	private void DropTable(String name) {
 		Statement stmt = null;
 		try {
 			stmt = _connection.createStatement();
@@ -108,7 +149,7 @@ public class SQLiteDB implements DataBase {
 		}
 	}
 
-	public boolean ExistTable(String name) {
+	private boolean ExistTable(String name) {
 		Statement stmt = null;
 		boolean exist = false;
 		try {
@@ -122,78 +163,6 @@ public class SQLiteDB implements DataBase {
 			e.printStackTrace();
 		}
 		return exist;
-	}
-
-	public void FillProject(HashSet<Project> projects) {
-		Iterator<Project> i = projects.iterator();
-		while (i.hasNext()) {
-			addProject(i.next());
-		}
-	}
-
-	public void FillCategory(HashSet<Category> Categories) {
-		Iterator<Category> i = Categories.iterator();
-		while (i.hasNext()) {
-			addCategory(i.next());
-		}
-	}
-
-	public void close() {
-		try {
-			_connection.close();
-		} catch (SQLException e) {
-			// e.printStackTrace();
-		}
-		_connected = false;
-	}
-
-	public boolean addProject(Project project) {
-		CreateProjectTable();
-		PreparedStatement stmt;
-		try {
-			String sql = "INSERT INTO 'project' (ID,NAME) "
-					+ "VALUES (?, ?);";
-			stmt = _connection.prepareStatement(sql);
-			stmt.setLong(1, project.getId());
-			stmt.setString(2, project.getName());	
-			stmt.executeUpdate();
-			stmt.close();
-		} catch (SQLException e) {
-			if (DEBUG)
-				e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-
-	public boolean addCategory(Category category) {
-		CreateCategoryTable();
-		PreparedStatement stmt;
-		try {
-			String sql = "INSERT INTO 'category' (ID,NAME,PROJECT_ID) "
-					+ "VALUES (?, ?, ?);";
-			stmt = _connection.prepareStatement(sql);
-			stmt.setString(1, category.getId());
-			stmt.setString(2, category.getName());
-			stmt.setLong(3, category.getProject().getId());		
-			stmt.executeUpdate();
-			stmt.close();
-		} catch (SQLException e) {
-			if (DEBUG)
-				e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-	
-
-	
-	public Connection getConnection() {
-		return _connection;
-	}
-
-	public boolean isConnected() {
-		return _connected;
 	}
 
 }
