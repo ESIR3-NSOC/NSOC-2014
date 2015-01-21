@@ -39,7 +39,6 @@ public class HTTP_Requester {
 				url = new URL(_adeServerUrl + path);
 			}
 
-			url = new URL(_adeServerUrl + path);
 			HttpURLConnection con;
 			con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
