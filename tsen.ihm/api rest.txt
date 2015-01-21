@@ -1,0 +1,1 @@
+tsen/model/{uid}/{+|0|-}
