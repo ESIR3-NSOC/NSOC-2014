@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import fr.esir.nsoc.tsen.ade.object.ADE_Event;
+import fr.esir.nsoc.tsen.ade.object.Event;
 import fr.esir.nsoc.tsen.ade.object.Project;
 import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
@@ -160,16 +160,16 @@ public class SQLiteDB implements DataBase {
 		}
 	}
 
-	public boolean FillEvent(Set<ADE_Event> set, int projectid) {
+	public boolean FillEvent(Set<Event> set, int projectid) {
 		if (!ExistTable("event_" + Integer.toString(projectid))) {
 			CreateEventTable(projectid);
 		}
 
 		// Get an iterator
-		Iterator<ADE_Event> i = set.iterator();
+		Iterator<Event> i = set.iterator();
 		// Display elements
 		while (i.hasNext()) {
-			ADE_Event adeEvent = (ADE_Event) i.next();
+			Event adeEvent = (Event) i.next();
 
 			PreparedStatement stmtUpdate;
 
@@ -226,16 +226,16 @@ public class SQLiteDB implements DataBase {
 		}
 	}
 
-	public boolean FillUid(Set<ADE_Event> set, String adeid, int projectid) {
+	public boolean FillUid(Set<Event> set, String adeid, int projectid) {
 		if (!ExistTable("uid_" + Integer.toString(projectid))) {
 			CreateUidTable(projectid);
 		}
 
 		// Get an iterator
-		Iterator<ADE_Event> i = set.iterator();
+		Iterator<Event> i = set.iterator();
 		// Display elements
 		while (i.hasNext()) {
-			ADE_Event adeEvent = (ADE_Event) i.next();
+			Event adeEvent = (Event) i.next();
 
 			PreparedStatement stmtUpdate;
 
@@ -434,7 +434,7 @@ public class SQLiteDB implements DataBase {
 	}
 
 	@Override
-	public boolean addADE_Event(ADE_Event _ADE_Event, Project project) {
+	public boolean addADE_Event(Event _ADE_Event, Project project) {
 		PreparedStatement stmt;
 		try {
 			String sql = "INSERT INTO 'event_" + Integer.toString(project.getId())
@@ -462,7 +462,7 @@ public class SQLiteDB implements DataBase {
 	}
 
 	@Override
-	public boolean addUid(ADE_Event _ADE_Event, TreeObject treeObject,
+	public boolean addUid(Event _ADE_Event, TreeObject treeObject,
 			Project project) {
 // TODO
 		return true;

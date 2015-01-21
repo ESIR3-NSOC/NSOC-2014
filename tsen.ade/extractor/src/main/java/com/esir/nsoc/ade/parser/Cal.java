@@ -12,7 +12,7 @@ import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import fr.esir.nsoc.tsen.ade.object.ADE_Event;
+import fr.esir.nsoc.tsen.ade.object.Event;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
@@ -26,9 +26,9 @@ public class Cal {
 		this.icsContent = icsContent;
 	}
 
-	public HashSet<ADE_Event> parse() {
+	public HashSet<Event> parse() {
 
-		HashSet<ADE_Event> _ADE_Events = new HashSet<ADE_Event>();
+		HashSet<Event> _ADE_Events = new HashSet<Event>();
 		// Premier mot du HTTP_GET
 		String test = icsContent.substring(0, 5);
 		// Test si c'est un ICS
@@ -43,7 +43,7 @@ public class Cal {
 				for (Iterator<Component> i = calendar.getComponents()
 						.iterator(); i.hasNext();) {
 					Component component = i.next();
-					ADE_Event ade_event = new ADE_Event();
+					Event ade_event = new Event();
 					System.out.println("Component [" + component.getName()
 							+ "]");
 

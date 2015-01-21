@@ -27,7 +27,7 @@ import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Parameter;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Response;
-import fr.esir.nsoc.tsen.ade.object.ADE_Event;
+import fr.esir.nsoc.tsen.ade.object.Event;
 import fr.esir.nsoc.tsen.ade.object.Project;
 import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
@@ -60,7 +60,7 @@ public class ICSExtractor implements Callable<Boolean> {
 		System.out.println(db.isConnected() ? "Connection DB ok" : "Connection DB nok");
 
 		// Get a set of the entries
-		HashSet<ADE_Event> _ADE_Events = cal.parse();
+		HashSet<Event> _ADE_Events = cal.parse();
 		//Test si l'ICS à bien été interprété
 		if(_ADE_Events!=null){
 
@@ -86,7 +86,7 @@ public class ICSExtractor implements Callable<Boolean> {
 		System.out.println(db.isConnected() ? "Connection DB ok" : "Connection DB nok");
 
 		// Get a set of the entries
-		HashSet<ADE_Event> _ADE_Events = cal.parse();
+		HashSet<Event> _ADE_Events = cal.parse();
 		//Test si l'ICS à bien été interprété
 		if(_ADE_Events!=null){
 //			ok=db.FillEvent(set, PROJECT_ID, FIRST_DATE);

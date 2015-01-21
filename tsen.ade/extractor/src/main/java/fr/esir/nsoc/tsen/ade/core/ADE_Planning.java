@@ -17,7 +17,6 @@ import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
 public class ADE_Planning {
 
-	private final static boolean DEBUG = true;
 
 	private DataBase dataBase;
 	private ADE_Scope scope;
