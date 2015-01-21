@@ -282,36 +282,94 @@ public class SQLiteDB implements DataBase {
 		return Integer.toString(calendar.get(Calendar.DAY_OF_YEAR))+"_"+Integer.toString(calendar.get(Calendar.YEAR));
 	}*/
 	
+	/**
+	 * Récupération des enfants d'une branche
+	 */
 	@Override
 	public HashSet<TreeObject> getTreeObjectChildren(TreeObject treeObject) {
-		Statement stmt = null;
 		
+		HashSet<TreeObject> TreeObjectChildren = new HashSet<TreeObject>();
+		
+		if (ExistTable("tree_object")){
+		
+			Statement stmt = null;
+			
+			int level;
+			String name;
+			String id;
+			String parentId;
+			String type;
+			
+			try {
+				stmt = _connection.createStatement();
+				ResultSet rs = stmt
+						.executeQuery("SELECT * FROM tree_object WHERE PARENT_ID=" + treeObject.getId()+";");
+				
+				while(rs.next()){
+					id=rs.getString(1);
+					name=rs.getString(2);
+					level=rs.getInt(3);
+					parentId=rs.getString(4);
+					type=rs.getString(5);
+					Project project=new Project(rs.getInt(6),"");
+	
+					TreeObjectChildren.add(new TreeObject(project, level, name, parentId, type));
+				}
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return TreeObjectChildren;
+		}
+		//Si pas de table existante, retourne un HashSet vide
+		return TreeObjectChildren;
+	}
+	
+	/**
+	 * Récupération des entités associées à un cours (prof, élèves, salle)
+	 */
+	public HashSet<TreeObject> getTreeObjectSession(String uid, Project projet) {
+		
+		HashSet<TreeObject> TreeObjectSession = new HashSet<TreeObject>();
 		int level;
 		String name;
 		String id;
 		String parentId;
 		String type;
 		
-		HashSet<TreeObject> TreeObjectChildren = new HashSet<TreeObject>();
-		try {
-			stmt = _connection.createStatement();
-			ResultSet rs = stmt
-					.executeQuery("SELECT * FROM tree_object WHERE PARENT_ID=" + treeObject.getId()+";");
+		if (ExistTable("uid_"+Integer.toString(projet.getId()))){
+				
+			Statement stmt = null;
 			
-			while(rs.next()){
-				id=rs.getString(1);
-				name=rs.getString(2);
-				level=rs.getInt(3);
-				parentId=rs.getString(4);
-				type=rs.getString(5);
-				Project project=new Project(rs.getInt(6),"");
-				TreeObjectChildren.add(new TreeObject(project, level, name, parentId, type));
+			try {
+				stmt = _connection.createStatement();
+				ResultSet rs = stmt
+						.executeQuery("SELECT * FROM 'uid_"+Integer.toString(projet.getId())+"' WHERE UID=" + uid +";");
+				
+				while(rs.next()){
+					
+					ResultSet rs2 = stmt
+							.executeQuery("SELECT * FROM tree_object WHERE ID=" + rs.getString(1)+";");
+					
+					while(rs2.next()){
+						id=rs.getString(1);
+						name=rs.getString(2);
+						level=rs.getInt(3);
+						parentId=rs.getString(4);
+						type=rs.getString(5);
+						Project project=new Project(rs.getInt(6),"");
+
+						TreeObjectSession.add(new TreeObject(project, level, name, parentId, type));
+					}
+				}
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-			stmt.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+			return TreeObjectSession;
 		}
-		return TreeObjectChildren;
+		//Si pas de table existante, retourne un HashSet vide
+		return TreeObjectSession;
 	}
 	
 	private void DropTable(String name) {

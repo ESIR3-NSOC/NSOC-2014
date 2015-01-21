@@ -27,4 +27,6 @@ public interface DataBase {
 	public void CreateUidTable(int project_ID);
 	public boolean FillUid(Set<ADE_Event> set, String adeid, int projectid);
 
+	public HashSet<TreeObject> getTreeObjectSession(String UID, Project projet);
+
 }
