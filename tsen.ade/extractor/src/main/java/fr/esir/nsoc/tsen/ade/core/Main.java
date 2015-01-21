@@ -1,8 +1,10 @@
 package fr.esir.nsoc.tsen.ade.core;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 
 
 import java.util.List;
@@ -11,14 +13,19 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+
+
+
+
+
+
 
 
 
 import fr.esir.nsoc.tsen.ade.database.DataBase;
 import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
-import fr.esir.nsoc.tsen.ade.object.ADEDay;
 import fr.esir.nsoc.tsen.ade.object.Project;
 import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
@@ -51,14 +58,17 @@ public class Main {
 		scope.addChildrenToScope(new TreeObject(project, -1, "", "7748", "", "")); // esir 3 domo
 		scope.addChildrenToScope(new TreeObject(project, -1, "", "7828", "", "")); // esir 3 mat
 
+		scope.setStartPoint(parseDate("19/01/2015"));
+		scope.setEndPoint(parseDate("25/01/2015"));
+
 		
 		// retrieve planning
+		ADE_Planning planning = new ADE_Planning(db, scope);
+		planning.retrieve(20);
 		
 		
 		
-		
-		
-		
+		/*
 		// example
 		HashSet<TreeObject> tos = db.getTreeObjectChildren(new TreeObject(new Project(22, ""), -1, "", "7748", "", ""));
 		Iterator<TreeObject> i = tos.iterator();
@@ -73,15 +83,15 @@ public class Main {
 		
 		
 		
+		*/
 		
 		
 		
-		
-
+/*
 		
 		List<Callable<Boolean>> taches = new ArrayList<Callable<Boolean>>();
 		
-		/*
+		
 		ADEDay Alex=new ADEDay(4128, "2015-01-19", 22);
 		ADEDay Alexis=new ADEDay(6579, "2015-01-19", 22);
 		ADEDay Mathou=new ADEDay(6434, "2015-01-19", 22);
@@ -103,7 +113,7 @@ public class Main {
 		ADEDay Oceane=new ADEDay(7862, "2015-01-19", 22);
 		ADEDay Mael=new ADEDay(8084, "2015-01-19", 22);
 		
-		*/
+		
 		
 		
 		
@@ -147,13 +157,11 @@ public class Main {
 		taches.add(tache17);
 		taches.add(tache18);
 		taches.add(tache19);
-		taches.add(tache20);
+		taches.add(tache20);*/
 			
-		ExecutorService executor = Executors.newFixedThreadPool(10);
+		//ExecutorService executor = Executors.newFixedThreadPool(10);
 		
-		resoudre(executor, taches);
-		
-		
+		//resoudre(executor, taches);
 		
 		
 		
@@ -168,6 +176,11 @@ public class Main {
 		
 		
 		
+		
+		
+		
+		
+		//System.out.println(formatDate(parseDate("23/07/1992")));
 		
 		
 		
@@ -215,7 +228,32 @@ public class Main {
 			executor.shutdown();
 		}
 }
+	
+	
+	public static LocalDate parseDate (String input) {
+		LocalDate date = null;
+		try {
+		    DateTimeFormatter formatter =
+		                      DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		    date = LocalDate.parse(input, formatter);
+		}
+		catch (DateTimeParseException exc) {
+			exc.printStackTrace();
+		}
+		return date;
+	}
 
+	public static String formatDate (LocalDate input) {
+		String string = null;
+		try {
+		    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		    string = input.format(format);
+		}
+		catch (DateTimeException exc) {
+		    exc.printStackTrace();
+		}
+		return string;
+	}
 
 
 }

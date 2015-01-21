@@ -1,12 +1,17 @@
 package fr.esir.nsoc.tsen.ade.core;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.Callable;
+
+
+
+
+
 
 
 
@@ -22,8 +27,9 @@ import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Parameter;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Response;
-import fr.esir.nsoc.tsen.ade.object.ADEDay;
+import fr.esir.nsoc.tsen.ade.object.ADE_Event;
 import fr.esir.nsoc.tsen.ade.object.Project;
+import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
 public class ICSExtractor implements Callable<Boolean> {
 
@@ -31,23 +37,18 @@ public class ICSExtractor implements Callable<Boolean> {
 	private static boolean ok=false;
 	private final static boolean DEBUG = true;
 	
-	private Project project;
-	private String _ADE_ID;
-	private Date startDate;
-	private Date endDate;
+	private TreeObject treeObject;
+	private LocalDate startPoint;
+	private LocalDate endPoint;
 	
-	
-	
-	public ICSExtractor(Project project, String _ADE_ID, Date stratDate,
-			Date endDate) {
+
+	public ICSExtractor(TreeObject treeObject, LocalDate startPoint,
+			LocalDate endPoint) {
 		super();
-		this.project = project;
-		this._ADE_ID = _ADE_ID;
-		this.startDate = stratDate;
-		this.endDate = endDate;
+		this.treeObject = treeObject;
+		this.startPoint = startPoint;
+		this.endPoint = endPoint;
 	}
-	
-	
 
 	@Override
 	public Boolean call() throws Exception {
@@ -59,15 +60,15 @@ public class ICSExtractor implements Callable<Boolean> {
 		System.out.println(db.isConnected() ? "Connection DB ok" : "Connection DB nok");
 
 		// Get a set of the entries
-		Set set = cal.getSet();
+		HashSet<ADE_Event> _ADE_Events = cal.parse();
 		//Test si l'ICS à bien été interprété
-		if(set!=null){
+		if(_ADE_Events!=null){
 
 //			ok=db.FillEvent(set, PROJECT_ID);
 //			db.FillUid(set, ADE_ID, PROJECT_ID);
 
-			ok=db.FillEvent(set, project.getId());
-			db.FillUid(set, _ADE_ID, project.getId());
+			ok=db.FillEvent(_ADE_Events, treeObject.getProject().getId());
+			db.FillUid(_ADE_Events, treeObject.getId(), treeObject.getProject().getId());
 
 		}
 		else ok=false;
@@ -85,9 +86,9 @@ public class ICSExtractor implements Callable<Boolean> {
 		System.out.println(db.isConnected() ? "Connection DB ok" : "Connection DB nok");
 
 		// Get a set of the entries
-		Set set = cal.getSet();
+		HashSet<ADE_Event> _ADE_Events = cal.parse();
 		//Test si l'ICS à bien été interprété
-		if(set!=null){
+		if(_ADE_Events!=null){
 //			ok=db.FillEvent(set, PROJECT_ID, FIRST_DATE);
 //			db.FillUid(set, ADE_ID, PROJECT_ID, FIRST_DATE);
 		}
@@ -103,24 +104,56 @@ public class ICSExtractor implements Callable<Boolean> {
 		
 		//HTTP_Response httpResp = httpReq.sendGet("ade/custom/modules/plannings/direct_cal.jsp?resources="+adeID+"&calType=ical&firstDate="+addOneDay(firstDate)+"&lastDate="+addOneDay(firstDate)+"&login=cal&password=visu&projectId="+projectID);
 		
-		parameters.add(new HTTP_Parameter("resources", _ADE_ID));
+		parameters.add(new HTTP_Parameter("resources", treeObject.getId()));
 		parameters.add(new HTTP_Parameter("calType", "ical"));
-		parameters.add(new HTTP_Parameter("firstDate", addOneDay(startDate)));
-		parameters.add(new HTTP_Parameter("lastDate", addOneDay(endDate)));
+		parameters.add(new HTTP_Parameter("firstDate", formatDate(startPoint)));
+		parameters.add(new HTTP_Parameter("lastDate", formatDate(endPoint)));
 		parameters.add(new HTTP_Parameter("login", "cal"));
 		parameters.add(new HTTP_Parameter("password", "visu"));
-		parameters.add(new HTTP_Parameter("projectId", Integer.toString(project.getId())));
+		parameters.add(new HTTP_Parameter("projectId", Integer.toString(treeObject.getProject().getId())));
 		HTTP_Response httpResp = httpReq.sendGet("ade/custom/modules/plannings/direct_cal.jsp", parameters);
 		
 		if (DEBUG) System.out.println(httpResp.getCode()==200 ? httpResp.getCode() : "err");
 		return httpResp.getContent();
 	}
-	
-	private String addOneDay(Date date){
+	/*
+	private String addOneDay(LocalDate date){
+		
+		
+		
+		
+		
+		
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();    
 		c.setTime(date);
 		c.add(Calendar.DATE, 1);
 		return formatter.format(c.getTime()).toString();
+	}
+	*/
+	
+	public static LocalDate parseDate (String input) {
+		LocalDate date = null;
+		try {
+		    DateTimeFormatter formatter =
+		                      DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		    date = LocalDate.parse(input, formatter);
+		}
+		catch (DateTimeParseException exc) {
+			exc.printStackTrace();
+		}
+		return date;
+	}
+
+	public static String formatDate (LocalDate input) {
+		String string = null;
+		try {
+		    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		    string = input.format(format);
+		}
+		catch (DateTimeException exc) {
+		    exc.printStackTrace();
+		}
+		return string;
 	}
 }

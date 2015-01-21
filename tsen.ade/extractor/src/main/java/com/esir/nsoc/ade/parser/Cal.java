@@ -5,57 +5,64 @@ import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Property;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
+import fr.esir.nsoc.tsen.ade.object.ADE_Event;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 
 public class Cal {
-	
-	private Set<ADE_Event> set;
-	
-	public Cal(String content) {
-		
-		//Premier mot du HTTP_GET
-		String test=content.substring(0,5);
-		//Test si c'est un ICS
-		if(test.equals("BEGIN")){
+
+	private String icsContent;
+
+	public Cal(String icsContent) {
+		super();
+		this.icsContent = icsContent;
+	}
+
+	public HashSet<ADE_Event> parse() {
+
+		HashSet<ADE_Event> _ADE_Events = new HashSet<ADE_Event>();
+		// Premier mot du HTTP_GET
+		String test = icsContent.substring(0, 5);
+		// Test si c'est un ICS
+		if (test.equals("BEGIN")) {
 			try {
 				CalendarBuilder builder = new CalendarBuilder();
-	
-				Calendar calendar = builder.build(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
 
-				set = new HashSet<ADE_Event>();
-	
+				Calendar calendar = builder.build(new ByteArrayInputStream(
+						icsContent.getBytes(StandardCharsets.UTF_8)));
+
 				// Iterating over a Calendar
-				for (Iterator i = calendar.getComponents().iterator(); i.hasNext();) {
-					Component component = (Component) i.next();
+				for (Iterator<Component> i = calendar.getComponents()
+						.iterator(); i.hasNext();) {
+					Component component = i.next();
 					ADE_Event ade_event = new ADE_Event();
-					System.out.println("Component [" + component.getName() + "]");
-	
-					for (Iterator j = component.getProperties().iterator(); j.hasNext();) {
-						Property property = (Property) j.next();
-	
+					System.out.println("Component [" + component.getName()
+							+ "]");
+
+					for (Iterator<Property> j = component.getProperties()
+							.iterator(); j.hasNext();) {
+						Property property = j.next();
+
 						switch (property.getName().toString()) {
 						case "UID":
 							ade_event.setUid(property.getValue());
 							break;
 						case "DTSTART":
 							DateTime dtstart;
-	
+
 							try {
-								dtstart = new DateTime(property.getValue().toString());
-								java.text.SimpleDateFormat sdf = 
-									     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+								dtstart = new DateTime(property.getValue()
+										.toString());
+								java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
+										"yyyy-MM-dd HH:mm:ss");
 								ade_event.setDtstart(sdf.format(dtstart));
 							} catch (ParseException e) {
 								// TODO Auto-generated catch block
@@ -65,9 +72,10 @@ public class Cal {
 						case "DTEND":
 							DateTime dtend;
 							try {
-								dtend = new DateTime(property.getValue().toString());
-								java.text.SimpleDateFormat sdf = 
-									     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+								dtend = new DateTime(property.getValue()
+										.toString());
+								java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
+										"yyyy-MM-dd HH:mm:ss");
 								ade_event.setDtend(sdf.format(dtend));
 							} catch (ParseException e) {
 								// TODO Auto-generated catch block
@@ -85,7 +93,7 @@ public class Cal {
 							break;
 						}
 					}
-					set.add(ade_event);
+					_ADE_Events.add(ade_event);
 				}
 
 			} catch (FileNotFoundException e) {
@@ -99,9 +107,6 @@ public class Cal {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	public Set getSet(){
-		return set;
+		return _ADE_Events;
 	}
 }

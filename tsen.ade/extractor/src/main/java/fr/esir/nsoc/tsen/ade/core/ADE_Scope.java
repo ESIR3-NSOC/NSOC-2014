@@ -1,5 +1,6 @@
 package fr.esir.nsoc.tsen.ade.core;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -8,10 +9,10 @@ import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
 public class ADE_Scope {
 
-	private final static boolean DEBUG = true;
-
 	private DataBase dataBase;
 	private HashSet<TreeObject> scope;
+	private LocalDate startPoint;
+	private LocalDate endPoint;
 
 	public ADE_Scope(DataBase dataBase) {
 		super();
@@ -34,5 +35,27 @@ public class ADE_Scope {
 		}
 		return false;
 	}
+
+	public LocalDate getStartPoint() {
+		return startPoint;
+	}
+
+	public void setStartPoint(LocalDate startPoint) {
+		this.startPoint = startPoint;
+	}
+
+	public LocalDate getEndPoint() {
+		return endPoint;
+	}
+
+	public void setEndPoint(LocalDate endPoint) {
+		this.endPoint = endPoint;
+	}
+
+	public HashSet<TreeObject> getScope() {
+		return scope;
+	}
+
+
 
 }
