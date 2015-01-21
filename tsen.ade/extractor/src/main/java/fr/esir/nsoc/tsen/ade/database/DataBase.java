@@ -20,7 +20,7 @@ public interface DataBase {
 	public boolean addTreeObject(TreeObject treeObject);
 	public HashSet<TreeObject> getTreeObjectChildren(TreeObject treeObject);
 	
-	public void CreateEventTable(String firstdate);
+	public void CreateEventTable(int project_ID);
 	public boolean FillEvent(Set<ADE_Event> set, int projectid, String firstdate);
 	
 	public void CreateUidTable(String firstdate);
