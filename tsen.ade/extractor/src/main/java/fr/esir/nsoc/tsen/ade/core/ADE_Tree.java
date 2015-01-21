@@ -23,14 +23,13 @@ public class ADE_Tree {
 	private final static String ADE_INTERFACE_PATH = "ade/standard/gui/interface.jsp";
 	
 	private DataBase dataBase;
-	
-	
-	
+	private Project project;
 	
 	
 	public ADE_Tree(DataBase dataBase) {
 		super();
 		this.dataBase = dataBase;
+		this.project = null;
 	}
 
 	public boolean browseTree() {
@@ -125,6 +124,16 @@ public class ADE_Tree {
 		return _continue;
 	}
 	
+	
+	
+	public Project getProject() {
+		return project;
+	}
+
+	public void setProject(int projectId) {
+		this.project = dataBase.getProject(projectId);
+	}
+
 	private static boolean isHexNumber(String input) {
 		try {
 			while (input.length() > 8) {

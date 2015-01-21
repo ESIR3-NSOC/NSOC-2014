@@ -337,4 +337,16 @@ public class SQLiteDB implements DataBase {
 		}
 		return exist;
 	}
+
+	@Override
+	public Project getProject(int projectId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void CreateEventTable(int project_ID) {
+		// TODO Auto-generated method stub
+		
+	}
 }

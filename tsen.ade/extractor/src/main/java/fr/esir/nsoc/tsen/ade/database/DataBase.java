@@ -15,6 +15,7 @@ public interface DataBase {
 	public void CreateProjectTable();
 	public boolean addProject(Project project);
 	public void FillProject(HashSet<Project> projects);
+	public Project getProject(int projectId);
 	
 	public void CreateTreeObjectTable();
 	public boolean addTreeObject(TreeObject treeObject);

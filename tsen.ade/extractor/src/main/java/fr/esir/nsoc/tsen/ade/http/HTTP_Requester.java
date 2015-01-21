@@ -45,7 +45,7 @@ public class HTTP_Requester {
 
 			// request header
 			con.setRequestProperty("User-Agent", USER_AGENT);
-			con.setRequestProperty("Cookie", "JSESSIONID=" + _jSessionId
+			if (_jSessionId != "") con.setRequestProperty("Cookie", "JSESSIONID=" + _jSessionId
 					+ ".plannings1");
 
 			int code = con.getResponseCode();
