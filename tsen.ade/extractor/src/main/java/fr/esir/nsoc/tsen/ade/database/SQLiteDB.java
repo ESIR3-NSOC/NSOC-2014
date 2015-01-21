@@ -145,16 +145,15 @@ public class SQLiteDB implements DataBase {
 		return true;
 	}
 
-	public void CreateEventTable(String firstdate) {
-		if (ExistTable("event_"+getNameTable(firstdate)))
-			DropTable("event_"+getNameTable(firstdate));
+	public void CreateEventTable(int projectid) {
+		if (ExistTable("event_"+Integer.toString(projectid)))
+			DropTable("event_"+Integer.toString(projectid));
 		Statement stmt = null;
 				
 		try {
 			stmt = _connection.createStatement();
-			String sql = "CREATE TABLE event_" + getNameTable(firstdate)
-					+ " (UID INT UNIQUE PRIMARY KEY     NOT NULL,"
-					+ " PROJECTID           INTEGER    NOT NULL,"
+			String sql = "CREATE TABLE event_" + Integer.toString(projectid)
+					+ " (UID TEXT UNIQUE PRIMARY KEY     NOT NULL,"
 					+ " DTSTART           DATE    NOT NULL,"
 					+ " DTEND           DATE    NOT NULL,"
 					+ " SUMMARY           TEXT    NOT NULL,"
@@ -167,9 +166,9 @@ public class SQLiteDB implements DataBase {
 		}
 	}
 	
-	public boolean FillEvent(Set<ADE_Event> set, int projectid, String firstdate) {
-		if (!ExistTable("event_"+getNameTable(firstdate))){
-			CreateEventTable(firstdate);
+	public boolean FillEvent(Set<ADE_Event> set, int projectid) {
+		if (!ExistTable("event_"+Integer.toString(projectid))){
+			CreateEventTable(projectid);
 		}
 		
 		// Get an iterator
@@ -183,17 +182,19 @@ public class SQLiteDB implements DataBase {
 			try {
 
 				Statement stmtQuery = _connection.createStatement();
-	            ResultSet rs = stmtQuery.executeQuery("SELECT UID FROM 'event_"+getNameTable(firstdate)+"' WHERE UID = '" +adeEvent.getUid()+"'");
+	            ResultSet rs = stmtQuery.executeQuery("SELECT UID FROM 'event_"+Integer.toString(projectid)+"' WHERE UID = '" +adeEvent.getUid()+"'");
 
 	            if(!rs.next()){
-	            	String sql = "INSERT INTO 'event_"+getNameTable(firstdate)+"' (UID, PROJECTID, DTSTART, DTEND, SUMMARY, LOCATION, DESCRIPTION) " + "VALUES ('"
-							+ adeEvent.getUid() + "', '" + projectid + "', '" + adeEvent.getDtstart() + "', '"
-							+ adeEvent.getDtend() + "', ?, ?, ?);";
+	            	String sql = "INSERT INTO 'event_"+Integer.toString(projectid)+"' "
+	            			+ "(UID, DTSTART, DTEND, SUMMARY, LOCATION, DESCRIPTION) " + "VALUES (?, ?, ?, ?, ?, ?);";
 					stmtUpdate = _connection.prepareStatement(sql);
 					//Evite d'utiliser les caractères spéciaux ex : "'"
-					stmtUpdate.setString(1, adeEvent.getSummary());
-					stmtUpdate.setString(2, adeEvent.getLocation());
-					stmtUpdate.setString(3, adeEvent.getDescription());			
+					stmtUpdate.setString(1, adeEvent.getUid());
+					stmtUpdate.setString(2, adeEvent.getDtstart());
+					stmtUpdate.setString(3, adeEvent.getDtend());
+					stmtUpdate.setString(4, adeEvent.getSummary());
+					stmtUpdate.setString(5, adeEvent.getLocation());
+					stmtUpdate.setString(6, adeEvent.getDescription());			
 
 					stmtUpdate.executeUpdate();
 					stmtUpdate.close();
@@ -208,17 +209,16 @@ public class SQLiteDB implements DataBase {
 		return true;
 	}
 
-	public void CreateUidTable(String firstdate) {
-		if (ExistTable("uid_"+getNameTable(firstdate)))
-			DropTable("uid_"+getNameTable(firstdate));
+	public void CreateUidTable(int projectid) {
+		if (ExistTable("uid_"+Integer.toString(projectid)))
+			DropTable("uid_"+Integer.toString(projectid));
 		Statement stmt = null;
 				
 		try {
 			stmt = _connection.createStatement();
-			String sql = "CREATE TABLE uid_" + getNameTable(firstdate)
+			String sql = "CREATE TABLE uid_" + Integer.toString(projectid)
 					+ " (UID INT				 NOT NULL,"
 					+ " ADE_ID           INTEGER    NOT NULL,"
-					+ " PROJECTID           INTEGER    NOT NULL,"
 					+ " PRIMARY KEY (UID, ADE_ID))";
 			stmt.executeUpdate(sql);
 			stmt.close();
@@ -227,9 +227,9 @@ public class SQLiteDB implements DataBase {
 		}
 	}
 	
-	public boolean FillUid(Set<ADE_Event> set, int adeid, int projectid, String firstdate) {
-		if (!ExistTable("uid_"+getNameTable(firstdate))){
-			CreateUidTable(firstdate);
+	public boolean FillUid(Set<ADE_Event> set, String adeid, int projectid) {
+		if (!ExistTable("uid_"+Integer.toString(projectid))){
+			CreateUidTable(projectid);
 		}
 		
 		// Get an iterator
@@ -243,13 +243,16 @@ public class SQLiteDB implements DataBase {
 			try {
 
 				Statement stmtQuery = _connection.createStatement();
-	            ResultSet rs = stmtQuery.executeQuery("SELECT UID, ADE_ID FROM 'uid_"+getNameTable(firstdate)+"' WHERE UID = '" +adeEvent.getUid()+"' AND ADE_ID = '" +adeid+"'");
+	            ResultSet rs = stmtQuery.executeQuery("SELECT UID, ADE_ID FROM 'uid_"+Integer.toString(projectid)+"' WHERE UID = '" +adeEvent.getUid()+"' AND ADE_ID = '" +adeid+"'");
 
 	            if(!rs.next()){
-	            	String sql = "INSERT INTO 'uid_"+getNameTable(firstdate)+"' (UID, ADE_ID, PROJECTID) " + "VALUES ('"
-							+ adeEvent.getUid() + "', '" + adeid + "', '" + projectid + "');";
+	            	String sql = "INSERT INTO 'uid_"+Integer.toString(projectid)+"' (UID, ADE_ID) " + "VALUES ("
+	            			+ "?, ?);";
 					stmtUpdate = _connection.prepareStatement(sql);
-
+					
+					stmtUpdate.setString(1, adeEvent.getUid());
+					stmtUpdate.setString(2, adeid);
+					
 					stmtUpdate.executeUpdate();
 					stmtUpdate.close();
 	            }
@@ -262,7 +265,7 @@ public class SQLiteDB implements DataBase {
 		return true;
 	}	
 	
-	public String getNameTable(String firstdate){
+	/*public String getNameTable(String firstdate){
 		//Get day of year
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = null;
@@ -277,7 +280,7 @@ public class SQLiteDB implements DataBase {
 		calendar.setTime(date);
 		
 		return Integer.toString(calendar.get(Calendar.DAY_OF_YEAR))+"_"+Integer.toString(calendar.get(Calendar.YEAR));
-	}
+	}*/
 	
 	@Override
 	public HashSet<TreeObject> getTreeObjectChildren(TreeObject treeObject) {
@@ -342,11 +345,5 @@ public class SQLiteDB implements DataBase {
 	public Project getProject(int projectId) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void CreateEventTable(int project_ID) {
-		// TODO Auto-generated method stub
-		
 	}
 }

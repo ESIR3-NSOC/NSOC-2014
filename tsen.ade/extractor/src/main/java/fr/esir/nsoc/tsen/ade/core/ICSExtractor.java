@@ -50,8 +50,8 @@ public class ICSExtractor implements Callable<Boolean> {
 		Set set = cal.getSet();
 		//Test si l'ICS à bien été interprété
 		if(set!=null){
-			ok=db.FillEvent(set, PROJECT_ID, FIRST_DATE);
-			db.FillUid(set, ADE_ID, PROJECT_ID, FIRST_DATE);
+			ok=db.FillEvent(set, PROJECT_ID);
+			db.FillUid(set, ADE_ID, PROJECT_ID);
 		}
 		else ok=false;
 

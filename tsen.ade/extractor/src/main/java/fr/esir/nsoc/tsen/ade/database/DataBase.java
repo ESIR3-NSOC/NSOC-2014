@@ -22,10 +22,9 @@ public interface DataBase {
 	public HashSet<TreeObject> getTreeObjectChildren(TreeObject treeObject);
 	
 	public void CreateEventTable(int project_ID);
-	public boolean FillEvent(Set<ADE_Event> set, int projectid, String firstdate);
+	public boolean FillEvent(Set<ADE_Event> set, int projectid);
 	
-	public void CreateUidTable(String firstdate);
-	public boolean FillUid(Set<ADE_Event> set, int adeid, int projectid, String firstdate);
-	
-	public String getNameTable(String firstdate);
+	public void CreateUidTable(int project_ID);
+	public boolean FillUid(Set<ADE_Event> set, String adeid, int projectid);
+
 }
