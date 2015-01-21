@@ -1,5 +1,8 @@
 package knx;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import tuwien.auto.calimero.KNXListener;
 import tuwien.auto.calimero.exception.KNXException;
 import tuwien.auto.calimero.knxnetip.Discoverer;
 import tuwien.auto.calimero.knxnetip.servicetype.SearchResponse;
@@ -19,16 +22,34 @@ public class Utility {
     public static SearchResponse Discover (){
 
         try {
+            System.out.println("running discover...");
             Discoverer discoverer = new Discoverer (Reference.KNX_PORT, true);
-            discoverer.startSearch(Reference.DISCOVERER_TIMEOUT, true);
+            discoverer.startSearch(Reference.DISCOVERER_TIMEOUT, false);
+
+            if(!discoverer.isSearching()){
+                System.out.println("not searching");
+            }else{
+                System.out.println("init search");
+            }
 
             while(discoverer.isSearching()){
+                System.out.println("searching");
                 Thread.sleep(100);
             }
 
-            for(SearchResponse sr : discoverer.getSearchResponses()){
-                return sr;
+            if(discoverer.getSearchResponses().length!=0){
+                for(SearchResponse sr : discoverer.getSearchResponses()){
+                    if(sr!=null){
+                        System.out.println("Adresse trouvée : " + sr.getControlEndpoint().getAddress());
+                        return sr;
+                    }
+
+                }
+            }else{
+                System.out.println("No address found !");
             }
+
+
 
         } catch (KNXException e) {
             e.printStackTrace();
@@ -40,27 +61,36 @@ public class Utility {
     }
 
     public static KNXNetworkLinkIP openKnxConnection (InetAddress destination){
+
         KNXNetworkLinkIP netLinkIp = null;
         try {
 
-            InetAddress source = InetAddress.getLocalHost();
-            InetSocketAddress socketSource = new InetSocketAddress(source,8000);
+            InetAddress source = InetAddress.getByName("192.168.1.12");
+            InetSocketAddress socketSource = new InetSocketAddress(source,8060);
+            System.out.println("address ip local :" + source.toString() + " on port 8060 ");
 
 
-            InetSocketAddress socketDestination = new InetSocketAddress(destination,8000);
+            InetSocketAddress socketDestination = new InetSocketAddress(destination,Reference.KNX_PORT);
+            System.out.println("addresse ip maquette " +socketDestination.toString() +  " on port " + Reference.KNX_PORT);
 
             netLinkIp = new KNXNetworkLinkIP(KNXNetworkLinkIP.TUNNEL,socketSource,socketDestination,false, new TPSettings(false));
         } catch (KNXException e) {
+            System.out.println("KNX exception");
             e.printStackTrace();
         } catch (UnknownHostException e) {
+            System.out.println("Unknown host connection");
             e.printStackTrace();
         }
+
+
         return netLinkIp;
     }
 
     public static void closeConnection (KNXNetworkLinkIP knxLinkIp){
         knxLinkIp.close();
     }
+
+
 
     public static Map<String,String> importGroup(){
 
