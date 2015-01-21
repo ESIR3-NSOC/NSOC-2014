@@ -340,8 +340,26 @@ public class SQLiteDB implements DataBase {
 
 	@Override
 	public Project getProject(int projectId) {
-		// TODO Auto-generated method stub
-		return null;
+
+		
+		Statement stmt = null;
+		Project project = null;
+		try {
+
+			stmt = _connection.createStatement();
+			String sql = "SELECT ID, NAME FROM project WHERE ID = " + projectId + ";";
+			ResultSet rs = stmt.executeQuery(sql);
+            if(rs.next()){
+            	project = new Project(rs.getInt(1), rs.getString(2));
+            } else {
+            	project = new Project(-1, "error");
+            }
+			
+            stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return project;
 	}
 
 	@Override

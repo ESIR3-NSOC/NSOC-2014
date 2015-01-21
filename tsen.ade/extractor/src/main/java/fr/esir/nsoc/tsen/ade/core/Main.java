@@ -38,14 +38,24 @@ public class Main {
 		
 		// brows ADE Tree
 		ADE_Tree at = new ADE_Tree(db);
+		at.setProject(22);
 		//at.browseTree();
 		
 		// get project
 		Project project = at.getProject();
 		
+		
+		
 		// define scope
 		ADE_Scope scope = new ADE_Scope(db);
-		//scope.addChildrenToScope(new TreeObject(project, level, name, id, parentId, type))
+		scope.addChildrenToScope(new TreeObject(project, -1, "", "7748", "", "")); // esir 3 domo
+		scope.addChildrenToScope(new TreeObject(project, -1, "", "7828", "", "")); // esir 3 mat
+
+		
+		// retrieve planning
+		
+		
+		
 		
 		
 		
@@ -70,6 +80,8 @@ public class Main {
 
 		
 		List<Callable<Boolean>> taches = new ArrayList<Callable<Boolean>>();
+		
+		/*
 		ADEDay Alex=new ADEDay(4128, "2015-01-19", 22);
 		ADEDay Alexis=new ADEDay(6579, "2015-01-19", 22);
 		ADEDay Mathou=new ADEDay(6434, "2015-01-19", 22);
@@ -90,6 +102,10 @@ public class Main {
 		ADEDay Thomas=new ADEDay(7800, "2015-01-19", 22);
 		ADEDay Oceane=new ADEDay(7862, "2015-01-19", 22);
 		ADEDay Mael=new ADEDay(8084, "2015-01-19", 22);
+		
+		*/
+		
+		
 		
 		Callable<Boolean> tache1 = new ICSExtractor(Alex);
 		Callable<Boolean> tache2 = new ICSExtractor(Alexis);
