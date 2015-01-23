@@ -113,7 +113,7 @@ public class ADE_Tree {
 		
 		if (_continue)
 		{
-			dataBase.createTreeObjectTable();
+			dataBase.createTreeObjectTable(project.getId());
 			TreeBrowser tb = new TreeBrowser(new TreeObject(project, -1, "root", "", "root"), httpReq, dataBase);
 			_continue = tb.browse();
 		}

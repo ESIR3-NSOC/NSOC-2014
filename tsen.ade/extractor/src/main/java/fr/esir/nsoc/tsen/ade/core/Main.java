@@ -41,6 +41,8 @@ public class Main {
 		scope.addChildrenToScope(new TreeObject(project, -1, "", "7828", "",
 				"branch")); // esir 3 mat
 
+		
+		
 		if (DEBUG) {
 			HashSet<TreeObject> tos = scope.getScope();
 			Iterator<TreeObject> i = tos.iterator();
@@ -57,7 +59,7 @@ public class Main {
 
 		// retrieve planning
 		ADE_Planning planning = new ADE_Planning(db, scope);
-		planning.retrieve(20);
+		planning.retrieve(1);
 
 		// exit
 		System.exit(0);

@@ -16,12 +16,12 @@ public interface DataBase {
 	public void fillProject(HashSet<Project> projects);
 	public Project getProject(int projectId);
 	
-	public void createTreeObjectTable();
+	public void createTreeObjectTable(int projectid);
 	public boolean addTreeObject(TreeObject treeObject);
 	public HashSet<TreeObject> getTreeObjectChildren(TreeObject treeObject);
 	
 	public void createEventTable(int project_ID);
-	public boolean addADE_Event(Event _ADE_Event, Project project);
+	public boolean addEvent(Event event, Project project);
 	public boolean fillEvent(Set<Event> set, int projectid);
 	/*
 	public void createUidTable(int project_ID);

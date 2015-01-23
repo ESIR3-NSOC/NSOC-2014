@@ -44,8 +44,7 @@ public class Cal {
 						.iterator(); i.hasNext();) {
 					Component component = i.next();
 					Event ade_event = new Event();
-					System.out.println("Component [" + component.getName()
-							+ "]");
+
 
 					for (Iterator<Property> j = component.getProperties()
 							.iterator(); j.hasNext();) {
