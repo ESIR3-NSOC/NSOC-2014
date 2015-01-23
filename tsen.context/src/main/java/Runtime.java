@@ -1,4 +1,4 @@
-import Utilities.ContextInit;
+import utilities.ContextInit;
 
 /**
  * Created by mathi_000 on 09/01/2015.
@@ -6,7 +6,8 @@ import Utilities.ContextInit;
 public class Runtime {
 
     public static void main (String[] args){
-        ContextInit.initContext();
+        ContextInit.initContext("Salle test");
+
 
     }
 }

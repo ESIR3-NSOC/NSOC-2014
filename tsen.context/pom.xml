@@ -14,10 +14,6 @@
     <name>TSEN :: Context</name>
     <packaging>pom</packaging>
 
-    <modules>
-        <!--<module>contextManager</module>-->
-    </modules>
-
     <dependencies>
         <dependency>
             <groupId>org.kevoree.modeling</groupId>
