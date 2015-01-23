@@ -47,7 +47,8 @@ class tsen.Activity  {
 
 class tsen.User  {
     name : String
-    wishState : String
+    targetTemp : Double
+
 }
 
 class tsen.Temperature  {
