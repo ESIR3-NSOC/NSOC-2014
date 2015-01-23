@@ -1,0 +1,1 @@
+SELECT UID FROM correspondence_22 join event_22 on event_22.UID = correspondence_22.EVENT_ID WHERE ADE_ID="1005"

@@ -40,6 +40,12 @@ public class Main {
 				"branch")); // esir 3 domo
 		scope.addChildrenToScope(new TreeObject(project, -1, "", "7828", "",
 				"branch")); // esir 3 mat
+		scope.addChildrenToScope(new TreeObject(project, -1, "", "6082", "",
+				"branch")); // esir b41 td
+		scope.addChildrenToScope(new TreeObject(project, -1, "", "6092", "",
+				"branch")); // esir b41 td langue
+		scope.addChildrenToScope(new TreeObject(project, -1, "", "2302", "",
+				"leaf")); // eric beaty
 
 		
 		
@@ -59,9 +65,10 @@ public class Main {
 
 		// retrieve planning
 		ADE_Planning planning = new ADE_Planning(db, scope);
-		planning.retrieve(1);
+		planning.retrieve(30);
 
 		// exit
+		System.out.println("terminated !");
 		System.exit(0);
 	}
 
