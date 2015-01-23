@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.concurrent.Callable;
 
 
@@ -22,6 +23,9 @@ import java.util.concurrent.Callable;
 
 
 
+
+
+import fr.esir.nsoc.tsen.ade.database.DataBase;
 import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Parameter;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
@@ -39,14 +43,18 @@ public class ICSExtractor implements Callable<Boolean> {
 	private TreeObject treeObject;
 	private LocalDate startPoint;
 	private LocalDate endPoint;
+	private DataBase dataBase;
 	
 
+
+
 	public ICSExtractor(TreeObject treeObject, LocalDate startPoint,
-			LocalDate endPoint) {
+			LocalDate endPoint, DataBase dataBase) {
 		super();
 		this.treeObject = treeObject;
 		this.startPoint = startPoint;
 		this.endPoint = endPoint;
+		this.dataBase = dataBase;
 	}
 
 	@Override
@@ -54,22 +62,17 @@ public class ICSExtractor implements Callable<Boolean> {
 		//Récupération de l'ICS
 		Cal cal = new Cal(getICS());
 				
-		//Create and/or connect to local DB
-		SQLiteDB db = new SQLiteDB("test1.db");
-		System.out.println(db.isConnected() ? "Connection DB ok" : "Connection DB nok");
+
 
 		// Get a set of the entries
 		HashSet<Event> _ADE_Events = cal.parse();
+		
+		
+		
+		
 		//Test si l'ICS à bien été interprété
-		if(_ADE_Events!=null){
-
-//			ok=db.FillEvent(set, PROJECT_ID);
-//			db.FillUid(set, ADE_ID, PROJECT_ID);
-
-			ok=db.FillEvent(_ADE_Events, treeObject.getProject().getId());
-			db.FillUid(_ADE_Events, treeObject.getId(), treeObject.getProject().getId());
-
-		}
+		if(_ADE_Events!=null)
+			dataBase.fillCorrespondence(_ADE_Events, treeObject);
 		else ok=false;
 
 		return ok;

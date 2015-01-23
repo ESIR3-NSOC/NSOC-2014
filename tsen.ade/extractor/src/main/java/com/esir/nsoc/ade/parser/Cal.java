@@ -53,7 +53,7 @@ public class Cal {
 
 						switch (property.getName().toString()) {
 						case "UID":
-							ade_event.setUid(property.getValue());
+							ade_event.setId(property.getValue());
 							break;
 						case "DTSTART":
 							DateTime dtstart;

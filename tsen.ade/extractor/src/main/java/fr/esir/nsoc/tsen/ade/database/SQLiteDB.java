@@ -51,9 +51,9 @@ public class SQLiteDB implements DataBase {
 	}
 
 	@Override
-	public void CreateProjectTable() {
-		if (ExistTable("project"))
-			DropTable("project");
+	public void createProjectTable() {
+		if (existTable("project"))
+			dropTable("project");
 		Statement stmt = null;
 		try {
 			stmt = _connection.createStatement();
@@ -86,7 +86,7 @@ public class SQLiteDB implements DataBase {
 	}
 
 	@Override
-	public void FillProject(HashSet<Project> projects) {
+	public void fillProject(HashSet<Project> projects) {
 		Iterator<Project> i = projects.iterator();
 		while (i.hasNext()) {
 			addProject(i.next());
@@ -94,9 +94,9 @@ public class SQLiteDB implements DataBase {
 	}
 
 	@Override
-	public void CreateTreeObjectTable() {
-		if (ExistTable("tree_object"))
-			DropTable("tree_object");
+	public void createTreeObjectTable() {
+		if (existTable("tree_object"))
+			dropTable("tree_object");
 		Statement stmt = null;
 		try {
 			stmt = _connection.createStatement();
@@ -139,9 +139,9 @@ public class SQLiteDB implements DataBase {
 		return true;
 	}
 
-	public void CreateEventTable(int projectid) {
-		if (ExistTable("event_" + Integer.toString(projectid)))
-			DropTable("event_" + Integer.toString(projectid));
+	public void createEventTable(int projectid) {
+		if (existTable("event_" + Integer.toString(projectid)))
+			dropTable("event_" + Integer.toString(projectid));
 		Statement stmt = null;
 
 		try {
@@ -160,9 +160,9 @@ public class SQLiteDB implements DataBase {
 		}
 	}
 
-	public boolean FillEvent(Set<Event> set, int projectid) {
-		if (!ExistTable("event_" + Integer.toString(projectid))) {
-			CreateEventTable(projectid);
+	public boolean fillEvent(Set<Event> set, int projectid) {
+		if (!existTable("event_" + Integer.toString(projectid))) {
+			createEventTable(projectid);
 		}
 
 		// Get an iterator
@@ -178,7 +178,7 @@ public class SQLiteDB implements DataBase {
 				Statement stmtQuery = _connection.createStatement();
 				ResultSet rs = stmtQuery.executeQuery("SELECT UID FROM 'event_"
 						+ Integer.toString(projectid) + "' WHERE UID = '"
-						+ adeEvent.getUid() + "'");
+						+ adeEvent.getId() + "'");
 
 				if (!rs.next()) {
 					String sql = "INSERT INTO 'event_"
@@ -188,7 +188,7 @@ public class SQLiteDB implements DataBase {
 							+ "VALUES (?, ?, ?, ?, ?, ?);";
 					stmtUpdate = _connection.prepareStatement(sql);
 					// Evite d'utiliser les caractères spéciaux ex : "'"
-					stmtUpdate.setString(1, adeEvent.getUid());
+					stmtUpdate.setString(1, adeEvent.getId());
 					stmtUpdate.setString(2, adeEvent.getDtstart());
 					stmtUpdate.setString(3, adeEvent.getDtend());
 					stmtUpdate.setString(4, adeEvent.getSummary());
@@ -208,9 +208,27 @@ public class SQLiteDB implements DataBase {
 		return true;
 	}
 
-	public void CreateUidTable(int projectid) {
-		if (ExistTable("uid_" + Integer.toString(projectid)))
-			DropTable("uid_" + Integer.toString(projectid));
+	public void createCorrespondenceTable(int projectid) {
+		if (existTable("correspondence_" + Integer.toString(projectid)))
+			dropTable("correspondence_" + Integer.toString(projectid));
+		Statement stmt = null;
+
+		try {
+			stmt = _connection.createStatement();
+			String sql = "CREATE TABLE correspondence_" + Integer.toString(projectid)
+					+ " (EVENT_ID INT				 NOT NULL,"
+					+ " ADE_ID           INTEGER    NOT NULL,"
+					+ " PRIMARY KEY (EVENT_ID, ADE_ID))";
+			stmt.executeUpdate(sql);
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void createUidTable(int projectid) {
+		if (existTable("uid_" + Integer.toString(projectid)))
+			dropTable("uid_" + Integer.toString(projectid));
 		Statement stmt = null;
 
 		try {
@@ -226,9 +244,10 @@ public class SQLiteDB implements DataBase {
 		}
 	}
 
-	public boolean FillUid(Set<Event> set, String adeid, int projectid) {
-		if (!ExistTable("uid_" + Integer.toString(projectid))) {
-			CreateUidTable(projectid);
+	public boolean fillUid(Set<Event> set, String adeid, int projectid) {
+		
+		if (!existTable("uid_" + projectid)) {
+			createUidTable(projectid);
 		}
 
 		// Get an iterator
@@ -245,7 +264,7 @@ public class SQLiteDB implements DataBase {
 				ResultSet rs = stmtQuery
 						.executeQuery("SELECT UID, ADE_ID FROM 'uid_"
 								+ Integer.toString(projectid)
-								+ "' WHERE UID = '" + adeEvent.getUid()
+								+ "' WHERE UID = '" + adeEvent.getId()
 								+ "' AND ADE_ID = '" + adeid + "'");
 
 				if (!rs.next()) {
@@ -254,7 +273,7 @@ public class SQLiteDB implements DataBase {
 							+ "VALUES (" + "?, ?);";
 					stmtUpdate = _connection.prepareStatement(sql);
 
-					stmtUpdate.setString(1, adeEvent.getUid());
+					stmtUpdate.setString(1, adeEvent.getId());
 					stmtUpdate.setString(2, adeid);
 
 					stmtUpdate.executeUpdate();
@@ -298,7 +317,7 @@ public class SQLiteDB implements DataBase {
 		
 		HashSet<TreeObject> TreeObjectChildren = new HashSet<TreeObject>();
 		
-		if (ExistTable("tree_object")){
+		if (existTable("tree_object")){
 		
 			Statement stmt = null;
 			
@@ -347,7 +366,7 @@ public class SQLiteDB implements DataBase {
 
 
 		
-		if (ExistTable("uid_"+Integer.toString(projet.getId()))){
+		if (existTable("uid_"+Integer.toString(projet.getId()))){
 				
 			Statement stmt = null;
 			
@@ -382,7 +401,7 @@ public class SQLiteDB implements DataBase {
 		return TreeObjectSession;
 	}
 
-	private void DropTable(String name) {
+	private void dropTable(String name) {
 		Statement stmt = null;
 		try {
 			stmt = _connection.createStatement();
@@ -393,7 +412,7 @@ public class SQLiteDB implements DataBase {
 		}
 	}
 
-	private boolean ExistTable(String name) {
+	private boolean existTable(String name) {
 		Statement stmt = null;
 		boolean exist = false;
 		try {
@@ -443,7 +462,7 @@ public class SQLiteDB implements DataBase {
 					+ "VALUES (?, ?, ?, ?, ?, ?);";
 			stmt = _connection.prepareStatement(sql);
 
-			stmt.setString(1, _ADE_Event.getUid());
+			stmt.setString(1, _ADE_Event.getId());
 			stmt.setString(2, _ADE_Event.getDtstart());
 			stmt.setString(3, _ADE_Event.getDtend());
 			stmt.setString(4, _ADE_Event.getSummary());
@@ -461,10 +480,51 @@ public class SQLiteDB implements DataBase {
 		return true;
 	}
 
+
+	public boolean addCorrespondence(Event event, TreeObject treeObject) {
+		
+		if (!existTable("correspondence_" + treeObject.getProject().getId())) {
+			createCorrespondenceTable(treeObject.getProject().getId());
+		}
+
+		PreparedStatement stmtUpdate;
+
+		try {
+
+			Statement stmtQuery = _connection.createStatement();
+			ResultSet rs = stmtQuery
+					.executeQuery("SELECT EVENT_ID, ADE_ID FROM 'correspondence_"
+							+ Integer.toString(treeObject.getProject().getId())
+							+ "' WHERE EVENT_ID = '" + event.getId()
+							+ "' AND ADE_ID = '" + treeObject.getId() + "'");
+
+			if (!rs.next()) {
+				String sql = "INSERT INTO 'correspondence_"
+						+ Integer.toString(treeObject.getProject().getId()) + "' (EVENT_ID, ADE_ID) "
+						+ "VALUES (" + "?, ?);";
+				stmtUpdate = _connection.prepareStatement(sql);
+
+				stmtUpdate.setString(1, event.getId());
+				stmtUpdate.setString(2, treeObject.getId());
+
+				stmtUpdate.executeUpdate();
+				stmtUpdate.close();
+			}
+			stmtQuery.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
 	@Override
-	public boolean addUid(Event _ADE_Event, TreeObject treeObject,
-			Project project) {
-// TODO
+	public boolean fillCorrespondence(HashSet<Event> events, TreeObject treeObject) {
+		Iterator<Event> i = events.iterator();
+		while (i.hasNext()) {
+			Event event = i.next();
+			addCorrespondence(event, treeObject);
+		}
 		return true;
 	}
 

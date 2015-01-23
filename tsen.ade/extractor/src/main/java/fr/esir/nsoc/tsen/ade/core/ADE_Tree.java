@@ -70,8 +70,8 @@ public class ADE_Tree {
 				System.out.println(p.getId() + ": " + p.getName());
 			}
 			
-			dataBase.CreateProjectTable();
-			dataBase.FillProject(projectList);
+			dataBase.createProjectTable();
+			dataBase.fillProject(projectList);
 			
 
 			boolean loop = true;
@@ -113,7 +113,7 @@ public class ADE_Tree {
 		
 		if (_continue)
 		{
-			dataBase.CreateTreeObjectTable();
+			dataBase.createTreeObjectTable();
 			TreeBrowser tb = new TreeBrowser(new TreeObject(project, -1, "root", "", "root"), httpReq, dataBase);
 			_continue = tb.browse();
 		}
