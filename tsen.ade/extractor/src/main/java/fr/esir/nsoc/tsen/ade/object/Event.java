@@ -1,6 +1,6 @@
-package com.esir.nsoc.ade.parser;
+package fr.esir.nsoc.tsen.ade.object;
 
-public class ADE_Event {
+public class Event {
 	
 	private String uid;
 	private String dtstart;
@@ -9,7 +9,7 @@ public class ADE_Event {
 	private String location;
 	private String description;
 
-	public ADE_Event() {
+	public Event() {
 		super();
 		this.uid = "";
 		this.dtstart = "";
@@ -19,7 +19,7 @@ public class ADE_Event {
 		this.description = "";
 	}
 	
-	public ADE_Event(String uid, String dtstart, String dtend, String summary,
+	public Event(String uid, String dtstart, String dtend, String summary,
 			String location, String description) {
 		super();
 		this.uid = uid;

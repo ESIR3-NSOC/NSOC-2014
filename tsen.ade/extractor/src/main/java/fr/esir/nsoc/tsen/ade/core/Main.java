@@ -1,58 +1,90 @@
 package fr.esir.nsoc.tsen.ade.core;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Scanner;
 
-
-
-
-
-
-import fr.esir.nsoc.tsen.ade.browser.TreeBrowser;
 import fr.esir.nsoc.tsen.ade.database.DataBase;
 import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
-import fr.esir.nsoc.tsen.ade.http.HTTP_Parameter;
-import fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
-import fr.esir.nsoc.tsen.ade.http.HTTP_Response;
-import fr.esir.nsoc.tsen.ade.http.parser.ProjectParser;
 import fr.esir.nsoc.tsen.ade.object.Project;
 import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
 public class Main {
 
-
-
 	private final static boolean DEBUG = true;
 
 	public static void main(String[] args) {
-		
-		
+
 		// connect to local DB
 		DataBase db = new SQLiteDB("test1.db");
-		if (DEBUG) System.out.println(db.isConnected() ? "ok" : "nok");
-		
-		// brows ADE Tree
-		//ADE_Tree at = new ADE_Tree(db);
-		//at.browseTree();
-		
-		
-		// example
-		HashSet<TreeObject> tos = db.getTreeObjectChildren(new TreeObject(new Project(22, ""), -1, "", "7748", "", ""));
-		Iterator<TreeObject> i = tos.iterator();
-		while (i.hasNext()) {
-			TreeObject to = i.next();
-			
-				if (true) System.out.println(to.getType() + ": \"" + to.getName() + "\", id: \"" + to.getId() + "\", level:" + to.getLevel());
+		if (DEBUG)
+			System.out.println(db.isConnected() ? "ok" : "nok");
 
-				
-				
+		// brows ADE Tree
+		ADE_Tree at = new ADE_Tree(db);
+		at.setProject(22);
+		// at.browseTree();
+
+		// get project
+		Project project = at.getProject();
+		if (DEBUG)
+			System.out.println(at.getProject().getName());
+
+		// define scope
+		ADE_Scope scope = new ADE_Scope(db);
+		scope.addChildrenToScope(new TreeObject(project, -1, "", "7748", "",
+				"branch")); // esir 3 domo
+		scope.addChildrenToScope(new TreeObject(project, -1, "", "7828", "",
+				"branch")); // esir 3 mat
+
+		if (DEBUG) {
+			HashSet<TreeObject> tos = scope.getScope();
+			Iterator<TreeObject> i = tos.iterator();
+			while (i.hasNext()) {
+				TreeObject to = i.next();
+				System.out.println(to.getType() + ": \"" + to.getName()
+						+ "\", id: \"" + to.getId() + "\", level:"
+						+ to.getLevel());
 			}
+		}
+
+		scope.setStartPoint(parseDate("19/01/2015"));
+		scope.setEndPoint(parseDate("25/01/2015"));
+
+		// retrieve planning
+		ADE_Planning planning = new ADE_Planning(db, scope);
+		planning.retrieve(20);
 
 		// exit
 		System.exit(0);
 	}
 
+	public static LocalDate parseDate(String input) {
+		LocalDate date = null;
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter
+					.ofPattern("dd/MM/yyyy");
+			date = LocalDate.parse(input, formatter);
+		} catch (DateTimeParseException exc) {
+			exc.printStackTrace();
+		}
+		return date;
+	}
 
+	public static String formatDate(LocalDate input) {
+		String string = null;
+		try {
+			DateTimeFormatter format = DateTimeFormatter
+					.ofPattern("yyyy-MM-dd");
+			string = input.format(format);
+		} catch (DateTimeException exc) {
+			exc.printStackTrace();
+		}
+		return string;
+	}
 
 }

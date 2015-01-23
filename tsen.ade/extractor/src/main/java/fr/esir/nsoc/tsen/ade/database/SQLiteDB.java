@@ -6,17 +6,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.esir.nsoc.ade.parser.ADE_Event;
-
+import fr.esir.nsoc.tsen.ade.object.Event;
 import fr.esir.nsoc.tsen.ade.object.Project;
 import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
@@ -145,16 +139,15 @@ public class SQLiteDB implements DataBase {
 		return true;
 	}
 
-	public void CreateEventTable(String firstdate) {
-		if (ExistTable("event_"+getNameTable(firstdate)))
-			DropTable("event_"+getNameTable(firstdate));
+	public void CreateEventTable(int projectid) {
+		if (ExistTable("event_" + Integer.toString(projectid)))
+			DropTable("event_" + Integer.toString(projectid));
 		Statement stmt = null;
-				
+
 		try {
 			stmt = _connection.createStatement();
-			String sql = "CREATE TABLE event_" + getNameTable(firstdate)
-					+ " (UID INT UNIQUE PRIMARY KEY     NOT NULL,"
-					+ " PROJECTID           INTEGER    NOT NULL,"
+			String sql = "CREATE TABLE event_" + Integer.toString(projectid)
+					+ " (UID TEXT UNIQUE PRIMARY KEY     NOT NULL,"
 					+ " DTSTART           DATE    NOT NULL,"
 					+ " DTEND           DATE    NOT NULL,"
 					+ " SUMMARY           TEXT    NOT NULL,"
@@ -166,59 +159,65 @@ public class SQLiteDB implements DataBase {
 			e.printStackTrace();
 		}
 	}
-	
-	public boolean FillEvent(Set<ADE_Event> set, int projectid, String firstdate) {
-		if (!ExistTable("event_"+getNameTable(firstdate))){
-			CreateEventTable(firstdate);
+
+	public boolean FillEvent(Set<Event> set, int projectid) {
+		if (!ExistTable("event_" + Integer.toString(projectid))) {
+			CreateEventTable(projectid);
 		}
-		
+
 		// Get an iterator
-		Iterator<ADE_Event> i = set.iterator();
+		Iterator<Event> i = set.iterator();
 		// Display elements
 		while (i.hasNext()) {
-			ADE_Event adeEvent = (ADE_Event)i.next();
-			
+			Event adeEvent = (Event) i.next();
+
 			PreparedStatement stmtUpdate;
 
 			try {
 
 				Statement stmtQuery = _connection.createStatement();
-	            ResultSet rs = stmtQuery.executeQuery("SELECT UID FROM 'event_"+getNameTable(firstdate)+"' WHERE UID = '" +adeEvent.getUid()+"'");
+				ResultSet rs = stmtQuery.executeQuery("SELECT UID FROM 'event_"
+						+ Integer.toString(projectid) + "' WHERE UID = '"
+						+ adeEvent.getUid() + "'");
 
-	            if(!rs.next()){
-	            	String sql = "INSERT INTO 'event_"+getNameTable(firstdate)+"' (UID, PROJECTID, DTSTART, DTEND, SUMMARY, LOCATION, DESCRIPTION) " + "VALUES ('"
-							+ adeEvent.getUid() + "', '" + projectid + "', '" + adeEvent.getDtstart() + "', '"
-							+ adeEvent.getDtend() + "', ?, ?, ?);";
+				if (!rs.next()) {
+					String sql = "INSERT INTO 'event_"
+							+ Integer.toString(projectid)
+							+ "' "
+							+ "(UID, DTSTART, DTEND, SUMMARY, LOCATION, DESCRIPTION) "
+							+ "VALUES (?, ?, ?, ?, ?, ?);";
 					stmtUpdate = _connection.prepareStatement(sql);
-					//Evite d'utiliser les caractères spéciaux ex : "'"
-					stmtUpdate.setString(1, adeEvent.getSummary());
-					stmtUpdate.setString(2, adeEvent.getLocation());
-					stmtUpdate.setString(3, adeEvent.getDescription());			
+					// Evite d'utiliser les caractères spéciaux ex : "'"
+					stmtUpdate.setString(1, adeEvent.getUid());
+					stmtUpdate.setString(2, adeEvent.getDtstart());
+					stmtUpdate.setString(3, adeEvent.getDtend());
+					stmtUpdate.setString(4, adeEvent.getSummary());
+					stmtUpdate.setString(5, adeEvent.getLocation());
+					stmtUpdate.setString(6, adeEvent.getDescription());
 
 					stmtUpdate.executeUpdate();
 					stmtUpdate.close();
-	            }
-	            stmtQuery.close();
+				}
+				stmtQuery.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 				return false;
 			}
-			
+
 		}
 		return true;
 	}
 
-	public void CreateUidTable(String firstdate) {
-		if (ExistTable("uid_"+getNameTable(firstdate)))
-			DropTable("uid_"+getNameTable(firstdate));
+	public void CreateUidTable(int projectid) {
+		if (ExistTable("uid_" + Integer.toString(projectid)))
+			DropTable("uid_" + Integer.toString(projectid));
 		Statement stmt = null;
-				
+
 		try {
 			stmt = _connection.createStatement();
-			String sql = "CREATE TABLE uid_" + getNameTable(firstdate)
+			String sql = "CREATE TABLE uid_" + Integer.toString(projectid)
 					+ " (UID INT				 NOT NULL,"
 					+ " ADE_ID           INTEGER    NOT NULL,"
-					+ " PROJECTID           INTEGER    NOT NULL,"
 					+ " PRIMARY KEY (UID, ADE_ID))";
 			stmt.executeUpdate(sql);
 			stmt.close();
@@ -226,91 +225,163 @@ public class SQLiteDB implements DataBase {
 			e.printStackTrace();
 		}
 	}
-	
-	public boolean FillUid(Set<ADE_Event> set, int adeid, int projectid, String firstdate) {
-		if (!ExistTable("uid_"+getNameTable(firstdate))){
-			CreateUidTable(firstdate);
+
+	public boolean FillUid(Set<Event> set, String adeid, int projectid) {
+		if (!ExistTable("uid_" + Integer.toString(projectid))) {
+			CreateUidTable(projectid);
 		}
-		
+
 		// Get an iterator
-		Iterator<ADE_Event> i = set.iterator();
+		Iterator<Event> i = set.iterator();
 		// Display elements
 		while (i.hasNext()) {
-			ADE_Event adeEvent = (ADE_Event)i.next();
-			
+			Event adeEvent = (Event) i.next();
+
 			PreparedStatement stmtUpdate;
 
 			try {
 
 				Statement stmtQuery = _connection.createStatement();
-	            ResultSet rs = stmtQuery.executeQuery("SELECT UID, ADE_ID FROM 'uid_"+getNameTable(firstdate)+"' WHERE UID = '" +adeEvent.getUid()+"' AND ADE_ID = '" +adeid+"'");
+				ResultSet rs = stmtQuery
+						.executeQuery("SELECT UID, ADE_ID FROM 'uid_"
+								+ Integer.toString(projectid)
+								+ "' WHERE UID = '" + adeEvent.getUid()
+								+ "' AND ADE_ID = '" + adeid + "'");
 
-	            if(!rs.next()){
-	            	String sql = "INSERT INTO 'uid_"+getNameTable(firstdate)+"' (UID, ADE_ID, PROJECTID) " + "VALUES ('"
-							+ adeEvent.getUid() + "', '" + adeid + "', '" + projectid + "');";
+				if (!rs.next()) {
+					String sql = "INSERT INTO 'uid_"
+							+ Integer.toString(projectid) + "' (UID, ADE_ID) "
+							+ "VALUES (" + "?, ?);";
 					stmtUpdate = _connection.prepareStatement(sql);
+
+					stmtUpdate.setString(1, adeEvent.getUid());
+					stmtUpdate.setString(2, adeid);
 
 					stmtUpdate.executeUpdate();
 					stmtUpdate.close();
-	            }
-	            stmtQuery.close();
+				}
+				stmtQuery.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 				return false;
 			}
 		}
 		return true;
-	}	
-	
-	public String getNameTable(String firstdate){
-		//Get day of year
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = null;
-		try {
-			date = formatter.parse(firstdate);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	}
+
+	/*
+	 * public String getNameTable(String firstdate){ //Get day of year
+	 * SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); Date
+	 * date = null; try { date = formatter.parse(firstdate); } catch
+	 * (ParseException e) { // TODO Auto-generated catch block
+	 * e.printStackTrace(); }
+	 * 
+	 * Calendar calendar = new GregorianCalendar(); calendar.setTime(date);
+	 * 
+	 * return
+	 * Integer.toString(calendar.get(Calendar.DAY_OF_YEAR))+"_"+Integer.toString
+	 * (calendar.get(Calendar.YEAR)); }
+	 */
+/*
 
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(date);
 		
 		return Integer.toString(calendar.get(Calendar.DAY_OF_YEAR))+"_"+Integer.toString(calendar.get(Calendar.YEAR));
-	}
+	}*/
 	
+	/**
+	 * Récupération des enfants d'une branche
+	 */
 	@Override
 	public HashSet<TreeObject> getTreeObjectChildren(TreeObject treeObject) {
-		Statement stmt = null;
 		
+		HashSet<TreeObject> TreeObjectChildren = new HashSet<TreeObject>();
+		
+		if (ExistTable("tree_object")){
+		
+			Statement stmt = null;
+			
+			int level;
+			String name;
+			String id;
+			String parentId;
+			String type;
+			
+			try {
+				stmt = _connection.createStatement();
+				ResultSet rs = stmt
+						.executeQuery("SELECT * FROM tree_object WHERE PARENT_ID=" + treeObject.getId()+";");
+				
+				while(rs.next()){
+					id=rs.getString(1);
+					name=rs.getString(2);
+					level=rs.getInt(3);
+					parentId=rs.getString(4);
+					type=rs.getString(5);
+					Project project=new Project(rs.getInt(6),"");
+	
+					TreeObjectChildren.add(new TreeObject(project, level, name, parentId, type));
+				}
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return TreeObjectChildren;
+		}
+		//Si pas de table existante, retourne un HashSet vide
+		return TreeObjectChildren;
+	}
+	
+	/**
+	 * Récupération des entités associées à un cours (prof, élèves, salle)
+	 */
+	public HashSet<TreeObject> getTreeObjectSession(String uid, Project projet) {
+		
+		HashSet<TreeObject> TreeObjectSession = new HashSet<TreeObject>();
 		int level;
 		String name;
 		String id;
 		String parentId;
 		String type;
+
+
 		
-		HashSet<TreeObject> TreeObjectChildren = new HashSet<TreeObject>();
-		try {
-			stmt = _connection.createStatement();
-			ResultSet rs = stmt
-					.executeQuery("SELECT * FROM tree_object WHERE PARENT_ID=" + treeObject.getId()+";");
+		if (ExistTable("uid_"+Integer.toString(projet.getId()))){
+				
+			Statement stmt = null;
 			
-			while(rs.next()){
-				id=rs.getString(1);
-				name=rs.getString(2);
-				level=rs.getInt(3);
-				parentId=rs.getString(4);
-				type=rs.getString(5);
-				Project project=new Project(rs.getInt(6),"");
-				TreeObjectChildren.add(new TreeObject(project, level, name, parentId, type));
+			try {
+				stmt = _connection.createStatement();
+				ResultSet rs = stmt
+						.executeQuery("SELECT * FROM 'uid_"+Integer.toString(projet.getId())+"' WHERE UID=" + uid +";");
+				
+				while(rs.next()){
+					
+					ResultSet rs2 = stmt
+							.executeQuery("SELECT * FROM tree_object WHERE ID=" + rs.getString(1)+";");
+					
+					while(rs2.next()){
+						id=rs.getString(1);
+						name=rs.getString(2);
+						level=rs.getInt(3);
+						parentId=rs.getString(4);
+						type=rs.getString(5);
+						Project project=new Project(rs.getInt(6),"");
+
+						TreeObjectSession.add(new TreeObject(project, level, name, parentId, type));
+					}
+				}
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-			stmt.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+			return TreeObjectSession;
 		}
-		return TreeObjectChildren;
+		//Si pas de table existante, retourne un HashSet vide
+		return TreeObjectSession;
 	}
-	
+
 	private void DropTable(String name) {
 		Statement stmt = null;
 		try {
@@ -337,4 +408,64 @@ public class SQLiteDB implements DataBase {
 		}
 		return exist;
 	}
+
+	@Override
+	public Project getProject(int projectId) {
+
+		Statement stmt = null;
+		Project project = null;
+		try {
+
+			stmt = _connection.createStatement();
+			String sql = "SELECT ID, NAME FROM project WHERE ID = " + projectId
+					+ ";";
+			ResultSet rs = stmt.executeQuery(sql);
+			if (rs.next()) {
+				project = new Project(rs.getInt(1), rs.getString(2));
+			} else {
+				project = new Project(-1, "error");
+			}
+
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return project;
+	}
+
+	@Override
+	public boolean addADE_Event(Event _ADE_Event, Project project) {
+		PreparedStatement stmt;
+		try {
+			String sql = "INSERT INTO 'event_" + Integer.toString(project.getId())
+					+ "' "
+					+ "(UID, DTSTART, DTEND, SUMMARY, LOCATION, DESCRIPTION) "
+					+ "VALUES (?, ?, ?, ?, ?, ?);";
+			stmt = _connection.prepareStatement(sql);
+
+			stmt.setString(1, _ADE_Event.getUid());
+			stmt.setString(2, _ADE_Event.getDtstart());
+			stmt.setString(3, _ADE_Event.getDtend());
+			stmt.setString(4, _ADE_Event.getSummary());
+			stmt.setString(5, _ADE_Event.getLocation());
+			stmt.setString(6, _ADE_Event.getDescription());
+
+			stmt.executeUpdate();
+			stmt.close();
+		} catch (SQLException e) {
+			if (DEBUG)
+				e.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean addUid(Event _ADE_Event, TreeObject treeObject,
+			Project project) {
+// TODO
+		return true;
+	}
+
 }
