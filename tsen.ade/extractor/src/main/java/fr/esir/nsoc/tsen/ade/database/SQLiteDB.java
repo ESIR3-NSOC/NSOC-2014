@@ -37,12 +37,15 @@ public class SQLiteDB implements DataBase {
 		_connected = true;*/
 		String driver = "com.mysql.jdbc.Driver";
 		
-		String url="jdbc:mysql://tsen.uion.fr:3306/tsen";
+		String url="jdbc:mysql://tsen.uion.fr:3306/tsen_ade";
 		readFiletext("./Data/login MySQL.txt");
+		System.out.println(_login +" " +_password);
 
 			try {
 				Class.forName(driver);
-				_connection = DriverManager.getConnection(url, "tsen", "nsoc-tsen");
+				_connection = DriverManager.getConnection(url, _login, _password);
+				if(_connection.isValid(5000)) _connected=true;
+				
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -110,7 +113,7 @@ public class SQLiteDB implements DataBase {
 	public boolean addProject(Project project) {
 		PreparedStatement stmt;
 		try {
-			String sql = "INSERT INTO 'project' (ID,NAME) " + "VALUES (?, ?);";
+			String sql = "INSERT INTO project (ID,NAME) " + "VALUES (?, ?);";
 			stmt = _connection.prepareStatement(sql);
 			stmt.setLong(1, project.getId());
 			stmt.setString(2, project.getName());
@@ -139,7 +142,7 @@ public class SQLiteDB implements DataBase {
 		Statement stmt = null;
 		try {
 			stmt = _connection.createStatement();
-			String sql = "CREATE TABLE 'tree_object_" + Integer.toString(projectid) + "' "
+			String sql = "CREATE TABLE tree_object_" + Integer.toString(projectid) + " "
 					+ "(ID          TEXT   NOT NULL,"
 					+ " NAME        TEXT   NOT NULL,"
 					+ " LEVEL       INT    NOT NULL,"
@@ -157,7 +160,7 @@ public class SQLiteDB implements DataBase {
 	public boolean addTreeObject(TreeObject treeObject) {
 		PreparedStatement stmt;
 		try {
-			String sql = "INSERT INTO 'tree_object_" + treeObject.getProject().getId() + "' (ID,NAME,LEVEL,PARENT_ID,TYPE) "
+			String sql = "INSERT INTO tree_object_" + treeObject.getProject().getId() + " (ID,NAME,LEVEL,PARENT_ID,TYPE) "
 					+ "VALUES (?, ?, ?, ?, ?);";
 			stmt = _connection.prepareStatement(sql);
 			stmt.setString(1, treeObject.getId());
@@ -184,7 +187,7 @@ public class SQLiteDB implements DataBase {
 		try {
 			stmt = _connection.createStatement();
 			String sql = "CREATE TABLE event_" + Integer.toString(projectid)
-					+ " (UID TEXT UNIQUE PRIMARY KEY     NOT NULL,"
+					+ " (UID VARCHAR(64) UNIQUE PRIMARY KEY     NOT NULL,"
 					+ " DTSTART           DATE    NOT NULL,"
 					+ " DTEND           DATE    NOT NULL,"
 					+ " SUMMARY           TEXT    NOT NULL,"
@@ -213,14 +216,14 @@ public class SQLiteDB implements DataBase {
 			try {
 
 				Statement stmtQuery = _connection.createStatement();
-				ResultSet rs = stmtQuery.executeQuery("SELECT UID FROM 'event_"
-						+ Integer.toString(projectid) + "' WHERE UID = '"
+				ResultSet rs = stmtQuery.executeQuery("SELECT UID FROM event_"
+						+ Integer.toString(projectid) + " WHERE UID = '"
 						+ adeEvent.getId() + "'");
 
 				if (!rs.next()) {
-					String sql = "INSERT INTO 'event_"
+					String sql = "INSERT INTO event_"
 							+ Integer.toString(projectid)
-							+ "' "
+							+ " "
 							+ "(UID, DTSTART, DTEND, SUMMARY, LOCATION, DESCRIPTION) "
 							+ "VALUES (?, ?, ?, ?, ?, ?);";
 					stmtUpdate = _connection.prepareStatement(sql);
@@ -253,7 +256,7 @@ public class SQLiteDB implements DataBase {
 		try {
 			stmt = _connection.createStatement();
 			String sql = "CREATE TABLE correspondence_" + Integer.toString(projectid)
-					+ " (EVENT_ID INT				 NOT NULL,"
+					+ " (EVENT_ID VARCHAR(64)				 NOT NULL,"
 					+ " ADE_ID           INTEGER    NOT NULL,"
 					+ " PRIMARY KEY (EVENT_ID, ADE_ID))";
 			stmt.executeUpdate(sql);
@@ -284,7 +287,7 @@ public class SQLiteDB implements DataBase {
 			try {
 				stmt = _connection.createStatement();
 				ResultSet rs = stmt
-						.executeQuery("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`TYPE` FROM 'tree_object_" + Integer.toString(treeObject.getProject().getId()) + "' WHERE PARENT_ID=" + treeObject.getId()+";");
+						.executeQuery("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`TYPE` FROM tree_object_" + Integer.toString(treeObject.getProject().getId()) + " WHERE PARENT_ID=" + treeObject.getId()+";");
 				
 				while(rs.next()){
 					id=rs.getString(1);
@@ -327,7 +330,7 @@ public class SQLiteDB implements DataBase {
 			try {
 				stmt = _connection.createStatement();
 				ResultSet rs = stmt
-						.executeQuery("SELECT * FROM 'correspondence_"+Integer.toString(project.getId())+"' WHERE UID=" + uid +";");
+						.executeQuery("SELECT * FROM correspondence_"+Integer.toString(project.getId())+" WHERE UID=" + uid +";");
 				
 				while(rs.next()){
 					
@@ -366,19 +369,35 @@ public class SQLiteDB implements DataBase {
 	}
 
 	private boolean existTable(String name) {
-		Statement stmt = null;
+/*		Statement stmt = null;
 		boolean exist = false;
 		try {
 			stmt = _connection.createStatement();
 			ResultSet rs = stmt
-					.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='"
+					.executeQuery("SELECT name FROM tsen_ade WHERE type='table' AND name='"
 							+ name + "';");
 			exist = rs.next() && name.equals(rs.getString("name"));
 			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return exist;*/
+		Statement stmt = null;
+		boolean exist = false;
+		try {
+			stmt = _connection.createStatement();
+			ResultSet rs = stmt.executeQuery("SHOW TABLES LIKE '" + name + "';");
+			System.out.println(rs.getRow());
+			if(rs.getRow() > 0){
+				exist = true;
+			}
+			
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return exist;
+		
 	}
 
 	@Override
@@ -413,13 +432,13 @@ public class SQLiteDB implements DataBase {
 		PreparedStatement stmt;
 		try {
 			Statement stmtQuery = _connection.createStatement();
-			ResultSet rs = stmtQuery.executeQuery("SELECT UID FROM 'event_"
-					+ project.getId() + "' WHERE UID = '"
+			ResultSet rs = stmtQuery.executeQuery("SELECT UID FROM event_"
+					+ project.getId() + " WHERE UID = '"
 					+ event.getId() + "'");
 
 			if (!rs.next()) {
-				String sql = "INSERT INTO 'event_" + Integer.toString(project.getId())
-						+ "' "
+				String sql = "INSERT INTO event_" + Integer.toString(project.getId())
+						+ " "
 						+ "(UID, DTSTART, DTEND, SUMMARY, LOCATION, DESCRIPTION) "
 						+ "VALUES (?, ?, ?, ?, ?, ?);";
 				stmt = _connection.prepareStatement(sql);
@@ -457,14 +476,14 @@ public class SQLiteDB implements DataBase {
 
 			Statement stmtQuery = _connection.createStatement();
 			ResultSet rs = stmtQuery
-					.executeQuery("SELECT EVENT_ID, ADE_ID FROM 'correspondence_"
+					.executeQuery("SELECT EVENT_ID, ADE_ID FROM correspondence_"
 							+ Integer.toString(treeObject.getProject().getId())
-							+ "' WHERE EVENT_ID = '" + event.getId()
+							+ " WHERE EVENT_ID = '" + event.getId()
 							+ "' AND ADE_ID = '" + treeObject.getId() + "'");
 
 			if (!rs.next()) {
-				String sql = "INSERT INTO 'correspondence_"
-						+ Integer.toString(treeObject.getProject().getId()) + "' (EVENT_ID, ADE_ID) "
+				String sql = "INSERT INTO correspondence_"
+						+ Integer.toString(treeObject.getProject().getId()) + " (EVENT_ID, ADE_ID) "
 						+ "VALUES (" + "?, ?);";
 				stmtUpdate = _connection.prepareStatement(sql);
 
