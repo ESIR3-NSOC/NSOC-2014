@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import fr.esir.nsoc.tsen.ade.database.DataBase;
 import fr.esir.nsoc.tsen.ade.database.MySQLDB;
+import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
 import fr.esir.nsoc.tsen.ade.object.Project;
 import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
@@ -19,6 +20,7 @@ public class Main {
 	public static void main(String[] args) {
 
 		// connect to local DB
+		//DataBase db = new SQLiteDB("test1.db");
 		DataBase db = new MySQLDB("tsen_ade");
 		if (DEBUG)
 			System.out.println(db.isConnected() ? "ok" : "nok");

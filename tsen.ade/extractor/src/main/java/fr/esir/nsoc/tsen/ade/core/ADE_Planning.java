@@ -12,10 +12,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import com.esir.nsoc.ade.parser.ICSExtractor;
-
 import fr.esir.nsoc.tsen.ade.database.DataBase;
 import fr.esir.nsoc.tsen.ade.object.TreeObject;
+import fr.esir.nsoc.tsen.ade.parser.ICSExtractor;
 
 public class ADE_Planning {
 
