@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.concurrent.Callable;
 
 import fr.esir.nsoc.tsen.ade.database.DataBase;
-import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
+import fr.esir.nsoc.tsen.ade.database.MySQLDB;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Parameter;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Requester;
 import fr.esir.nsoc.tsen.ade.http.HTTP_Response;
