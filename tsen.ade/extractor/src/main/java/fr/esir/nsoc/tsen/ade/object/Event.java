@@ -2,7 +2,7 @@ package fr.esir.nsoc.tsen.ade.object;
 
 public class Event {
 	
-	private String uid;
+	private String id;
 	private String dtstart;
 	private String dtend;
 	private String summary;
@@ -11,7 +11,7 @@ public class Event {
 
 	public Event() {
 		super();
-		this.uid = "";
+		this.id = "";
 		this.dtstart = "";
 		this.dtend = "";
 		this.summary = "";
@@ -22,7 +22,7 @@ public class Event {
 	public Event(String uid, String dtstart, String dtend, String summary,
 			String location, String description) {
 		super();
-		this.uid = uid;
+		this.id = uid;
 		this.dtstart = dtstart;
 		this.dtend = dtend;
 		this.summary = summary;
@@ -30,12 +30,12 @@ public class Event {
 		this.description = description;
 	}
 
-	public String getUid() {
-		return uid;
+	public String getId() {
+		return id;
 	}
 
-	public void setUid(String uid) {
-		this.uid = uid;
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	public String getDtstart() {

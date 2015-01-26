@@ -37,7 +37,7 @@ public class ADE_Planning {
 		while (i.hasNext()) {
 			TreeObject to = i.next();
 			pool.add(new ICSExtractor(to, scope.getStartPoint(), scope
-					.getEndPoint()));
+					.getEndPoint(), dataBase));
 
 		}
 

@@ -5,13 +5,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-import java.util.HashSet;
-import java.util.Iterator;
-
 import fr.esir.nsoc.tsen.ade.database.DataBase;
 import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
-import fr.esir.nsoc.tsen.ade.object.Project;
-import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
 public class Main {
 
@@ -20,10 +15,11 @@ public class Main {
 	public static void main(String[] args) {
 
 		// connect to local DB
-		DataBase db = new SQLiteDB("test1.db");
+		DataBase db = new SQLiteDB("tsen_ade.db");
 		if (DEBUG)
 			System.out.println(db.isConnected() ? "ok" : "nok");
-
+		/*
+		
 		// brows ADE Tree
 		ADE_Tree at = new ADE_Tree(db);
 		at.setProject(22);
@@ -40,7 +36,15 @@ public class Main {
 				"branch")); // esir 3 domo
 		scope.addChildrenToScope(new TreeObject(project, -1, "", "7828", "",
 				"branch")); // esir 3 mat
+		scope.addChildrenToScope(new TreeObject(project, -1, "", "6082", "",
+				"branch")); // esir b41 td
+		scope.addChildrenToScope(new TreeObject(project, -1, "", "6092", "",
+				"branch")); // esir b41 td langue
+		scope.addChildrenToScope(new TreeObject(project, -1, "", "2302", "",
+				"leaf")); // eric beaty
 
+		
+		
 		if (DEBUG) {
 			HashSet<TreeObject> tos = scope.getScope();
 			Iterator<TreeObject> i = tos.iterator();
@@ -57,9 +61,10 @@ public class Main {
 
 		// retrieve planning
 		ADE_Planning planning = new ADE_Planning(db, scope);
-		planning.retrieve(20);
-
+		planning.retrieve(30);
+*/
 		// exit
+		System.out.println("terminated !");
 		System.exit(0);
 	}
 
