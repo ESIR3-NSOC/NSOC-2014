@@ -1,0 +1,40 @@
+{
+    "groups": [
+        {
+            "address": "0/0/2",
+            "sensorsType": "Valve",
+            "DPT": "vv"
+        },
+        {
+            "address": "0/0/3",
+            "sensorsType": "IndoorTemperature",
+            "DPT": "?"
+        },
+        {
+            "address": "0/0/4",
+            "sensorsType": "Co2_sensor",
+            "DPT": "?"
+        },
+        {
+            "address": "0/0/5",
+            "sensorsType": "IndoorHumidity",
+            "DPT": "?"
+        },
+        {
+            "address": "0/1/0",
+            "sensorsType": "OutdoorTemperature",
+            "DPT": "?"
+        },
+        {
+            "address": "0/1/1",
+            "sensorsType": "OutdoorBrightness",
+            "DPT": "?"
+        },
+        {
+            "address": "0/1/2",
+            "sensorsType": "OutdoorHumidity",
+            "DPT": "?"
+        }
+    ],
+    "otherConf": " none "
+}

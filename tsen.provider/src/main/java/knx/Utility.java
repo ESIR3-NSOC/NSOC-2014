@@ -1,5 +1,8 @@
 package knx;
 
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import tuwien.auto.calimero.KNXListener;
@@ -8,6 +11,7 @@ import tuwien.auto.calimero.knxnetip.Discoverer;
 import tuwien.auto.calimero.knxnetip.servicetype.SearchResponse;
 import tuwien.auto.calimero.link.KNXNetworkLinkIP;
 import tuwien.auto.calimero.link.medium.TPSettings;
+import weka.core.json.JSONNode;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -19,53 +23,12 @@ import java.util.Map;
 
 public class Utility {
 
-    public static SearchResponse Discover (){
-
-        try {
-            System.out.println("running discover...");
-            Discoverer discoverer = new Discoverer (Reference.KNX_PORT, true);
-            discoverer.startSearch(Reference.DISCOVERER_TIMEOUT, false);
-
-            if(!discoverer.isSearching()){
-                System.out.println("not searching");
-            }else{
-                System.out.println("init search");
-            }
-
-            while(discoverer.isSearching()){
-                System.out.println("searching");
-                Thread.sleep(100);
-            }
-
-            if(discoverer.getSearchResponses().length!=0){
-                for(SearchResponse sr : discoverer.getSearchResponses()){
-                    if(sr!=null){
-                        System.out.println("Adresse trouvée : " + sr.getControlEndpoint().getAddress());
-                        return sr;
-                    }
-
-                }
-            }else{
-                System.out.println("No address found !");
-            }
-
-
-
-        } catch (KNXException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     public static KNXNetworkLinkIP openKnxConnection (InetAddress destination){
 
         KNXNetworkLinkIP netLinkIp = null;
         try {
 
-            InetAddress source = InetAddress.getByName("192.168.1.12");
+            InetAddress source = InetAddress.getByName(Reference.HOST_ADDRESS);
             InetSocketAddress socketSource = new InetSocketAddress(source,8060);
             System.out.println("address ip local :" + source.toString() + " on port 8060 ");
 
@@ -86,35 +49,23 @@ public class Utility {
         return netLinkIp;
     }
 
-    public static void closeConnection (KNXNetworkLinkIP knxLinkIp){
-        knxLinkIp.close();
-    }
+    public static JsonNode importGroup(){
 
-
-
-    public static Map<String,String> importGroup(){
-
-        Map<String,String> pairMap = new HashMap<String,String>();
+       ObjectMapper mapper = new ObjectMapper();
+        JsonNode node;
+        StringBuilder AllConf = new StringBuilder();
 
         try {
-            String line = "";
+
             File groupConfiguration = new File("tsen.provider/src/main/resources/knxGroup.txt");
             InputStream read = new FileInputStream(groupConfiguration);
             InputStreamReader lecture = new InputStreamReader(read);
             BufferedReader br = new BufferedReader(lecture);
-
+            String line ;
             while((line=br.readLine())!=null){
-
-                if(!line.startsWith("#")){
-                    String [] pair = line.split(":");
-                    pairMap.put(pair[0],pair[1]);
-
-                }
-
+                AllConf.append(line);
             }
-
             br.close();
-
 
 
         } catch (FileNotFoundException e) {
@@ -123,8 +74,13 @@ public class Utility {
             e.printStackTrace();
         }
 
-        return pairMap;
-
+        try{
+            node = mapper.readTree(AllConf.toString());
+        }catch (Exception e){
+            System.out.println("Could not import KNXGroup");
+            node =  null;
+        }
+        return node;
     }
 
 }

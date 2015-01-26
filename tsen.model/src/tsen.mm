@@ -4,53 +4,114 @@ class tsen.Room  {
     name : String
 
     @contained
-    humiditySensor : tsen.Humidity
+    indoorHumiditySensor : tsen.IndoorHumidity[0,*]
     @contained
-    temperatureSensor : tsen.IndoorTemperature
+    outdoorHumiditySensor : tsen.OutdoorHumidity[0,*]
     @contained
-    airQualitySensor : tsen.CO2
+    indoorTemperatureSensor : tsen.IndoorTemperature[0,*]
     @contained
-    valves : tsen.Heater
+    outDoorTemperatureSensor : tsen.OutDoorTemperature[0,*]
+    @contained
+    airQualitySensor : tsen.CO2[0,*]
+    @contained
+    valves : tsen.Heater[0,*]
     @contained
     lesson : tsen.Activity[0,*]
-}
-
-class tsen.Humidity  {
-    name : String
-    value : Double
-}
-
-class tsen.CO2 {
-    name : String
-    value :Double
-}
-
-class tsen.IndoorTemperature  {
-    name : String
-    value : Double
-}
-
-class tsen.Heater  {
-    name : String
-    value : Double
-}
-
-class tsen.Activity  {
-    name : String
-    start : Long
-    end : Long
     @contained
     members : tsen.User[0,*]
     @contained
-    targetedTemperature : tsen.Temperature
+    luxSensors : tsen.OutdoorBrightness[0,*]
+}
+
+class tsen.IndoorHumidity  {
+
+
+    name : String
+    DPT : String
+    value : Double
+    scale : String
+    @id
+    group : String
+}
+
+class tsen.OutdoorHumidity  {
+
+    name : String
+    DPT : String
+    value : Double
+    scale : String
+    @id
+    group : String
+}
+
+class tsen.CO2 {
+
+    name: String
+    DPT : String
+    value :Double
+    scale : String
+    @id
+    group : String
+}
+
+class tsen.IndoorTemperature  {
+
+
+    name: String
+    DPT : String
+    value : Double
+    scale : String
+    @id
+    group : String
+}
+
+class tsen.Heater  {
+
+    name : String
+    DPT : String
+    value : Double
+    @id
+    group : String
+    scale : String
+}
+
+class tsen.Activity  {
+
+    @id
+    Uid : String
+
+    start : Long
+    end : Long
+    @contained
+    targetedTemperature : tsen.TargetTemperature
 }
 
 class tsen.User  {
+    @id
     name : String
     targetTemp : Double
 
 }
 
-class tsen.Temperature  {
+class tsen.OutdoorBrightness{
+    @id
+    group : String
+    name: String
+    DPT : String
+    Scale : String
     value : Double
+}
+
+class tsen.OutDoorTemperature{
+    @id
+    group : String
+    name: String
+    DPT : String
+    Scale : String
+    value : Double
+}
+
+class tsen.TargetTemperature  {
+    value : Double
+    Scale : String
 }

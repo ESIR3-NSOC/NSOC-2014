@@ -1,15 +1,9 @@
 package knx;
 
-import org.jcp.xml.dsig.internal.dom.DOMXPathFilter2Transform;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.codehaus.jackson.JsonNode;
 import tuwien.auto.calimero.CloseEvent;
 import tuwien.auto.calimero.FrameEvent;
-import tuwien.auto.calimero.GroupAddress;
 import tuwien.auto.calimero.cemi.CEMILData;
-import tuwien.auto.calimero.dptxlator.DPT;
-import tuwien.auto.calimero.exception.KNXTimeoutException;
-import tuwien.auto.calimero.knxnetip.servicetype.SearchResponse;
 import tuwien.auto.calimero.link.KNXLinkClosedException;
 import tuwien.auto.calimero.link.KNXNetworkLinkIP;
 import tuwien.auto.calimero.link.event.NetworkLinkListener;
@@ -24,107 +18,58 @@ import java.util.List;
 
 public class KnxManager {
 
-    private InetAddress _knxIpAddress ;
-    private static KNXNetworkLinkIP netLinkIP ;
-    private static List<FrameEvent> _eventBuffer;
+    private KNXNetworkLinkIP _netLinkIp ;
+    private List<GroupEvent> _eventBuffer;
+    private JsonNode _knxConf;
 
+    boolean run ;
 
-
+    private Thread _bufferReader;
 
     public KnxManager(){
 
-        _eventBuffer = new LinkedList<>();
+        _knxConf = Utility.importGroup();
+       
+        //initConnection();
+        //_eventBuffer = new LinkedList<>();
+        //createKNXListener();
+
+
+
+
+    }
+
+    private void initConnection (){
 
         KNXNetworkLinkIP netLinkIp = null;
 
         try {
-            netLinkIp = Utility.openKnxConnection(InetAddress.getByName("192.168.1.15"));
+            _netLinkIp = Utility.openKnxConnection(InetAddress.getByName(Reference.KNX_ADDRESS));
         } catch (UnknownHostException e) {
+            System.out.println("Could not open KNX connection");
             e.printStackTrace();
         }
-
-
 
         if(netLinkIp != null ){
             try {
                 ProcessCommunicator communicator = new ProcessCommunicatorImpl(netLinkIp);
-
-                createKNXListener(netLinkIp);
-
-
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        int i = 0;
-                        while (i<10){
-
-                            System.out.println(i);
-                            try {
-                                communicator.write(new GroupAddress(0,0,1),true);
-                                System.out.println("pass to true");
-                                Thread.sleep(1000);
-
-                                communicator.write(new GroupAddress(0,0,1),false);
-                                System.out.println("pass to false");
-
-                                Thread.sleep(1000);
-                            } catch (KNXTimeoutException e) {
-                                e.printStackTrace();
-                            } catch (KNXLinkClosedException e) {
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        i++;
-                    }
-                });
-
-                try {
-                    Thread.sleep(60000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-
-                netLinkIp.close();
+                createKNXListener();
             } catch (KNXLinkClosedException e) {
                 e.printStackTrace();
             }
-
-            System.out.println("buffer content : ");
-
-            if(getKNXFrameBuffer().size()!=0){
-                for(FrameEvent arg : getKNXFrameBuffer()){
-                    System.out.println(arg);
-                }
-            }else{
-                System.out.println("buffer empty");
-            }
-
         }else{
-            System.out.println("Could not open KNX connection");
+
         }
-
-        /*SearchResponse response =  Utility.Discover();
-
-        if(response != null){
-            _knxIpAddress = response.getControlEndpoint().getAddress();
-            //netLinkIP = Utility.openKnxConnection(_knxIpAddress);
-            _eventBuffer = new LinkedList<FrameEvent>();
-        }else{
-            System.out.println("Could not found any address");
-        }
-
-        */
     }
-    public static void CloseConnection(){
-        netLinkIP.close();
-    }
-    public static void createKNXListener (KNXNetworkLinkIP netLinkIp ){
 
-        netLinkIp.addLinkListener(new NetworkLinkListener(){
+    public void CloseConnection(){
+        _netLinkIp.close();
+        System.out.println("KNX connection has been closed");
+    }
+
+    public void createKNXListener (){
+
+        _netLinkIp.addLinkListener(new NetworkLinkListener(){
 
             public void confirmation(FrameEvent arg0) {
 
@@ -144,12 +89,37 @@ public class KnxManager {
 
         });
     }
-    public static List<FrameEvent> getKNXFrameBuffer(){
+
+    public  List<GroupEvent> getKNXFrameBuffer(){
         return _eventBuffer;
 
     }
 
-    private static void addFrameToBuffer(FrameEvent evnt){
-        _eventBuffer.add(evnt);
+    public JsonNode getGroups(){
+        JsonNode groups ;
+        System.out.println(_knxConf.toString());
+            groups= _knxConf.get("groups");
+        return groups;
     }
+
+    private void addFrameToBuffer(FrameEvent frameEvent){
+
+        String group = ((CEMILData)frameEvent.getFrame()).getDestination().toString();
+
+        JsonNode groupsArray;
+
+
+        // Looking for in config which sensors match received event
+
+            groupsArray = _knxConf.get("groups");
+            for(JsonNode n : groupsArray) {
+                if (group.compareTo(n.get("address").asText()) == 0) {
+                    _eventBuffer.add(new GroupEvent(frameEvent,n));
+                }
+            }
+    }
+
+
+
+
 }
