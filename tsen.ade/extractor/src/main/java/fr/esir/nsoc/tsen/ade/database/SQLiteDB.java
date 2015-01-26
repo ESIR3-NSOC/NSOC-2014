@@ -1,5 +1,8 @@
 package fr.esir.nsoc.tsen.ade.database;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -20,16 +23,52 @@ public class SQLiteDB implements DataBase {
 
 	private Connection _connection = null;
 	private boolean _connected = false;
+	private String _login;
+	private String _password;
 
 	public SQLiteDB(String name) {
-		try {
+/*		try {
 			Class.forName("org.sqlite.JDBC");
 			_connection = DriverManager.getConnection("jdbc:sqlite:" + name);
 		} catch (Exception e) {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			_connected = false;
 		}
-		_connected = true;
+		_connected = true;*/
+		String driver = "com.mysql.jdbc.Driver";
+		
+		String url="jdbc:mysql://tsen.uion.fr:3306/tsen";
+		readFiletext("./Data/login MySQL.txt");
+
+			try {
+				Class.forName(driver);
+				_connection = DriverManager.getConnection(url, "tsen", "nsoc-tsen");
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+	
+	private void readFiletext(String path_file) {
+		try {
+			FileReader fileToRead = new FileReader(path_file);
+			BufferedReader bf = new BufferedReader(fileToRead);
+			int line = 1;
+			String aline;
+			while ((aline = bf.readLine()) != null) {
+				if (line == 1) {
+					_login = aline;
+					line=2;
+				} else {
+					_password = aline;
+				}
+			}
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	@Override
@@ -223,9 +262,6 @@ public class SQLiteDB implements DataBase {
 			e.printStackTrace();
 		}
 	}
-
-
-	
 	
 	/**
 	 * Récupération des enfants d'une branche

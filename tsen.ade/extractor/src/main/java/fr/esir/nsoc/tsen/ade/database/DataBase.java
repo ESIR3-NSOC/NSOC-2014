@@ -29,7 +29,6 @@ public interface DataBase {
 	
 	*/
 	
-	
 	public boolean addCorrespondence(Event event, TreeObject treeObject);
 	public boolean fillCorrespondence(HashSet<Event> events, TreeObject treeObject);
 	public HashSet<TreeObject> getTreeObjectSession(String UID, Project projet);

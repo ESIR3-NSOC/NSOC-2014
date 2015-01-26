@@ -5,13 +5,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-import java.util.HashSet;
-import java.util.Iterator;
-
 import fr.esir.nsoc.tsen.ade.database.DataBase;
 import fr.esir.nsoc.tsen.ade.database.SQLiteDB;
-import fr.esir.nsoc.tsen.ade.object.Project;
-import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
 public class Main {
 
@@ -20,10 +15,11 @@ public class Main {
 	public static void main(String[] args) {
 
 		// connect to local DB
-		DataBase db = new SQLiteDB("test1.db");
+		DataBase db = new SQLiteDB("tsen_ade.db");
 		if (DEBUG)
 			System.out.println(db.isConnected() ? "ok" : "nok");
-
+		/*
+		
 		// brows ADE Tree
 		ADE_Tree at = new ADE_Tree(db);
 		at.setProject(22);
@@ -66,7 +62,7 @@ public class Main {
 		// retrieve planning
 		ADE_Planning planning = new ADE_Planning(db, scope);
 		planning.retrieve(30);
-
+*/
 		// exit
 		System.out.println("terminated !");
 		System.exit(0);
