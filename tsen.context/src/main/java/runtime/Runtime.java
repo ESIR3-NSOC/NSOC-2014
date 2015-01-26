@@ -6,7 +6,7 @@ import org.kevoree.modeling.api.KObject;
 import tsen.IndoorHumidity;
 import tsen.Room;
 import tsen.TsenDimension;
-import utilities.ContextInit;
+import utilities.ContextHelper;
 
 /**
  * Created by mathi_000 on 09/01/2015.
@@ -15,7 +15,7 @@ public class Runtime {
 
     public static void main (String[] args){
 
-        Context ctx = ContextInit.initContext("Salle test");
+        Context ctx = ContextHelper.initContext("Salle test");
         TsenDimension dim = ctx.getDimension();
 
         try {
