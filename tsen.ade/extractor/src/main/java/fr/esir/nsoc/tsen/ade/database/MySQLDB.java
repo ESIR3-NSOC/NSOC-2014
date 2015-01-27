@@ -27,14 +27,6 @@ public class MySQLDB implements DataBase {
 	private String _password;
 
 	public MySQLDB(String name) {
-/*		try {
-			Class.forName("org.sqlite.JDBC");
-			_connection = DriverManager.getConnection("jdbc:sqlite:" + name);
-		} catch (Exception e) {
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			_connected = false;
-		}
-		_connected = true;*/
 		String driver = "com.mysql.jdbc.Driver";
 		
 		String url="jdbc:mysql://tsen.uion.fr:3306/tsen_ade";
