@@ -14,7 +14,6 @@ package com.example.esir.nsoc2014.tsen.lob.database;
 
 import java.io.IOException;
 import java.sql.ResultSet;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -30,7 +29,6 @@ import org.apache.http.client.ClientProtocolException;
 
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Instances;
-import weka.experiment.InstanceQuery;
 
 import com.example.esir.nsoc2014.tsen.lob.arff.ArffGenerated;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
@@ -59,7 +57,7 @@ public class DatabaseRegression {
 	}
 
 	public static void predict() throws Exception {
-		InstanceQuery query = new InstanceQuery();
+		//InstanceQuery query = new InstanceQuery();
 		JdbcData jdbc = new JdbcData();
 		jdbc.connexionData();
 		jdbc.getDataFromDB();
@@ -73,8 +71,8 @@ public class DatabaseRegression {
 		while (result.next()) {
 			Date dat = result.getDate(2);
 			if (!weatherMap.containsKey(dat)) {
-				SimpleDateFormat ft = new SimpleDateFormat(
-						"yyyy-MM-dd HH:mm:ss");
+//				SimpleDateFormat ft = new SimpleDateFormat(
+//						"yyyy-MM-dd HH:mm:ss");
 
 				System.out.println(dat);
 				Calendar calendar = new GregorianCalendar();
@@ -123,7 +121,7 @@ public class DatabaseRegression {
 			// }
 			DatesInterval dateinterv = new DatesInterval(dat,
 					result.getDate(3), model.classifyInstance(arff.getArff()
-							.lastInstance()));
+							.lastInstance()), 0, weatherMap.get(dat));
 			if (!datesinte.containsKey(dat)) {
 				datesinte.put(dat, new ArrayList<DatesInterval>());
 				datesinte.get(dat).add(dateinterv);
@@ -141,10 +139,10 @@ public class DatabaseRegression {
 		SortedMap<Date, List<DatesInterval>> dat = datesinter;
 		List<DatesInterval> datesTemp = new ArrayList<DatesInterval>();
 		for (Entry<Date, List<DatesInterval>> entry : dat.entrySet()) {
-			datesTemp
-					.add(new DatesInterval(entry.getKey(), entry.getValue()
-							.get(0).getStartEnd(), medianCalculation(entry
-							.getValue())));
+			int nb = entry.getValue().size();
+			datesTemp.add(new DatesInterval(entry.getKey(), entry.getValue()
+					.get(0).getStartEnd(), medianCalculation(entry.getValue()),
+					nb, entry.getValue().get(0).getPrevision()));
 		}
 	}
 

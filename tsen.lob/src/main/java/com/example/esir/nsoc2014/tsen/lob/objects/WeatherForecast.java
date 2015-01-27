@@ -20,14 +20,12 @@ import org.json.JSONObject;
 public class WeatherForecast {
 	private double humidity;
 	private double temp;
-	private int time;
 	
 	private JSONArray hourly;
 
 	public WeatherForecast() {
 		this.humidity = 0;
 		this.temp = 0;
-		this.time = 0;
 	}
 
 	/**
@@ -49,14 +47,6 @@ public class WeatherForecast {
 		return temp;
 	}
 
-	/**
-	 * get the time value
-	 * 
-	 * @return
-	 */
-	public int getTime() {
-		return time;
-	}
 
 	private ArrayList<Integer> list = new ArrayList<Integer>() {
 		private static final long serialVersionUID = 1L;
