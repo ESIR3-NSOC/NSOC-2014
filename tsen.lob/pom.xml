@@ -8,6 +8,9 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
+	
+	<artifactId>tsen.lob</artifactId>
+	<name>TSEN :: LOB</name>
 
 	<dependencies>
 		<dependency>
@@ -26,9 +29,6 @@
 			<version>4.3.6</version>
 		</dependency>
 	</dependencies>
-
-	<artifactId>tsen.lob</artifactId>
-	<name>TSEN :: LOB</name>
 
 
 </project>
