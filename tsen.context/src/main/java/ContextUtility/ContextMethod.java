@@ -1,6 +1,6 @@
-package Utilities;
+package ContextUtility;
 
-import knx.KnxManager;
+import context.Context;
 import org.kevoree.modeling.api.Callback;
 import org.kevoree.modeling.api.KObject;
 import org.kevoree.modeling.databases.leveldb.LevelDbDataBase;
@@ -15,30 +15,24 @@ import tsen.TsenView;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by mathi_000 on 29/12/2014.
- */
-public class ContextInit {
 
-    private Logger logger = LoggerFactory.getLogger(ContextInit.class);
-    private static TsenUniverse _universe;
-    private static TsenDimension _dim0;
-    private KnxManager _knxManager;
+public class ContextMethod {
 
-    public static void initContext() {
-        _universe = new TsenUniverse();
-        _dim0 = _universe.dimension(0);
-        connectToDataBase();
-        createRoom();
-        // _knxManager = new KnxManager();
 
+    public static Context initContext(String roomName) {
+        TsenUniverse universe = new TsenUniverse();
+        //connectToDataBase(universe);
+        createRoom(universe.dimension(0),roomName);
+        return new Context(universe);
     }
 
-    public static void connectToDataBase() {
+    public static void connectToDataBase(TsenUniverse universe) {
 
         try {
-            _universe.storage().setDataBase(new LevelDbDataBase(File.createTempFile("Tsen", "db", new File(System.getProperty("java.io.tmpdir") + "/Tsen")).toString()));
-            _universe.connect(new Callback<Throwable>() {
+            File database = File.createTempFile("database",".db",new File(System.getProperty("java.io.tmpdir") + "/tsen/context"));
+            System.out.println("trying to connect to database at :" + database.getAbsolutePath());
+            universe.storage().setDataBase(new LevelDbDataBase(database.getAbsolutePath()));
+            universe.connect(new Callback<Throwable>() {
                 @Override
                 public void on(Throwable throwable) {
                     if (throwable != null) {
@@ -53,14 +47,14 @@ public class ContextInit {
 
     }
 
-    public static void createRoom() {
-        TsenView view = _dim0.time(0L);
+    public static void createRoom(TsenDimension dim0, String roomName) {
+        TsenView view = dim0.time(0L);
         view.select("/", new Callback<KObject[]>() {
             @Override
             public void on(KObject[] kObjects) {
                 if (kObjects == null || kObjects.length == 0) {
                     Room r = view.createRoom();
-                    r.setName("Lipari");
+                    r.setName(roomName);
                     view.setRoot(r, new Callback<Throwable>() {
                         @Override
                         public void on(Throwable throwable) {
@@ -69,7 +63,7 @@ public class ContextInit {
                             }
                         }
                     });
-                    _dim0.save(new Callback<Throwable>() {
+                    dim0.save(new Callback<Throwable>() {
                         @Override
                         public void on(Throwable throwable) {
                             if (throwable != null) {
@@ -82,10 +76,6 @@ public class ContextInit {
                 }
             }
         });
-    }
-
-    public TsenUniverse getUniverse(){
-        return _universe;
     }
 
 }
