@@ -8,6 +8,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class JdbcData {
 	private Connection conn;
@@ -27,10 +29,6 @@ public class JdbcData {
 	/**
 	 * connect to the database of a student to add his vote
 	 * 
-	 * @param id
-	 * @param temp_ext
-	 * @param humidity_ext
-	 * @param temp_int
 	 */
 	public void connexionData() {
 		try {
@@ -51,11 +49,20 @@ public class JdbcData {
 
 	}
 
+	/**
+	 * 
+	 * @throws SQLException
+	 */
 	public void getDataFromDB() throws SQLException {
+		Date dt = new Date();
+		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+		String datenow = ft.format(dt);
 		Statement st = conn.createStatement();
 		String sql = "select ADE_ID,DTSTART,DTEND from tree_object_22 join (select ADE_ID, EVENT_ID from correspondence_22 join (SELECT UID FROM correspondence_22 join event_22 on event_22.UID = correspondence_22.EVENT_ID WHERE ADE_ID=\""
 				+ id
-				+ "\" and date(event_22.DTSTART) LIKE '2015-01-23') as tmp1 on correspondence_22.EVENT_ID = tmp1.UID) as tmp2 on tree_object_22.id=tmp2.ADE_ID join event_22 on tmp2.EVENT_ID=event_22.UID WHERE NAME NOT LIKE \"%"
+				+ "\" and date(event_22.DTSTART) LIKE '"
+				+ datenow
+				+ "') as tmp1 on correspondence_22.EVENT_ID = tmp1.UID) as tmp2 on tree_object_22.id=tmp2.ADE_ID join event_22 on tmp2.EVENT_ID=event_22.UID WHERE NAME NOT LIKE \"%"
 				+ room + "%\"";
 		// System.out.println(sql);
 		result = st.executeQuery(sql);
@@ -70,6 +77,9 @@ public class JdbcData {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public void findIDRoom() {
 		try {
 			FileReader fileToRead = new FileReader("./data/confData.txt");

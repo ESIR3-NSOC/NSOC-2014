@@ -5,5 +5,5 @@ chaud:-0.5
 bon:0
 froid:0.5
 tres froid:1
-minValue:19
+minValue:20
 maxValue:24

@@ -30,6 +30,8 @@ import java.util.SortedMap;
 import org.apache.http.client.ClientProtocolException;
 
 import weka.classifiers.functions.LinearRegression;
+import weka.core.DenseInstance;
+import weka.core.Instance;
 import weka.core.Instances;
 
 import com.example.esir.nsoc2014.tsen.lob.arff.ArffGenerated;
@@ -53,7 +55,11 @@ public class DatabaseRegression {
 	// predict();
 	// // System.out.println("median = " + median_val);
 	// }
-
+	/**
+	 * 
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public void weatherSearch() throws ClientProtocolException, IOException {
 		weather = new WeatherForecast();
 		weather.executeApiForcast();
@@ -70,7 +76,7 @@ public class DatabaseRegression {
 		// execute the linear regression model for each student included in the
 		// above list
 
-		// Instance value_futur;
+		Instance value_futur;
 		while (result.next()) {
 			Date dat = result.getDate(2);
 			if (!weatherMap.containsKey(dat)) {
@@ -85,6 +91,8 @@ public class DatabaseRegression {
 			}
 
 			arff = new ArffGenerated();
+			arff.generateArff(result.getString(1));
+			arff.addDataGeneric();
 
 			// int id = result.getInt(1); // get the id of the student
 			// System.out.println("id= " + id);
@@ -109,29 +117,26 @@ public class DatabaseRegression {
 			//
 			// // System.out.println(instNew);
 			//
-			// value_futur = new DenseInstance(3);
-			//
-			// value_futur.setValue(instNew.attribute("humidity_ext"),
-			// weather.getHumidity()); // add predicted values (weather)
-			// value_futur.setValue(instNew.attribute("temp_ext"),
-			// weather.getTemp());
-			// instNew.add(value_futur);
+			value_futur = new DenseInstance(3);
+			value_futur.setValue(arff.getArff().attribute("hum_ext"),
+					weather.getHumidity()); // add predicted values (weather)
+			value_futur.setValue(arff.getArff().attribute("temp_ext"),
+					weather.getTemp());
+			arff.getArff().add(value_futur);
 			// System.out.println(instNew + "\n");
 
-			// if (executeModel(instNew)) { // execute the model on the data
-			// tab_values[i] = model.classifyInstance(instNew.lastInstance());
-			// System.out.println(tab_values[i]);
-			// }
-			Double tempC = model
-					.classifyInstance(arff.getArff().lastInstance());
-			DatesInterval dateinterv = new DatesInterval(dat,
-					result.getDate(3), verifSeuil(tempC), 0,
-					weatherMap.get(dat));
-			if (!datesinte.containsKey(dat)) {
-				datesinte.put(dat, new ArrayList<DatesInterval>());
-				datesinte.get(dat).add(dateinterv);
-			} else {
-				datesinte.get(dat).add(dateinterv);
+			if (executeModel(arff.getArff())) { // execute the model on the data
+				Double tempC = model.classifyInstance(arff.getArff()
+						.lastInstance());
+				DatesInterval dateinterv = new DatesInterval(dat,
+						result.getDate(3), verifSeuil(tempC), 0,
+						weatherMap.get(dat));
+				if (!datesinte.containsKey(dat)) {
+					datesinte.put(dat, new ArrayList<DatesInterval>());
+					datesinte.get(dat).add(dateinterv);
+				} else {
+					datesinte.get(dat).add(dateinterv);
+				}
 			}
 		}
 		calcultab(datesinte);
@@ -140,6 +145,10 @@ public class DatabaseRegression {
 		// return medianCalculation(tab_values);
 	}
 
+	/**
+	 * 
+	 * @param datesinter
+	 */
 	public void calcultab(SortedMap<Date, List<DatesInterval>> datesinter) {
 		SortedMap<Date, List<DatesInterval>> dat = datesinter;
 		List<DatesInterval> datesTemp = new ArrayList<DatesInterval>();
@@ -170,6 +179,7 @@ public class DatabaseRegression {
 		if (tab.size() % 2 == 0) {
 			median = (median + (Double) tab.get(mid - 1).getConsigne()) / 2;
 		}
+		
 		return median;
 	}
 
@@ -198,6 +208,9 @@ public class DatabaseRegression {
 				: temp);
 	}
 
+	/**
+	 * 
+	 */
 	private void findMinMax() {
 		try {
 			FileReader fileToRead = new FileReader("./data/confData.txt");

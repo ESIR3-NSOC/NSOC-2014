@@ -29,11 +29,16 @@ public class ArffGenerated {
 		}
 	};
 
-	public void generateArff(ArrayList<?> list, String user_id) {
+	public void generateArff(String user_id) {
 		data = new Instances("pref_" + user_id, atts, 0);
 	}
 
-	public boolean addData(double... att) {
+	/**
+	 * 
+	 * @param att
+	 * @return
+	 */
+	private boolean addData(double... att) {
 		instance = new DenseInstance(3);
 		instance.setValue(data.attribute("hum_ext"), att[0]);
 		instance.setValue(data.attribute("temp_ext"), att[1]);
@@ -44,6 +49,10 @@ public class ArffGenerated {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean addDataGeneric() {
 		addData(85, 17, 22.5);
 		addData(43, 21, 21);
