@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.http.client.ClientProtocolException;
 
@@ -47,30 +49,38 @@ public class DatabaseRegression {
 	private static double maxTemp = 0;
 	private static ArffGenerated arff;
 	private static HashMap<Date, WeatherForecast> weatherMap = new HashMap<>();
-	private static SortedMap<Date, List<DatesInterval>> datesinte;
+	private static SortedMap<Time, List<DatesInterval>> datesinte;
 
-	// public static void main(String args[]) throws Exception {
-	// //
-	// weatherSearch();
-	// predict();
-	// // System.out.println("median = " + median_val);
-	// }
+	private List<DatesInterval> list;
+
+	public DatabaseRegression() {
+		this.list = null;
+	}
+
+	public List<DatesInterval> getListData() {
+		return list;
+	}
+
 	/**
 	 * 
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public void weatherSearch() throws ClientProtocolException, IOException {
+	private void weatherSearch() throws ClientProtocolException, IOException {
 		weather = new WeatherForecast();
 		weather.executeApiForcast();
 	}
 
 	public void predict() throws Exception {
+		weatherSearch();
 		// InstanceQuery query = new InstanceQuery();
 		JdbcData jdbc = new JdbcData();
 		jdbc.connexionData();
 		jdbc.getDataFromDB();
 		ResultSet result = jdbc.getResultSet();
+		
+		datesinte = new TreeMap<Time, List<DatesInterval>>();
+
 		if (!weatherMap.isEmpty())
 			weatherMap.clear();
 		// execute the linear regression model for each student included in the
@@ -124,40 +134,40 @@ public class DatabaseRegression {
 					weather.getTemp());
 			arff.getArff().add(value_futur);
 			// System.out.println(instNew + "\n");
-
+			Time tm = result.getTime(2);
 			if (executeModel(arff.getArff())) { // execute the model on the data
 				Double tempC = model.classifyInstance(arff.getArff()
 						.lastInstance());
-				DatesInterval dateinterv = new DatesInterval(dat,
-						result.getDate(3), verifSeuil(tempC), 0,
+				DatesInterval dateinterv = new DatesInterval(tm,
+						result.getTime(3), verifSeuil(tempC), 0,
 						weatherMap.get(dat));
-				if (!datesinte.containsKey(dat)) {
-					datesinte.put(dat, new ArrayList<DatesInterval>());
-					datesinte.get(dat).add(dateinterv);
+				if (!datesinte.containsKey(tm)) {
+					datesinte.put(tm, new ArrayList<DatesInterval>());
+					datesinte.get(tm).add(dateinterv);
 				} else {
-					datesinte.get(dat).add(dateinterv);
+					datesinte.get(tm).add(dateinterv);
 				}
 			}
 		}
-		calcultab(datesinte);
+		list = calcultab(datesinte);
 		jdbc.close();
-		// Arrays.sort(tab_values);
-		// return medianCalculation(tab_values);
 	}
 
 	/**
 	 * 
 	 * @param datesinter
 	 */
-	public void calcultab(SortedMap<Date, List<DatesInterval>> datesinter) {
-		SortedMap<Date, List<DatesInterval>> dat = datesinter;
+	private List<DatesInterval> calcultab(
+			SortedMap<Time, List<DatesInterval>> datesinter) {
+		SortedMap<Time, List<DatesInterval>> dat = datesinter;
 		List<DatesInterval> datesTemp = new ArrayList<DatesInterval>();
-		for (Entry<Date, List<DatesInterval>> entry : dat.entrySet()) {
+		for (Entry<Time, List<DatesInterval>> entry : dat.entrySet()) {
 			int nb = entry.getValue().size();
 			datesTemp.add(new DatesInterval(entry.getKey(), entry.getValue()
 					.get(0).getStartEnd(), medianCalculation(entry.getValue()),
 					nb, entry.getValue().get(0).getPrevision()));
 		}
+		return datesTemp;
 	}
 
 	/**
@@ -179,7 +189,7 @@ public class DatabaseRegression {
 		if (tab.size() % 2 == 0) {
 			median = (median + (Double) tab.get(mid - 1).getConsigne()) / 2;
 		}
-		
+
 		return median;
 	}
 
