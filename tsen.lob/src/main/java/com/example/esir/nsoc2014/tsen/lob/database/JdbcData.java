@@ -38,7 +38,7 @@ public class JdbcData {
 			String url = "jdbc:mysql://tsen.uion.fr:3306/tsen_ade";
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(url, "tsen", "nsoc-tsen");
-			
+
 			if (conn.isValid(5000))
 				System.out.println("success");
 			else
@@ -50,14 +50,14 @@ public class JdbcData {
 		}
 
 	}
-	
+
 	public void getDataFromDB() throws SQLException {
 		Statement st = conn.createStatement();
 		String sql = "select ADE_ID,DTSTART,DTEND from tree_object_22 join (select ADE_ID, EVENT_ID from correspondence_22 join (SELECT UID FROM correspondence_22 join event_22 on event_22.UID = correspondence_22.EVENT_ID WHERE ADE_ID=\""
 				+ id
 				+ "\" and date(event_22.DTSTART) LIKE '2015-01-23') as tmp1 on correspondence_22.EVENT_ID = tmp1.UID) as tmp2 on tree_object_22.id=tmp2.ADE_ID join event_22 on tmp2.EVENT_ID=event_22.UID WHERE NAME NOT LIKE \"%"
 				+ room + "%\"";
-		//System.out.println(sql);
+		// System.out.println(sql);
 		result = st.executeQuery(sql);
 	}
 
@@ -91,36 +91,5 @@ public class JdbcData {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
-	}
-
-	/**
-	 * read a file and insert data in the database
-	 * 
-	 * @param path_file
-	 * @param st
-	 * @param id
-	 * @return
-	 */
-	private static boolean readFileTxt(String path_file, Statement st, String id) {
-		try {
-			FileReader fileToRead = new FileReader(path_file);
-			BufferedReader bf = new BufferedReader(fileToRead);
-			String aLine;
-			while ((aLine = bf.readLine()) != null) {
-				String newLine = aLine.replaceAll("X", id);
-				System.out.println(newLine);
-				try {
-					st.executeUpdate(newLine);
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			bf.close();
-			return true;
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-		}
-		return false;
 	}
 }

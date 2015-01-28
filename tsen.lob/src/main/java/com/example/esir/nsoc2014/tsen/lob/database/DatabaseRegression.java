@@ -12,6 +12,8 @@
 
 package com.example.esir.nsoc2014.tsen.lob.database;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -39,25 +41,26 @@ public class DatabaseRegression {
 	static LinearRegression model;
 	static WeatherForecast weather;
 
+	private static double minTemp = 0;
+	private static double maxTemp = 0;
 	private static ArffGenerated arff;
 	private static HashMap<Date, WeatherForecast> weatherMap = new HashMap<>();
 	private static SortedMap<Date, List<DatesInterval>> datesinte;
 
-	public static void main(String args[]) throws Exception {
-		//
-		weatherSearch();
-		predict();
-		// System.out.println("median = " + median_val);
-	}
+	// public static void main(String args[]) throws Exception {
+	// //
+	// weatherSearch();
+	// predict();
+	// // System.out.println("median = " + median_val);
+	// }
 
-	public static void weatherSearch() throws ClientProtocolException,
-			IOException {
+	public void weatherSearch() throws ClientProtocolException, IOException {
 		weather = new WeatherForecast();
 		weather.executeApiForcast();
 	}
 
-	public static void predict() throws Exception {
-		//InstanceQuery query = new InstanceQuery();
+	public void predict() throws Exception {
+		// InstanceQuery query = new InstanceQuery();
 		JdbcData jdbc = new JdbcData();
 		jdbc.connexionData();
 		jdbc.getDataFromDB();
@@ -71,8 +74,8 @@ public class DatabaseRegression {
 		while (result.next()) {
 			Date dat = result.getDate(2);
 			if (!weatherMap.containsKey(dat)) {
-//				SimpleDateFormat ft = new SimpleDateFormat(
-//						"yyyy-MM-dd HH:mm:ss");
+				// SimpleDateFormat ft = new SimpleDateFormat(
+				// "yyyy-MM-dd HH:mm:ss");
 
 				System.out.println(dat);
 				Calendar calendar = new GregorianCalendar();
@@ -119,9 +122,11 @@ public class DatabaseRegression {
 			// tab_values[i] = model.classifyInstance(instNew.lastInstance());
 			// System.out.println(tab_values[i]);
 			// }
+			Double tempC = model
+					.classifyInstance(arff.getArff().lastInstance());
 			DatesInterval dateinterv = new DatesInterval(dat,
-					result.getDate(3), model.classifyInstance(arff.getArff()
-							.lastInstance()), 0, weatherMap.get(dat));
+					result.getDate(3), verifSeuil(tempC), 0,
+					weatherMap.get(dat));
 			if (!datesinte.containsKey(dat)) {
 				datesinte.put(dat, new ArrayList<DatesInterval>());
 				datesinte.get(dat).add(dateinterv);
@@ -135,7 +140,7 @@ public class DatabaseRegression {
 		// return medianCalculation(tab_values);
 	}
 
-	public static void calcultab(SortedMap<Date, List<DatesInterval>> datesinter) {
+	public void calcultab(SortedMap<Date, List<DatesInterval>> datesinter) {
 		SortedMap<Date, List<DatesInterval>> dat = datesinter;
 		List<DatesInterval> datesTemp = new ArrayList<DatesInterval>();
 		for (Entry<Date, List<DatesInterval>> entry : dat.entrySet()) {
@@ -151,7 +156,7 @@ public class DatabaseRegression {
 	 * @param tab
 	 * @return
 	 */
-	private static double medianCalculation(List<DatesInterval> tab) {
+	private double medianCalculation(List<DatesInterval> tab) {
 		Collections.sort(tab, new Comparator<DatesInterval>() {
 			@Override
 			public int compare(DatesInterval arg0, DatesInterval arg1) {
@@ -174,7 +179,7 @@ public class DatabaseRegression {
 	 * @return
 	 * @throws Exception
 	 */
-	private static boolean executeModel(Instances data) throws Exception {
+	private boolean executeModel(Instances data) throws Exception {
 
 		data.setClassIndex(data.numAttributes() - 1); // checks for the
 														// attributes
@@ -185,5 +190,40 @@ public class DatabaseRegression {
 		// System.out.println("model : "+model);
 
 		return true;
+	}
+
+	private double verifSeuil(double temp) {
+		findMinMax();
+		return temp = temp < minTemp ? minTemp : (temp > maxTemp ? maxTemp
+				: temp);
+	}
+
+	private void findMinMax() {
+		try {
+			FileReader fileToRead = new FileReader("./data/confData.txt");
+			BufferedReader bf = new BufferedReader(fileToRead);
+			String aLine;
+			String[] values = null;
+			boolean okmin = false;
+			boolean okmax = false;
+			while ((aLine = bf.readLine()) != null) {
+				if (aLine.startsWith("minValue")) {
+					values = aLine.split(":");
+					minTemp = Double.parseDouble(values[1]);
+					okmin = true;
+				} else if (aLine.startsWith("maxValue")) {
+					values = aLine.split(":");
+					maxTemp = Double.parseDouble(values[1]);
+					okmax = true;
+				}
+			}
+			if (!okmin)
+				minTemp = 20;
+			if (!okmax)
+				maxTemp = 24;
+			bf.close();
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 }
