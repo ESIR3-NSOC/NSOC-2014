@@ -180,8 +180,8 @@ public class MySQLDB implements DataBase {
 			stmt = _connection.createStatement();
 			String sql = "CREATE TABLE event_" + Integer.toString(projectid)
 					+ " (UID VARCHAR(64) UNIQUE PRIMARY KEY     NOT NULL,"
-					+ " DTSTART           DATE    NOT NULL,"
-					+ " DTEND           DATE    NOT NULL,"
+					+ " DTSTART           DATETIME    NOT NULL,"
+					+ " DTEND           DATETIME    NOT NULL,"
 					+ " SUMMARY           TEXT    NOT NULL,"
 					+ " LOCATION           TEXT    NOT NULL,"
 					+ " DESCRIPTION          TEXT    NOT NULL)";
@@ -248,9 +248,10 @@ public class MySQLDB implements DataBase {
 		try {
 			stmt = _connection.createStatement();
 			String sql = "CREATE TABLE correspondence_" + Integer.toString(projectid)
-					+ " (EVENT_ID VARCHAR(64)				 NOT NULL,"
-					+ " ADE_ID           INTEGER    NOT NULL,"
+					+ " (EVENT_ID VARCHAR(64) NOT NULL,"
+					+ " ADE_ID INTEGER NOT NULL,"
 					+ " PRIMARY KEY (EVENT_ID, ADE_ID))";
+			
 			stmt.executeUpdate(sql);
 			stmt.close();
 		} catch (SQLException e) {
@@ -378,12 +379,10 @@ public class MySQLDB implements DataBase {
 		boolean exist = false;
 		try {
 			stmt = _connection.createStatement();
-			ResultSet rs = stmt.executeQuery("SHOW TABLES LIKE '" + name + "';");
-			System.out.println(rs.getRow());
-			if(rs.getRow() > 0){
+			ResultSet rs = stmt.executeQuery("SHOW TABLES LIKE '%" + name + "%';");		
+			if(rs.next()){
 				exist = true;
-			}
-			
+			}	
 			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -472,11 +471,10 @@ public class MySQLDB implements DataBase {
 							+ Integer.toString(treeObject.getProject().getId())
 							+ " WHERE EVENT_ID = '" + event.getId()
 							+ "' AND ADE_ID = '" + treeObject.getId() + "'");
-
 			if (!rs.next()) {
 				String sql = "INSERT INTO correspondence_"
 						+ Integer.toString(treeObject.getProject().getId()) + " (EVENT_ID, ADE_ID) "
-						+ "VALUES (" + "?, ?);";
+						+ "VALUES (?,?);";
 				stmtUpdate = _connection.prepareStatement(sql);
 
 				stmtUpdate.setString(1, event.getId());
