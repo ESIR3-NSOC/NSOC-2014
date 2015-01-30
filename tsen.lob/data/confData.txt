@@ -1,5 +1,9 @@
-tres chaud:1
-chaud:0,5
+ADE_ID:1005
+SALLE:104
+tres chaud:-1
+chaud:-0.5
 bon:0
-froid:-0.5
-tres froid:-1
+froid:0.5
+tres froid:1
+minValue:20
+maxValue:24

@@ -1,4 +1,4 @@
-package com.example.esir.nsoc2014.tsen.lob.forecast;
+package com.example.esir.nsoc2014.tsen.lob.objects;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,23 +20,26 @@ import org.json.JSONObject;
 public class WeatherForecast {
 	private double humidity;
 	private double temp;
-	private int time;
+	
+	private JSONArray hourly;
 
 	public WeatherForecast() {
 		this.humidity = 0;
 		this.temp = 0;
-		this.time = 0;
 	}
 
 	/**
+	 * get the humidity value
 	 * 
 	 * @return
 	 */
 	public double getHumidity() {
 		return humidity;
+		
 	}
 
 	/**
+	 * get the temperature value
 	 * 
 	 * @return
 	 */
@@ -44,22 +47,29 @@ public class WeatherForecast {
 		return temp;
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public int getTime() {
-		return time;
-	}
+
+	private ArrayList<Integer> list = new ArrayList<Integer>() {
+		private static final long serialVersionUID = 1L;
+		{
+			add(1);
+			add(4);
+			add(7);
+			add(10);
+			add(13);
+			add(16);
+			add(19);
+			add(22);
+		}
+	};
 
 	/**
+	 * fill the constructor with weather data
 	 * 
 	 * @param start_hour
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public void executeSearch(int start_hour) throws ClientProtocolException,
-			IOException {
+	public void executeApiForcast() throws ClientProtocolException, IOException {
 		// set config to ignore cookies
 		RequestConfig globalConfig = RequestConfig.custom()
 				.setCookieSpec(CookieSpecs.BEST_MATCH).build();
@@ -87,30 +97,13 @@ public class WeatherForecast {
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
 				String retSrc = EntityUtils.toString(entity);
-				//System.out.println(retSrc);
+				// System.out.println(retSrc);
 				// parsing JSON
 				JSONObject result = new JSONObject(retSrc); // Convert String to
 															// JSON Object
 				JSONObject data = result.getJSONObject("data");
 				JSONArray weather = data.getJSONArray("weather");
-				JSONArray hourly = weather.getJSONObject(0).getJSONArray(
-						"hourly");
-				ArrayList<Integer> list = new ArrayList<Integer>();
-				list.add(1);
-				list.add(4);
-				list.add(7);
-				list.add(10);
-				list.add(13);
-				list.add(16);
-				list.add(19);
-				list.add(22);
-				int pos = closest(start_hour, list)/3 + 1;
-				temp = hourly.getJSONObject(pos).getDouble("tempC");
-				humidity = hourly.getJSONObject(pos)
-						.getDouble("humidity");
-				System.out.println(temp);
-				System.out.println(humidity);
-				
+				hourly = weather.getJSONObject(0).getJSONArray("hourly");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -126,13 +119,22 @@ public class WeatherForecast {
 		}
 	}
 
+	public void executeSearch(int start_hour) {
+		int pos = closest(start_hour, list) / 3 + 1;
+		temp = hourly.getJSONObject(pos).getDouble("tempC");
+		humidity = hourly.getJSONObject(pos).getDouble("humidity");
+		System.out.println(temp);
+		System.out.println(humidity);
+	}
+
 	/**
+	 * find the forecast time for a given time
 	 * 
 	 * @param of
 	 * @param in
 	 * @return
 	 */
-	public static int closest(int of, List<Integer> in) {
+	private static int closest(int of, List<Integer> in) {
 		int min = Integer.MAX_VALUE;
 		int closest = of;
 
