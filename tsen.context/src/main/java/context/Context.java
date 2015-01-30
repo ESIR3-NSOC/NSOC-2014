@@ -3,12 +3,12 @@ package context;
 import knx.GroupEvent;
 import knx.KnxManager;
 import knx.SensorType;
-import knx.Utility;
 import org.codehaus.jackson.JsonNode;
 import org.kevoree.modeling.api.Callback;
 import org.kevoree.modeling.api.KObject;
 import tsen.*;
 
+import java.util.Queue;
 import java.util.UUID;
 
 
@@ -18,9 +18,7 @@ public class Context {
     private TsenDimension _dim0;
 
     private Thread _bufferReader;
-    private boolean _knxRun;
-
-
+    private boolean _isProcessingBuffer;
 
     private KnxManager _knxManager;
 
@@ -30,30 +28,58 @@ public class Context {
         _universe = universe ;
         _dim0 = _universe.dimension(0L);
         initSensors();
+        createBufferReader();
+        startContext();
+    }
 
-        _knxRun = true ;
+    public void startContext(){
+        _isProcessingBuffer = true ;
+        _bufferReader.start();
+    }
+
+    public void stopContext(){
+        _isProcessingBuffer = false;
+        _knxManager.CloseConnection();
+    }
+
+    public void createBufferReader(){
 
         _bufferReader = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(_knxRun){
+                while(_isProcessingBuffer){
+                    Queue<GroupEvent> buf =  _knxManager.getKNXFrameBuffer();
 
-                    for(GroupEvent ge : _knxManager.getKNXFrameBuffer()){
-                        ge.addToContext(_dim0);
-                        _knxManager.getKNXFrameBuffer().remove(ge);
+                    while(!buf.isEmpty()){
+                        System.out.println(buf);
+                        GroupEvent grpEvt = buf.poll();
+                        grpEvt.addToContext(_dim0);
                     }
+                }
+
+                try {
+                    Thread.sleep(30000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         });
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
-
-
 
     public TsenDimension getDimension(){
         return _dim0;
     }
 
-    private void initSensors(){
+    private String initSensors(){
+
+        String result = "";
 
         System.out.println("sensor initialisation ...");
 
@@ -105,7 +131,7 @@ public class Context {
                             case SensorType.OUTDOOR_TEMPERATURE : Sensor outDoorTemperature = view.createSensor();
                                 outDoorTemperature.setSensorType(SensorType.OUTDOOR_TEMPERATURE);
                                 outDoorTemperature.setGroupAddress(node.get("address").asText());
-                                outDoorTemperature.setAssociatedDPT((node.get("address").asText()));
+                                outDoorTemperature.setAssociatedDPT((node.get("DPT").asText()));
                                 outDoorTemperature.setScale(SensorType.TEMPERATURE_SCALE);
                                 outDoorTemperature.setSensorId(UUID.randomUUID().toString());
                                 room.addMeasurement(outDoorTemperature);
@@ -150,7 +176,20 @@ public class Context {
             }
         });
 
+        return _knxManager.getGroups().asText();
     }
+
+    public KnxManager getKnxManager(){
+        return _knxManager;
+    }
+
+    public boolean isRunning(){
+        return _isProcessingBuffer && _knxManager.isConnected();
+    }
+
+
+
+
 
 
 

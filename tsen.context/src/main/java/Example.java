@@ -64,7 +64,7 @@ public class Example {
                         Room lipari = (Room)kObjects[0];
 
                         Activity acti = viewNow.createActivity();
-                        acti.setUid("");
+                        acti.setHour("");
                         lipari.addLesson(acti);
 
                         dim0.save(new Callback<Throwable>() {

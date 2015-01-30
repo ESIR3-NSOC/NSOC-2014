@@ -21,7 +21,7 @@ class tsen.Sensor {
     sensorId : String
     sensorType : String
     associatedDPT : String
-    value : Double
+    value : String
     scale : String
 }
 
@@ -29,20 +29,18 @@ class tsen.Sensor {
 class tsen.Activity  {
 
     @id
-    Uid : String
+    hour : String
 
-    @contained
-    targetedTemperature : tsen.TargetTemperature
+    targetTemperature : Double
 }
 
 class tsen.User  {
     @id
+    id : String
     name : String
+    surname : String
     targetTemp : Double
 
 }
 
-class tsen.TargetTemperature  {
-    value : Double
-    Scale : String
-}
+

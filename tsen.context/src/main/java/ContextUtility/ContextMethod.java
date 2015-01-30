@@ -5,8 +5,6 @@ import org.kevoree.modeling.api.Callback;
 import org.kevoree.modeling.api.KObject;
 import org.kevoree.modeling.databases.leveldb.LevelDbDataBase;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import tsen.Room;
 import tsen.TsenDimension;
 import tsen.TsenUniverse;
@@ -47,7 +45,7 @@ public class ContextMethod {
 
     }
 
-    public static void createRoom(TsenDimension dim0, String roomName) {
+    public static void createRoom(TsenDimension dim0, String roomName   ) {
         TsenView view = dim0.time(0L);
         view.select("/", new Callback<KObject[]>() {
             @Override

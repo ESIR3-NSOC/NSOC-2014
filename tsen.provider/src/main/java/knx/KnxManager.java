@@ -3,7 +3,10 @@ package knx;
 import org.codehaus.jackson.JsonNode;
 import tuwien.auto.calimero.CloseEvent;
 import tuwien.auto.calimero.FrameEvent;
+import tuwien.auto.calimero.GroupAddress;
 import tuwien.auto.calimero.cemi.CEMILData;
+import tuwien.auto.calimero.exception.KNXException;
+import tuwien.auto.calimero.exception.KNXFormatException;
 import tuwien.auto.calimero.link.KNXLinkClosedException;
 import tuwien.auto.calimero.link.KNXNetworkLinkIP;
 import tuwien.auto.calimero.link.event.NetworkLinkListener;
@@ -12,14 +15,14 @@ import tuwien.auto.calimero.process.ProcessCommunicatorImpl;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 public class KnxManager {
 
     private KNXNetworkLinkIP _netLinkIp ;
-    private List<GroupEvent> _eventBuffer;
+    private Queue<GroupEvent> _eventBuffer;
     private JsonNode _knxConf;
 
     boolean run ;
@@ -29,13 +32,10 @@ public class KnxManager {
     public KnxManager(){
 
         _knxConf = Utility.importGroup();
-       
-        //initConnection();
-        //_eventBuffer = new LinkedList<>();
-        //createKNXListener();
 
-
-
+        initConnection();
+        _eventBuffer = new ConcurrentLinkedQueue<>();
+        createKNXListener();
 
     }
 
@@ -76,10 +76,7 @@ public class KnxManager {
             }
 
             public void indication(FrameEvent arg0) {
-                System.out.println("srcadress " + arg0.getSource());
-                System.out.println("sourceGroup" + ((CEMILData)arg0.getFrame()).getSource());
-                System.out.println("targetadress " +((CEMILData)arg0.getFrame()).getDestination());
-                System.out.println("value + " + arg0.getFrame());
+                System.out.println("frame captured !");
                 addFrameToBuffer(arg0);
             }
 
@@ -90,9 +87,8 @@ public class KnxManager {
         });
     }
 
-    public  List<GroupEvent> getKNXFrameBuffer(){
+    public  Queue<GroupEvent> getKNXFrameBuffer(){
         return _eventBuffer;
-
     }
 
     public JsonNode getGroups(){
@@ -105,20 +101,28 @@ public class KnxManager {
     private void addFrameToBuffer(FrameEvent frameEvent){
 
         String group = ((CEMILData)frameEvent.getFrame()).getDestination().toString();
-
         JsonNode groupsArray;
-
-
         // Looking for in config which sensors match received event
 
             groupsArray = _knxConf.get("groups");
             for(JsonNode n : groupsArray) {
                 if (group.compareTo(n.get("address").asText()) == 0) {
-                    _eventBuffer.add(new GroupEvent(frameEvent,n));
+                    GroupEvent evt = new GroupEvent(frameEvent,n);
+                    _eventBuffer.add(evt);
                 }
             }
     }
 
+    public boolean isConnected(){
+        return _netLinkIp.isOpen();
+    }
+
+
+    public void setVanne(int percent, String address) throws KNXException{
+
+            ProcessCommunicator processCommunicator = new ProcessCommunicatorImpl(_netLinkIp);
+            processCommunicator.write(new GroupAddress(address),percent);
+    }
 
 
 
