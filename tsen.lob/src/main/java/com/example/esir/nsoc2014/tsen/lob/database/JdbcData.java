@@ -65,8 +65,6 @@ public class JdbcData {
 				+ "') as tmp1 on correspondence_22.EVENT_ID = tmp1.UID) as tmp2 on tree_object_22.id=tmp2.ADE_ID join event_22 on tmp2.EVENT_ID=event_22.UID WHERE NAME NOT LIKE \"%"
 				+ room + "%\"";
 		result = st.executeQuery(sql);
-		if (result != null)
-			System.out.println("result not null");
 	}
 
 	public void close() {

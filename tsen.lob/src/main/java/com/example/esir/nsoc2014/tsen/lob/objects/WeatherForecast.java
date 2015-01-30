@@ -1,7 +1,9 @@
 package com.example.esir.nsoc2014.tsen.lob.objects;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -17,15 +19,25 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.example.esir.nsoc2014.tsen.lob.arff.ArffGenerated;
+
 public class WeatherForecast {
 	private double humidity;
 	private double temp;
-	
+	private int lum;
+	private int saison;
+	private int cloudcover;
+
 	private JSONArray hourly;
 
 	public WeatherForecast() {
 		this.humidity = 0;
 		this.temp = 0;
+		this.lum = 0;
+	}
+
+	private int getLum() {
+		return lum;
 	}
 
 	/**
@@ -35,7 +47,7 @@ public class WeatherForecast {
 	 */
 	public double getHumidity() {
 		return humidity;
-		
+
 	}
 
 	/**
@@ -46,7 +58,6 @@ public class WeatherForecast {
 	public double getTemp() {
 		return temp;
 	}
-
 
 	private ArrayList<Integer> list = new ArrayList<Integer>() {
 		private static final long serialVersionUID = 1L;
@@ -104,6 +115,9 @@ public class WeatherForecast {
 				JSONObject data = result.getJSONObject("data");
 				JSONArray weather = data.getJSONArray("weather");
 				hourly = weather.getJSONObject(0).getJSONArray("hourly");
+				Date datenow = new Date();
+				saison = getSeason(datenow);
+				System.out.println(saison);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -119,10 +133,22 @@ public class WeatherForecast {
 		}
 	}
 
+	private static final int seasons[] = { 2, 2, 4, 4, 1, 1, 1, 1, 3, 3, 2, 2 };
+
+	public int getSeason(Date date) {
+		return seasons[date.getMonth()];
+	}
+
 	public void executeSearch(int start_hour) {
 		int pos = closest(start_hour, list) / 3 + 1;
 		temp = hourly.getJSONObject(pos).getDouble("tempC");
 		humidity = hourly.getJSONObject(pos).getDouble("humidity");
+		cloudcover = hourly.getJSONObject(pos).getInt("cloudcover");
+
+		calculLum(cloudcover);
+
+		System.out.println(lum);
+		System.out.println(cloudcover);
 		System.out.println(temp);
 		System.out.println(humidity);
 	}
@@ -149,4 +175,16 @@ public class WeatherForecast {
 
 		return closest;
 	}
+
+	public void calculLum(int cloudCover) {
+		ArffGenerated arffinou = new ArffGenerated();
+		arffinou.generateArfflum();
+	}
+
+	/*
+	 * Plein soleil (supérieur à 90000 lux)0-25, Partiellement nuageux 25-50
+	 * (70000 - 90000 lux), Nuageux (25000 - 70000 lux)50-75, Pluvieux (3750 -
+	 * 25000 lux) 75-100
+	 */
+
 }

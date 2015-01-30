@@ -78,6 +78,10 @@ public class DatabaseRegression {
 		jdbc.connexionData();
 		jdbc.getDataFromDB();
 		ResultSet result = jdbc.getResultSet();
+		weather.executeSearch(8);
+		
+		if (result.getFetchSize() <= 0 || result == null)
+			return;
 		
 		datesinte = new TreeMap<Time, List<DatesInterval>>();
 
