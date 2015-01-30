@@ -2,6 +2,7 @@ package com.example.esir.nsoc2014.tsen.lob.arff;
 
 import java.util.ArrayList;
 
+import weka.classifiers.functions.LinearRegression;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
@@ -11,13 +12,19 @@ public class ArffGenerated {
 
 	private Instances data;
 	private Instance instance;
+	private LinearRegression model;
 
 	public ArffGenerated() {
 		this.data = null;
+		this.model = null;
 	}
 
 	public Instances getArff() {
 		return data;
+	}
+
+	public LinearRegression getModel() {
+		return model;
 	}
 
 	private ArrayList<Attribute> atts = new ArrayList<Attribute>() {
@@ -36,7 +43,7 @@ public class ArffGenerated {
 			add(new Attribute("season"));
 			add(new Attribute("cloud"));
 			add(new Attribute("temp_ext"));
-			add(new Attribute("int_ext"));
+			add(new Attribute("hum_ext"));
 			add(new Attribute("lum_ext"));
 		}
 	};
@@ -55,8 +62,8 @@ public class ArffGenerated {
 	 * @param att
 	 * @return
 	 */
-	private boolean addData(double... att) {
-		instance = new DenseInstance(3);
+	private boolean addData4lum(double... att) {
+		instance = new DenseInstance(5);
 		instance.setValue(data.attribute("season"), att[0]);
 		instance.setValue(data.attribute("cloud"), att[1]);
 		instance.setValue(data.attribute("temp_ext"), att[2]);
@@ -68,8 +75,8 @@ public class ArffGenerated {
 		return true;
 	}
 
-	private boolean addData4lum(double... att) {
-		instance = new DenseInstance(3);
+	private boolean addData(double... att) {
+		instance = new DenseInstance(4);
 		instance.setValue(data.attribute("hum_ext"), att[0]);
 		instance.setValue(data.attribute("temp_ext"), att[1]);
 		instance.setValue(data.attribute("temp_int"), att[2]);
@@ -97,7 +104,7 @@ public class ArffGenerated {
 	}
 
 	private boolean addDataLum() {
-		addData4lum(1, 20, 25, 5, 100000);
+		addData4lum(1, 20, 25, 7, 100000);
 		addData4lum(1, 35, 25, 25, 89000);
 		addData4lum(1, 60, 25, 60, 70000);
 		addData4lum(1, 80, 25, 80, 25000);
@@ -105,16 +112,47 @@ public class ArffGenerated {
 		addData4lum(2, 35, 7, 40, 76000);
 		addData4lum(2, 60, 7, 70, 40000);
 		addData4lum(2, 80, 7, 90, 10000);
-		addData(3, 20, 13, 10, 92500);
-		addData(3, 35, 13, 35, 76000);
-		addData(3, 60, 13, 63, 40000);
-		addData(3, 80, 13, 84, 10000);
-		addData(4, 20, 19, 10, 96800);
-		addData(4, 35, 19, 30, 83500);
-		addData(4, 60, 19, 68, 57000);
-		addData(4, 80, 19, 87, 18000);
+		addData4lum(3, 20, 13, 10, 92500);
+		addData4lum(3, 35, 13, 35, 76000);
+		addData4lum(3, 60, 13, 63, 40000);
+		addData4lum(3, 80, 13, 84, 10000);
+		addData4lum(4, 20, 19, 10, 96800);
+		addData4lum(4, 35, 19, 30, 83500);
+		addData4lum(4, 60, 19, 68, 57000);
+		addData4lum(4, 80, 19, 87, 18000);
 
 		return true;
+	}
+
+	public double executeModel() throws Exception {
+
+		data.setClassIndex(data.numAttributes() - 1); // checks for the //
+														// attributes
+		// build a model
+		model = new LinearRegression();
+		model.buildClassifier(data); // the last instance with a missing value
+										// is not used
+		// System.out.println("model : "+model);
+
+		return model.classifyInstance(data.lastInstance());
+	}
+
+	public void addInstance(double hum, double temp, double lum) {
+		Instance value_futur = new DenseInstance(4);
+		value_futur.setValue(data.attribute("hum_ext"), hum);
+		value_futur.setValue(data.attribute("temp_ext"), temp);
+		value_futur.setValue(data.attribute("lum_ext"), lum);
+		data.add(value_futur);
+	}
+
+	public void addInstance(double hum, double temp, double cloud, double season) {
+		Instance value_futur = new DenseInstance(5);
+		System.out.println(hum + " " + temp + " " + cloud + " " + season);
+		value_futur.setValue(data.attribute("hum_ext"), hum);
+		value_futur.setValue(data.attribute("temp_ext"), temp);
+		value_futur.setValue(data.attribute("cloud"), cloud);
+		value_futur.setValue(data.attribute("season"), season);
+		data.add(value_futur);
 	}
 
 }

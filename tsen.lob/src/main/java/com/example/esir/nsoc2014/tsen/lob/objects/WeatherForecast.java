@@ -1,8 +1,8 @@
 package com.example.esir.nsoc2014.tsen.lob.objects;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -24,9 +24,9 @@ import com.example.esir.nsoc2014.tsen.lob.arff.ArffGenerated;
 public class WeatherForecast {
 	private double humidity;
 	private double temp;
-	private int lum;
-	private int saison;
-	private int cloudcover;
+	private double lum;
+	private double saison;
+	private double cloudcover;
 
 	private JSONArray hourly;
 
@@ -36,7 +36,7 @@ public class WeatherForecast {
 		this.lum = 0;
 	}
 
-	private int getLum() {
+	public double getLum() {
 		return lum;
 	}
 
@@ -135,11 +135,13 @@ public class WeatherForecast {
 
 	private static final int seasons[] = { 2, 2, 4, 4, 1, 1, 1, 1, 3, 3, 2, 2 };
 
-	public int getSeason(Date date) {
-		return seasons[date.getMonth()];
+	private int getSeason(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return seasons[cal.get(Calendar.MONTH)];
 	}
 
-	public void executeSearch(int start_hour) {
+	public void executeSearch(int start_hour) throws Exception {
 		int pos = closest(start_hour, list) / 3 + 1;
 		temp = hourly.getJSONObject(pos).getDouble("tempC");
 		humidity = hourly.getJSONObject(pos).getDouble("humidity");
@@ -147,10 +149,10 @@ public class WeatherForecast {
 
 		calculLum(cloudcover);
 
-		System.out.println(lum);
-		System.out.println(cloudcover);
-		System.out.println(temp);
-		System.out.println(humidity);
+		System.out.println("luminosity : " + lum);
+		System.out.println("cloud cover : " + cloudcover);
+		System.out.println("temp_out : " + temp);
+		System.out.println("humidity " + humidity);
 	}
 
 	/**
@@ -176,15 +178,10 @@ public class WeatherForecast {
 		return closest;
 	}
 
-	public void calculLum(int cloudCover) {
+	private void calculLum(double cloudCover) throws Exception {
 		ArffGenerated arffinou = new ArffGenerated();
 		arffinou.generateArfflum();
+		arffinou.addInstance(humidity, temp, cloudcover, saison);
+		lum = arffinou.executeModel();
 	}
-
-	/*
-	 * Plein soleil (supérieur à 90000 lux)0-25, Partiellement nuageux 25-50
-	 * (70000 - 90000 lux), Nuageux (25000 - 70000 lux)50-75, Pluvieux (3750 -
-	 * 25000 lux) 75-100
-	 */
-
 }

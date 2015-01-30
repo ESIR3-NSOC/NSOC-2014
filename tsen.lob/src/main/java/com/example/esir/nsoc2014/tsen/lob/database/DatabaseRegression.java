@@ -31,19 +31,13 @@ import java.util.TreeMap;
 
 import org.apache.http.client.ClientProtocolException;
 
-import weka.classifiers.functions.LinearRegression;
-import weka.core.DenseInstance;
-import weka.core.Instance;
-import weka.core.Instances;
-
 import com.example.esir.nsoc2014.tsen.lob.arff.ArffGenerated;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import com.example.esir.nsoc2014.tsen.lob.objects.WeatherForecast;
 
 public class DatabaseRegression {
 
-	static LinearRegression model;
-	static WeatherForecast weather;
+	private WeatherForecast weather;
 
 	private static double minTemp = 0;
 	private static double maxTemp = 0;
@@ -79,10 +73,10 @@ public class DatabaseRegression {
 		jdbc.getDataFromDB();
 		ResultSet result = jdbc.getResultSet();
 		weather.executeSearch(8);
-		
+
 		if (result.getFetchSize() <= 0 || result == null)
 			return;
-		
+
 		datesinte = new TreeMap<Time, List<DatesInterval>>();
 
 		if (!weatherMap.isEmpty())
@@ -90,7 +84,6 @@ public class DatabaseRegression {
 		// execute the linear regression model for each student included in the
 		// above list
 
-		Instance value_futur;
 		while (result.next()) {
 			Date dat = result.getDate(2);
 			if (!weatherMap.containsKey(dat)) {
@@ -131,26 +124,18 @@ public class DatabaseRegression {
 			//
 			// // System.out.println(instNew);
 			//
-			value_futur = new DenseInstance(3);
-			value_futur.setValue(arff.getArff().attribute("hum_ext"),
-					weather.getHumidity()); // add predicted values (weather)
-			value_futur.setValue(arff.getArff().attribute("temp_ext"),
-					weather.getTemp());
-			arff.getArff().add(value_futur);
-			// System.out.println(instNew + "\n");
+			arff.addInstance(weather.getHumidity(), weather.getTemp(),
+					weather.getLum());
 			Time tm = result.getTime(2);
-			if (executeModel(arff.getArff())) { // execute the model on the data
-				Double tempC = model.classifyInstance(arff.getArff()
-						.lastInstance());
-				DatesInterval dateinterv = new DatesInterval(tm,
-						result.getTime(3), verifSeuil(tempC), 0,
-						weatherMap.get(dat));
-				if (!datesinte.containsKey(tm)) {
-					datesinte.put(tm, new ArrayList<DatesInterval>());
-					datesinte.get(tm).add(dateinterv);
-				} else {
-					datesinte.get(tm).add(dateinterv);
-				}
+			// execute the model on the data
+			Double tempC = arff.executeModel();
+			DatesInterval dateinterv = new DatesInterval(tm, result.getTime(3),
+					verifSeuil(tempC), 0, weatherMap.get(dat));
+			if (!datesinte.containsKey(tm)) {
+				datesinte.put(tm, new ArrayList<DatesInterval>());
+				datesinte.get(tm).add(dateinterv);
+			} else {
+				datesinte.get(tm).add(dateinterv);
 			}
 		}
 		list = calcultab(datesinte);
@@ -195,25 +180,6 @@ public class DatabaseRegression {
 		}
 
 		return median;
-	}
-
-	/**
-	 * 
-	 * @param data
-	 * @return
-	 * @throws Exception
-	 */
-	private boolean executeModel(Instances data) throws Exception {
-
-		data.setClassIndex(data.numAttributes() - 1); // checks for the
-														// attributes
-		// build a model
-		model = new LinearRegression();
-		model.buildClassifier(data); // the last instance with a missing value
-										// is not used
-		// System.out.println("model : "+model);
-
-		return true;
 	}
 
 	private double verifSeuil(double temp) {

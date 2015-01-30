@@ -57,6 +57,7 @@ public class JdbcData {
 		Date dt = new Date();
 		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
 		String datenow = ft.format(dt);
+		System.out.println(datenow);
 		Statement st = conn.createStatement();
 		String sql = "select DISTINCT ADE_ID,DTSTART,DTEND from tree_object_22 join (select ADE_ID, EVENT_ID from correspondence_22 join (SELECT UID FROM correspondence_22 join event_22 on event_22.UID = correspondence_22.EVENT_ID WHERE ADE_ID=\""
 				+ id
@@ -79,7 +80,7 @@ public class JdbcData {
 	/**
 	 * 
 	 */
-	public void findIDRoom() {
+	private void findIDRoom() {
 		try {
 			FileReader fileToRead = new FileReader("./data/confData.txt");
 			BufferedReader bf = new BufferedReader(fileToRead);
