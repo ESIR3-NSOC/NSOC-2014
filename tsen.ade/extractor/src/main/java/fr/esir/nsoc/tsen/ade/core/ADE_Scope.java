@@ -20,16 +20,30 @@ public class ADE_Scope {
 		this.scope = new HashSet<TreeObject>();
 	}
 
+	public ADE_Scope(ADE_Scope scope) {
+		super();
+		this.dataBase = scope.getDataBase();
+		this.scope = scope.getScope();
+	}
+
 	public boolean addChildrenToScope(TreeObject treeObject) {
-		if (treeObject.getType() == "leaf") {
+		if (treeObject.getType().equals("leaf")) {
 			scope.add(treeObject);
+			System.out.println("ADD: " + treeObject.getType() + ": \"" + treeObject.getName()
+					+ "\", id: \"" + treeObject.getId() + "\", level:"
+					+ treeObject.getLevel());
 			return true;
-		} else if (treeObject.getType() == "branch") {
+		} else if (treeObject.getType().equals("branch")) {
 			HashSet<TreeObject> tos = dataBase
 					.getTreeObjectChildren(treeObject);
 			Iterator<TreeObject> i = tos.iterator();
 			while (i.hasNext()) {
-				scope.add(i.next());
+				TreeObject to = i.next();
+				new ADE_Scope(this).addChildrenToScope(to);
+				System.out.println("---: " + to.getType() + ": \"" + to.getName()
+						+ "\", id: \"" + to.getId() + "\", level:"
+						+ to.getLevel());
+				//scope.add(i.next());
 			}
 			return true;
 		}
@@ -54,6 +68,10 @@ public class ADE_Scope {
 
 	public HashSet<TreeObject> getScope() {
 		return scope;
+	}
+
+	public DataBase getDataBase() {
+		return dataBase;
 	}
 
 

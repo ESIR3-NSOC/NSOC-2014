@@ -28,8 +28,9 @@ public class MySQLDB implements DataBase {
 
 	public MySQLDB(String name) {
 		String driver = "com.mysql.jdbc.Driver";
-		
-		String url="jdbc:mysql://tsen.uion.fr:3306/tsen_ade";
+
+		//String url="jdbc:mysql://tsen.uion.fr:3306/" + name;
+		String url="jdbc:mysql://localhost:3306/" + name;
 		readFiletext("./Data/login MySQL.txt");
 		System.out.println(_login +" " +_password);
 
@@ -281,7 +282,7 @@ public class MySQLDB implements DataBase {
 				stmt = _connection.createStatement();
 				ResultSet rs = stmt
 						.executeQuery("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`TYPE` FROM tree_object_" + Integer.toString(treeObject.getProject().getId()) + " WHERE PARENT_ID=" + treeObject.getId()+";");
-				
+				System.out.println("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`TYPE` FROM tree_object_" + Integer.toString(treeObject.getProject().getId()) + " WHERE PARENT_ID=" + treeObject.getId()+";");
 				while(rs.next()){
 					id=rs.getString(1);
 					name=rs.getString(2);

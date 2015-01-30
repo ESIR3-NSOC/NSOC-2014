@@ -28,7 +28,7 @@ public class Main {
 		// brows ADE Tree
 		ADE_Tree at = new ADE_Tree(db);
 		
-		//at.browseTree();
+		at.browseTree();
 		at.setProject(22);
 
 		// get project
@@ -38,7 +38,7 @@ public class Main {
 
 		// define scope
 		ADE_Scope scope = new ADE_Scope(db);
-		scope.addChildrenToScope(new TreeObject(project, -1, "", "7748", "",
+/*		scope.addChildrenToScope(new TreeObject(project, -1, "", "7748", "",
 				"branch")); // esir 3 domo
 		scope.addChildrenToScope(new TreeObject(project, -1, "", "7828", "",
 				"branch")); // esir 3 mat
@@ -48,7 +48,23 @@ public class Main {
 				"branch")); // esir b41 td langue
 		scope.addChildrenToScope(new TreeObject(project, -1, "", "2302", "",
 				"leaf")); // eric beaty
-
+*/
+		scope.addChildrenToScope(new TreeObject(project, -1, "", "5238", "", "branch")); // esir etu 
+		scope.addChildrenToScope(new TreeObject(project, -1, "", "5833", "", "branch")); // esir prof
+		//scope.addChildrenToScope(new TreeObject(project, -1, "", "1149", "", "branch")); // scelva prof
+		//scope.addChildrenToScope(new TreeObject(project, -1, "", "4217", "", "branch")); // istic prof
+		scope.addChildrenToScope(new TreeObject(project, -1, "",  "346", "", "branch")); // esir salles
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3635", "", "branch")); // b5 salles
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3972", "", "branch")); // 12d salles
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3806", "", "branch")); // 12d salles
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3820", "", "branch")); // 12d salles
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3809", "", "branch")); // 12d salles
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3935", "", "branch")); // 12d salles
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3839", "", "branch")); // 12d salles
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3805", "", "branch")); // 12d salles
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3634", "", "branch")); // 12d salles
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3635", "", "branch")); // bat0 salles
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "4223", "", "branch")); // istic salles
 		
 		
 		if (DEBUG) {
@@ -62,16 +78,16 @@ public class Main {
 			}
 		}
 
-		scope.setStartPoint(parseDate("19/01/2015"));
-		scope.setEndPoint(parseDate("25/01/2015"));
+		scope.setStartPoint(parseDate("02/02/2015"));
+		scope.setEndPoint(parseDate("08/02/2015"));
 
 		// retrieve planning
 		ADE_Planning planning = new ADE_Planning(db, scope);
 		planning.retrieve(30);
 
 		// exit
-		//System.out.println("terminated !");
-		//System.exit(0);
+		System.out.println("terminated !");
+		System.exit(0);
 	}
 
 	public static LocalDate parseDate(String input) {

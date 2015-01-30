@@ -65,4 +65,12 @@ public class TreeObject {
 		return type;
 	}
 
+	public String toString() {
+		return this.getType() + ": \"" + this.getName()
+				+ "\", id: \"" + this.getId() + "\", parent id: \"" + this.getParentId() + "\", level:"
+				+ this.getLevel();
+	}
+	
+	
+
 }
