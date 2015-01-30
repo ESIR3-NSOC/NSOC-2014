@@ -11,26 +11,19 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class JdbcData {
+import com.example.esir.nsoc2014.tsen.lob.interfaces.ServiceConnection;
+
+public class JdbcData implements ServiceConnection {
 	private Connection conn;
 
-	private ResultSet result;
 	private String room;
 	private String id;
 
-	public JdbcData() {
-		this.result = null;
-	}
-
-	public ResultSet getResultSet() {
-		return result;
-	}
-
 	/**
-	 * connect to the database of a student to add his vote
+	 * connect to the database
 	 * 
 	 */
-	public void connexionData() {
+	public boolean connect() {
 		try {
 			findIDRoom();
 			String url = "jdbc:mysql://tsen.uion.fr:3306/tsen_ade";
@@ -38,22 +31,22 @@ public class JdbcData {
 			conn = DriverManager.getConnection(url, "tsen", "nsoc-tsen");
 
 			if (conn.isValid(5000))
-				System.out.println("success");
+				return true;
 			else
-				System.out.println("failed");
+				return false;
 
 		} catch (Exception e) {
 			System.err.println("Got an exception! ");
 			System.err.println(e.getMessage());
 		}
-
+		return false;
 	}
 
 	/**
 	 * 
 	 * @throws SQLException
 	 */
-	public void getDataFromDB() throws SQLException {
+	public ResultSet getDataFromDB() throws SQLException {
 		Date dt = new Date();
 		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
 		String datenow = ft.format(dt);
@@ -65,7 +58,7 @@ public class JdbcData {
 				+ datenow
 				+ "') as tmp1 on correspondence_22.EVENT_ID = tmp1.UID) as tmp2 on tree_object_22.id=tmp2.ADE_ID join event_22 on tmp2.EVENT_ID=event_22.UID WHERE NAME NOT LIKE \"%"
 				+ room + "%\"";
-		result = st.executeQuery(sql);
+		return st.executeQuery(sql);
 	}
 
 	public void close() {

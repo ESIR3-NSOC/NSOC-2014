@@ -32,10 +32,12 @@ import java.util.TreeMap;
 import org.apache.http.client.ClientProtocolException;
 
 import com.example.esir.nsoc2014.tsen.lob.arff.ArffGenerated;
+import com.example.esir.nsoc2014.tsen.lob.interfaces.Prevision;
+import com.example.esir.nsoc2014.tsen.lob.interfaces.ServiceConnection;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import com.example.esir.nsoc2014.tsen.lob.objects.WeatherForecast;
 
-public class DatabaseRegression {
+public class DatabaseRegression implements Prevision {
 
 	private WeatherForecast weather;
 
@@ -47,13 +49,13 @@ public class DatabaseRegression {
 
 	private List<DatesInterval> list;
 
-	public DatabaseRegression() {
-		this.list = null;
-	}
+	// public DatabaseRegression() {
+	// this.list = null;
+	// }
 
-	public List<DatesInterval> getListData() {
-		return list;
-	}
+	// public List<DatesInterval> getListData() {
+	// return list;
+	// }
 
 	/**
 	 * 
@@ -65,17 +67,16 @@ public class DatabaseRegression {
 		weather.executeApiForcast();
 	}
 
-	public void predict() throws Exception {
+	public List<DatesInterval> predict() throws Exception {
 		weatherSearch();
-		// InstanceQuery query = new InstanceQuery();
-		JdbcData jdbc = new JdbcData();
-		jdbc.connexionData();
-		jdbc.getDataFromDB();
-		ResultSet result = jdbc.getResultSet();
+		ServiceConnection jdbc = new JdbcData();
+		ResultSet result = null;
+		if (jdbc.connect())
+			result = jdbc.getDataFromDB();
 		weather.executeSearch(8);
 
 		if (result.getFetchSize() <= 0 || result == null)
-			return;
+			return null;
 
 		datesinte = new TreeMap<Time, List<DatesInterval>>();
 
@@ -140,6 +141,7 @@ public class DatabaseRegression {
 		}
 		list = calcultab(datesinte);
 		jdbc.close();
+		return list;
 	}
 
 	/**
