@@ -26,7 +26,7 @@
         <module>tsen.lob</module>
         <module>tsen.ade</module>
         <module>tsen.provider</module>
-        <module>tsen.androidApp</module>
+        <module>appli_tsen</module>
         <module>Restful</module>
     </modules>
 

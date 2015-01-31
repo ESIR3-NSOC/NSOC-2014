@@ -8,8 +8,8 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-
-	<artifactId>tsen.androidApp</artifactId>
+	
+	<artifactId>appli_tsen</artifactId>
 	<name>TSEN :: APPLI</name>
 
 	<dependencies>
@@ -18,6 +18,7 @@
             <artifactId>android</artifactId>
             <version>4.1.1.4</version>
         </dependency>
+
     </dependencies>
 
 
