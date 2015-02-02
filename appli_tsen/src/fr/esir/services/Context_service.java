@@ -4,10 +4,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
-/**
- * Created by Nicolas on 31/01/2015.
- */
 public class Context_service extends Service {
     private int mConnectionState = STATE_DISCONNECTED;
 
@@ -28,12 +26,11 @@ public class Context_service extends Service {
     }
 
     public class LocalBinder extends Binder {
-        Context_service getService() {
+        public Context_service getService() {
             return Context_service.this;
         }
     }
 
-    //initialiser le service knx
     public boolean initialize() {
 
         return false;

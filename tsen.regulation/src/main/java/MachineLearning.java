@@ -23,7 +23,7 @@ public class MachineLearning{
 		lr.buildClassifier(train);
 		
 		Evaluation eval = new Evaluation(train);
-		eval.crossValidateModel(nB, train, 10, new Random(1));
+		//eval.crossValidateModel(nB, train, 10, new Random(1));
 				
 	}
 }

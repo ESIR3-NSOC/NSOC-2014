@@ -5,23 +5,32 @@ import android.content.*;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.TextView;
 import fr.esir.services.Context_service;
 
 public class MyActivity extends Activity {
     private final static String TAG = MyActivity.class.getSimpleName();
-    private Context_service mContext_service;
+    public Context_service mContext_service;
+    TextView tv;
 
     /*
     * serviceConnection : context_service
      */
-    private final ServiceConnection mServiceConnectionContext = new ServiceConnection() {
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            if (!mContext_service.initialize()) {
-                Log.e(TAG, "Unable to initialize the context");
-                finish();
+            mContext_service = ((Context_service.LocalBinder) service).getService();
+            Log.w(TAG, name.getClassName().toString());
+            tv.setText(name.getClassName().toString());
+            //there 4 services so we need to know which is started.
+            if (name.getClassName().toString().equals("fr.esir.services.Context_service")) {
+                if (!mContext_service.initialize()) {
+                    Log.e(TAG, "Unable to initialize the context");
+                    finish();
+                }
             }
+
         }
 
         @Override
@@ -45,9 +54,22 @@ public class MyActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
+        tv = (TextView) findViewById(R.id.tv);
         // start the service context_service
-        Intent contextServiceIntent = new Intent(this, Context_service.class);
-        bindService(contextServiceIntent, mServiceConnectionContext, BIND_AUTO_CREATE);
+        Intent contextServiceIntent = new Intent(this.getApplicationContext(), Context_service.class);
+        bindService(contextServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mServiceConnection);
+        mContext_service = null;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //unregisterReceiver(mGattUpdateReceiver);
     }
 }
