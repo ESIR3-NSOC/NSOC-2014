@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
-import fr.esir.ressources.filterString;
+import fr.esir.ressources.FilterString;
 import fr.esir.services.Context_service;
 
 public class MyActivity extends Activity {
@@ -82,9 +82,22 @@ public class MyActivity extends Activity {
 
     private static IntentFilter makeServicesUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(filterString.ACTION_CONTEXT_CONNECTED);
-        intentFilter.addAction(filterString.ACTION_CONTEXT_DISCONNECTED);
-        intentFilter.addAction(filterString.EXTRA_DATA);
+        intentFilter.addAction(FilterString.ACTION_CONTEXT_CONNECTED);
+        intentFilter.addAction(FilterString.ACTION_CONTEXT_DISCONNECTED);
+        intentFilter.addAction(FilterString.CONTEXT_EXTRA_DATA);
+
+        intentFilter.addAction(FilterString.ACTION_REGULATION_CONNECTED);
+        intentFilter.addAction(FilterString.ACTION_REGULATION_DISCONNECTED);
+        intentFilter.addAction(FilterString.REGULATION_EXTRA_DATA);
+
+        intentFilter.addAction(FilterString.ACTION_KNX_CONNECTED);
+        intentFilter.addAction(FilterString.ACTION_KNX_DISCONNECTED);
+        intentFilter.addAction(FilterString.KNX_EXTRA_DATA);
+        
+        intentFilter.addAction(FilterString.ACTION_OEP_CONNECTED);
+        intentFilter.addAction(FilterString.ACTION_OEP_DISCONNECTED);
+        intentFilter.addAction(FilterString.OEP_EXTRA_DATA);
+
         intentFilter.addAction(android.content.Intent.ACTION_TIME_TICK);
         return intentFilter;
     }
