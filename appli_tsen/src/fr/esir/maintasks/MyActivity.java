@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
+import fr.esir.ressources.filterString;
 import fr.esir.services.Context_service;
 
 public class MyActivity extends Activity {
@@ -39,7 +40,7 @@ public class MyActivity extends Activity {
         }
     };
 
-    private final BroadcastReceiver mUpdateReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -70,6 +71,21 @@ public class MyActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        //unregisterReceiver(mGattUpdateReceiver);
+        unregisterReceiver(mServicesUpdateReceiver);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
+    }
+
+    private static IntentFilter makeServicesUpdateIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(filterString.ACTION_CONTEXT_CONNECTED);
+        intentFilter.addAction(filterString.ACTION_CONTEXT_DISCONNECTED);
+        intentFilter.addAction(filterString.EXTRA_DATA);
+        intentFilter.addAction(android.content.Intent.ACTION_TIME_TICK);
+        return intentFilter;
     }
 }

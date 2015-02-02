@@ -5,13 +5,10 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import fr.esir.ressources.filterString;
 
 public class Context_service extends Service {
-    private int mConnectionState = STATE_DISCONNECTED;
-
-    private static final int STATE_DISCONNECTED = 0;
-    private static final int STATE_CONNECTING = 1;
-    private static final int STATE_CONNECTED = 2;
+    private int mConnectionState = filterString.STATE_DISCONNECTED;
 
     private final IBinder mBinder = new LocalBinder();
 
