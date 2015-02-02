@@ -93,7 +93,7 @@ public class MyActivity extends Activity {
         intentFilter.addAction(FilterString.ACTION_KNX_CONNECTED);
         intentFilter.addAction(FilterString.ACTION_KNX_DISCONNECTED);
         intentFilter.addAction(FilterString.KNX_EXTRA_DATA);
-        
+
         intentFilter.addAction(FilterString.ACTION_OEP_CONNECTED);
         intentFilter.addAction(FilterString.ACTION_OEP_DISCONNECTED);
         intentFilter.addAction(FilterString.OEP_EXTRA_DATA);
