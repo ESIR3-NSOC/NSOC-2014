@@ -14,6 +14,7 @@ public class MyActivity extends Activity {
     public Context_service mContext_service;
     TextView tv;
 
+
     /*
     * serviceConnection : context_service
      */
@@ -41,12 +42,17 @@ public class MyActivity extends Activity {
     };
 
     private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
-
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
+
         }
     };
+
+    private void broadcastUpdate(final String action) {
+        final Intent intent = new Intent(action);
+        sendBroadcast(intent);
+    }
 
     /**
      * Called when the activity is first created.
@@ -98,7 +104,9 @@ public class MyActivity extends Activity {
         intentFilter.addAction(FilterString.ACTION_OEP_DISCONNECTED);
         intentFilter.addAction(FilterString.OEP_EXTRA_DATA);
 
-        intentFilter.addAction(android.content.Intent.ACTION_TIME_TICK);
+        intentFilter.addAction(Intent.ACTION_TIME_TICK);
+        intentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+        intentFilter.addAction(Intent.ACTION_TIME_CHANGED);
         return intentFilter;
     }
 }

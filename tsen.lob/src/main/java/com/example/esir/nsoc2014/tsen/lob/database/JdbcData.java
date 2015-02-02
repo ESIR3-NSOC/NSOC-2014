@@ -49,7 +49,7 @@ public class JdbcData implements ServiceConnection {
         String sql = "select DISTINCT ADE_ID,DTSTART,DTEND from tree_object_22 join (select ADE_ID, EVENT_ID from correspondence_22 join (SELECT UID FROM correspondence_22 join event_22 on event_22.UID = correspondence_22.EVENT_ID WHERE ADE_ID=\""
                 + id
                 + "\" and date(event_22.DTSTART) LIKE '"
-                + datenow
+                + "2015-01-23"
                 + "') as tmp1 on correspondence_22.EVENT_ID = tmp1.UID) as tmp2 on tree_object_22.id=tmp2.ADE_ID join event_22 on tmp2.EVENT_ID=event_22.UID WHERE NAME NOT LIKE \"%"
                 + room + "%\"";
         return st.executeQuery(sql);

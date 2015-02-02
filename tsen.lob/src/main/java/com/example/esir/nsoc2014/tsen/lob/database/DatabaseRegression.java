@@ -74,7 +74,7 @@ public class DatabaseRegression implements Prevision {
 
         while (result.next()) {
             wasInLoop = true;
-            Date dat = result.getDate(2);
+            Time dat = result.getTime(2);
             if (!weatherMap.containsKey(dat)) {
                 // SimpleDateFormat ft = new SimpleDateFormat(
                 // "yyyy-MM-dd HH:mm:ss");

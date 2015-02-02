@@ -16,10 +16,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import com.example.esir.nsoc2014.tsen.lob.arff.ArffGenerated;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class WeatherForecast {
     private double humidity;
@@ -135,10 +135,13 @@ public class WeatherForecast {
     }
 
     public void executeSearch(int start_hour) throws Exception {
+        System.out.println("heure : "+start_hour);
         int pos = closest(start_hour, list) / 3 + 1;
+        System.out.println("pos : "+pos);
         temp = hourly.getJSONObject(pos).getDouble("tempC");
         humidity = hourly.getJSONObject(pos).getDouble("humidity");
-        cloudcover = hourly.getJSONObject(pos).getInt("cloudcover");
+        cloudcover = hourly.getJSONObject(pos).getDouble("cloudcover");
+        System.out.println("heure : "+hourly.getJSONObject(pos).getDouble("time"));
 
         calculLum(cloudcover);
 
