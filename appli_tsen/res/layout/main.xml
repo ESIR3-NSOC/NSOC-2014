@@ -1,14 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-<TextView
-    android:id="@+id/tv"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:text="Hello World, MyActivity"
-    />
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+        >
+    <LinearLayout android:orientation="horizontal" android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+        <TextView
+                android:id="@+id/contexttv"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/contextetv"
+                />
+        <TextView
+                android:id="@+id/context_state"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/disconnected"
+                android:layout_marginLeft="20dp"
+                />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+        <TextView
+                android:id="@+id/oeptv"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/oeptv"
+                />
+        <TextView
+                android:id="@+id/oep_state"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/disconnected"
+                android:layout_marginLeft="20dp"
+                />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+        <TextView
+                android:id="@+id/regulationtv"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/regulationtetv"
+                />
+        <TextView
+                android:id="@+id/regulation_state"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/disconnected"
+                android:layout_marginLeft="20dp"
+                />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+        <TextView
+                android:id="@+id/knxtv"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/knxtv"
+                />
+        <TextView
+                android:layout_marginLeft="20dp"
+                android:id="@+id/knx_state"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/disconnected"
+                />
+    </LinearLayout>
+
 </LinearLayout>
 

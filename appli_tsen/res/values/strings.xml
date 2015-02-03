@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Tsen</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+
+    <string name="contextetv">Context service</string>
+    <string name="oeptv">Oep service</string>
+    <string name="regulationtetv">Regulation service</string>
+    <string name="knxtv">Knx service</string>
 </resources>

@@ -12,9 +12,6 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by Nicolas on 03/02/2015.
- */
 public class AsynchDB extends AsyncTask<Void, Void, ResultSet> {
     private String room;
     private String id;
@@ -87,7 +84,7 @@ public class AsynchDB extends AsyncTask<Void, Void, ResultSet> {
             FileReader fileToRead = new FileReader(file);
             BufferedReader bf = new BufferedReader(fileToRead);
             String aLine;
-            String[] values = null;
+            String[] values;
             while ((aLine = bf.readLine()) != null) {
                 if (aLine.startsWith("ADE_ID")) {
                     values = aLine.split(":");
@@ -101,6 +98,7 @@ public class AsynchDB extends AsyncTask<Void, Void, ResultSet> {
             bf.close();
 
         } catch (IOException e) {
+            //blabla
         }
     }
 }

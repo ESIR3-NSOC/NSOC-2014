@@ -15,9 +15,6 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 
-/**
- * Created by Nicolas on 02/02/2015.
- */
 public class AsynchWeather extends AsyncTask<Void, Void, String> {
     private OnTaskCompleted listener;
 

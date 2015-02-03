@@ -7,7 +7,6 @@ import android.os.IBinder;
 import fr.esir.ressources.FilterString;
 
 public class Context_service extends Service {
-    private int mConnectionState = FilterString.STATE_DISCONNECTED;
 
     private final IBinder mBinder = new LocalBinder();
 

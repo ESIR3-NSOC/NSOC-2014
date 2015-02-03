@@ -19,7 +19,6 @@ public class WeatherForecast implements OnTaskCompleted {
     private double temp;
     private double lum;
     private double saison;
-    private double cloudcover;
 
     private OnSearchCompleted listener;
 
@@ -39,7 +38,7 @@ public class WeatherForecast implements OnTaskCompleted {
     /**
      * get the humidity value
      *
-     * @return
+     * @return the humidity
      */
     public double getHumidity() {
         return humidity;
@@ -49,7 +48,7 @@ public class WeatherForecast implements OnTaskCompleted {
     /**
      * get the temperature value
      *
-     * @return
+     * @return the temp
      */
     public double getTemp() {
         return temp;
@@ -86,6 +85,7 @@ public class WeatherForecast implements OnTaskCompleted {
 
     public void executeSearch(int start_hour) throws Exception {
         System.out.println("heure : " + start_hour);
+        double cloudcover;
         int pos = closest(start_hour, list) / 3 + 1;
         System.out.println("pos : " + pos);
         temp = hourly.getJSONObject(pos).getDouble("tempC");
@@ -104,9 +104,9 @@ public class WeatherForecast implements OnTaskCompleted {
     /**
      * find the forecast time for a given time
      *
-     * @param of
-     * @param in
-     * @return
+     * @param of look for this int
+     * @param in in this list
+     * @return the int the closest to of
      */
     private static int closest(int of, List<Integer> in) {
         int min = Integer.MAX_VALUE;
@@ -127,14 +127,14 @@ public class WeatherForecast implements OnTaskCompleted {
     private void calculLum(double cloudCover) throws Exception {
         ArffGenerated arffinou = new ArffGenerated();
         arffinou.generateArfflum();
-        arffinou.addInstance(humidity, temp, cloudcover, saison);
+        arffinou.addInstance(humidity, temp, cloudCover, saison);
         lum = arffinou.executeModel();
     }
 
     @Override
     public void onTaskCompleted(String weath) {
         // parsing JSON
-        JSONObject result = null;
+        JSONObject result;
         try {
             result = new JSONObject(weath);
             // JSON Object
