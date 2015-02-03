@@ -12,4 +12,6 @@ public interface ServiceConnection {
 	public void close();
 	
 	public boolean connect();
+
+    public boolean isConnected();
 }

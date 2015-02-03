@@ -17,7 +17,6 @@ import com.example.esir.nsoc2014.tsen.lob.interfaces.Prevision;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.ServiceConnection;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import com.example.esir.nsoc2014.tsen.lob.objects.WeatherForecast;
-import org.apache.http.client.ClientProtocolException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -49,10 +48,10 @@ public class DatabaseRegression implements Prevision {
     // }
 
     /**
-     * @throws ClientProtocolException
+     *
      * @throws IOException
      */
-    private void weatherSearch() throws ClientProtocolException, IOException {
+    private void weatherSearch() throws IOException {
         weather = new WeatherForecast();
         weather.executeApiForcast();
     }

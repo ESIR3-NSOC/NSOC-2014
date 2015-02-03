@@ -1,10 +1,7 @@
 package fr.esir.objects;
 
 import weka.classifiers.functions.LinearRegression;
-import weka.core.Attribute;
-import weka.core.DenseInstance;
-import weka.core.Instance;
-import weka.core.Instances;
+import weka.core.*;
 
 import java.util.ArrayList;
 
@@ -51,11 +48,19 @@ public class ArffGenerated {
     };
 
     public void generateArff(String user_id) {
-        data = new Instances("pref_" + user_id, atts, 0);
+        FastVector fvWekaAttributes = new FastVector(4);
+        for(int i = 0 ; i < 4 ; i++){
+            fvWekaAttributes.addElement(atts.get(i));
+        }
+        data = new Instances(user_id,fvWekaAttributes,0);
     }
 
     public void generateArfflum() {
-        data = new Instances("Check_lum", attslum, 0);
+        FastVector fvWekaAttributes = new FastVector(5);
+        for(int i = 0 ; i < 5 ; i++){
+            fvWekaAttributes.addElement(attslum.get(i));
+        }
+        data = new Instances("Check_lum", fvWekaAttributes, 0);
         addDataLum();
     }
 
@@ -64,7 +69,7 @@ public class ArffGenerated {
      * @return true
      */
     private boolean addData4lum(double... att) {
-        instance = new DenseInstance(5);
+        instance = new Instance(5);
         instance.setValue(data.attribute("season"), att[0]);
         instance.setValue(data.attribute("cloud"), att[1]);
         instance.setValue(data.attribute("temp_ext"), att[2]);
@@ -77,7 +82,7 @@ public class ArffGenerated {
     }
 
     private boolean addData(double... att) {
-        instance = new DenseInstance(4);
+        instance = new Instance(4);
         instance.setValue(data.attribute("hum_ext"), att[0]);
         instance.setValue(data.attribute("temp_ext"), att[1]);
         instance.setValue(data.attribute("temp_int"), att[2]);
@@ -137,7 +142,7 @@ public class ArffGenerated {
     }
 
     public void addInstance(double hum, double temp, double lum) {
-        Instance value_futur = new DenseInstance(4);
+        Instance value_futur = new Instance(4);
         value_futur.setValue(data.attribute("hum_ext"), hum);
         value_futur.setValue(data.attribute("temp_ext"), temp);
         value_futur.setValue(data.attribute("lum_ext"), lum);
@@ -145,7 +150,7 @@ public class ArffGenerated {
     }
 
     public void addInstance(double hum, double temp, double cloud, double season) {
-        Instance value_futur = new DenseInstance(5);
+        Instance value_futur = new Instance(5);
         value_futur.setValue(data.attribute("hum_ext"), hum);
         value_futur.setValue(data.attribute("temp_ext"), temp);
         value_futur.setValue(data.attribute("cloud"), cloud);
