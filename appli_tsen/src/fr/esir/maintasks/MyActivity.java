@@ -11,12 +11,18 @@ import android.widget.TextView;
 import fr.esir.oep.PredictBroadcastReceiver;
 import fr.esir.ressources.FilterString;
 import fr.esir.services.Context_service;
+import fr.esir.services.Knx_service;
+import fr.esir.services.Oep_service;
+import fr.esir.services.Regulation_service;
 
 import java.util.Calendar;
 
 public class MyActivity extends Activity {
     private final static String TAG = MyActivity.class.getSimpleName();
     public Context_service mContext_service;
+    public Oep_service mOep_service;
+    public Knx_service mKnx_service;
+    public Regulation_service mRegulation_service;
     TextView tv;
 
 
@@ -27,14 +33,26 @@ public class MyActivity extends Activity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mContext_service = ((Context_service.LocalBinder) service).getService();
             tv.setText(name.getClassName());
-            //there 4 services so we need to know which is started.
-            if (name.getClassName().equals("fr.esir.services.Context_service")) {
-                if (!mContext_service.initialize()) {
-                    Log.e(TAG, "Unable to initialize the context");
-                    finish();
-                }
+            //there 4 services so we need to know which is started
+            switch(name.getClassName()){
+                case "fr.esir.services.Context_service" :
+                    mContext_service = ((Context_service.LocalBinder) service).getService();
+                    break;
+                case "fr.esir.services.Oep_service" :
+                    mOep_service = ((Oep_service.LocalBinder) service).getService();
+                    if (!mOep_service.initialize()) {
+                        Log.e(TAG, "Unable to initialize the oep");
+                        finish();
+                    }
+                    Log.w(TAG, "Oep initialized");
+                    break;
+                case "fr.esir.services.Regulation_service" :
+                    mRegulation_service = ((Regulation_service.LocalBinder) service).getService();
+                    break;
+                case "fr.esir.services.Knx_service" :
+                    mKnx_service = ((Knx_service.LocalBinder) service).getService();
+                    break;
             }
 
         }
@@ -71,32 +89,24 @@ public class MyActivity extends Activity {
         //Intent contextServiceIntent = new Intent(this.getApplicationContext(), Context_service.class);
         //bindService(contextServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
-        //start the alarm to do a recursive predict_oep task
-        //startAlarmPredictOEP();
+        // start the service oep_service
+        Intent oepServiceIntent = new Intent(this.getApplicationContext(), Oep_service.class);
+        bindService(oepServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
+        // start the service regulation_service
+        //Intent regulationServiceIntent = new Intent(this.getApplicationContext(), Regulation_service.class);
+        //bindService(regulationServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
+        // start the service knx_service
+        //Intent knxServiceIntent = new Intent(this.getApplicationContext(), Knx_service.class);
+        //bindService(knxServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
     }
 
-    public void startAlarmPredictOEP(){
-        //oep alarm manager
-        //create new calendar instance
-        Calendar sixAMCalendar = Calendar.getInstance();
-        sixAMCalendar.setTimeInMillis(System.currentTimeMillis());
-        //set the time to 1AM
-        sixAMCalendar.set(Calendar.HOUR_OF_DAY, 0);
-        sixAMCalendar.set(Calendar.MINUTE, 6);
-        sixAMCalendar.set(Calendar.SECOND, 0);
-        AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        //create a pending intent to be called at midnight
-        Intent sixI = new Intent(this, PredictBroadcastReceiver.class);
-        PendingIntent sixAMPI = PendingIntent.getBroadcast(this, 0, sixI, PendingIntent.FLAG_UPDATE_CURRENT);
-        //schedule time for pending intent, and set the interval to day so that this event will repeat at the selected time every day
-        am.setRepeating(AlarmManager.RTC_WAKEUP, sixAMCalendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, sixAMPI);
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //unbindService(mServiceConnection);
+        unbindService(mServiceConnection);
         mContext_service = null;
     }
 
