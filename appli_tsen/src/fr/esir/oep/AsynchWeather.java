@@ -1,7 +1,7 @@
 package fr.esir.oep;
 
 import android.os.AsyncTask;
-import fr.esir.interfaces.OnSearchCompleted;
+import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -18,7 +18,7 @@ import java.io.IOException;
 public class AsynchWeather extends AsyncTask<Void, Void, String> {
     private OnSearchCompleted listener;
 
-    public AsynchWeather(tsen.lob.OnSearchCompleted listener) {
+    public AsynchWeather(OnSearchCompleted listener) {
         this.listener = listener;
     }
 

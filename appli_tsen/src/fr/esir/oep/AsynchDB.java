@@ -2,7 +2,7 @@ package fr.esir.oep;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import fr.esir.interfaces.OnSearchCompleted;
+import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
 
 import java.io.BufferedReader;
 import java.io.File;

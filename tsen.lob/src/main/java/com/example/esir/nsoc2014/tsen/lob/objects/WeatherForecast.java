@@ -1,19 +1,17 @@
 package com.example.esir.nsoc2014.tsen.lob.objects;
 
 import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
-import fr.esir.oep.AsynchWeather;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class WeatherForecast implements OnSearchCompleted {
+public class WeatherForecast {
     private double humidity;
     private double temp;
     private double lum;
@@ -68,12 +66,6 @@ public class WeatherForecast implements OnSearchCompleted {
         }
     };
 
-    public void executeApiForcast() throws IOException {
-        AsynchWeather task = new AsynchWeather(this);
-        // System.out.println(retSrc);
-        task.execute();
-    }
-
     private static final int seasons[] = {2, 2, 4, 4, 1, 1, 1, 1, 3, 3, 2, 2};
 
     private int getSeason(Date date) {
@@ -126,18 +118,7 @@ public class WeatherForecast implements OnSearchCompleted {
         lum = arffinou.executeModel();
     }
 
-    @Override
-    public void onSearchCompleted(boolean o) {
-        //do nothing here
-    }
-
-    @Override
-    public void onSearchCompleted(ResultSet o) {
-        //do nothing here
-    }
-
-    @Override
-    public void onSearchCompleted(String weath) {
+    public void searchDone(String weath){
         // parsing JSON
         JSONObject result;
         try {

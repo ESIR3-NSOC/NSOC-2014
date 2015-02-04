@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 import fr.esir.oep.PredictBroadcastReceiver;
 
 import java.util.Calendar;
@@ -33,11 +34,12 @@ public class Oep_service extends Service {
     public boolean initialize() {
         //oep alarm manager
         //create new calendar instance
+        Log.w("predictinitalarm", "ok");
         Calendar sixAMCalendar = Calendar.getInstance();
         sixAMCalendar.setTimeInMillis(System.currentTimeMillis());
         //set the time to 1AM
-        sixAMCalendar.set(Calendar.HOUR_OF_DAY, 0);
-        sixAMCalendar.set(Calendar.MINUTE, 6);
+        sixAMCalendar.set(Calendar.HOUR_OF_DAY, 13);
+        sixAMCalendar.set(Calendar.MINUTE, 52);
         sixAMCalendar.set(Calendar.SECOND, 0);
         AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         //create a pending intent to be called at midnight

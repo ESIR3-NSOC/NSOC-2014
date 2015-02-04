@@ -14,11 +14,11 @@ package fr.esir.oep;
 
 import android.os.Environment;
 import android.util.Log;
-import fr.esir.interfaces.OnSearchCompleted;
-import fr.esir.interfaces.Prevision;
-import fr.esir.objects.ArffGenerated;
-import fr.esir.objects.DatesInterval;
-import fr.esir.objects.WeatherForecast;
+import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
+import com.example.esir.nsoc2014.tsen.lob.interfaces.Prevision;
+import com.example.esir.nsoc2014.tsen.lob.objects.ArffGenerated;
+import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
+import com.example.esir.nsoc2014.tsen.lob.objects.WeatherForecast;
 
 import java.io.*;
 import java.sql.ResultSet;
@@ -52,7 +52,10 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
      * @throws java.io.IOException
      */
     public void weatherSearch() throws IOException {
-        weather.executeApiForcast();
+        Log.w("weathersearch", "OK");
+        AsynchWeather task = new AsynchWeather(this);
+        // System.out.println(retSrc);
+        task.execute();
     }
 
     public void predict() {
@@ -297,7 +300,7 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
     }
 
     @Override
-    public void onSearchCompleted(String weather) {
-        //do nothing here;
+    public void onSearchCompleted(String weath) {
+        weather.searchDone(weath);
     }
 }

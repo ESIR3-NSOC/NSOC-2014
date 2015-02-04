@@ -33,6 +33,11 @@
             <artifactId>weka-android</artifactId>
             <version>3.6.6</version>
         </dependency>
+        <dependency>
+            <groupId>tsen</groupId>
+            <artifactId>tsen.lob</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
         <!--<dependency>
             <groupId>com.google.android</groupId>

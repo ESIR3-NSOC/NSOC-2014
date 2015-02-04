@@ -3,7 +3,7 @@ package fr.esir.oep;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import fr.esir.interfaces.Prevision;
+import com.example.esir.nsoc2014.tsen.lob.interfaces.Prevision;
 
 import java.io.IOException;
 
