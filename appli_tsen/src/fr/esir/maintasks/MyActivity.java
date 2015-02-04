@@ -149,9 +149,6 @@ public class MyActivity extends Activity {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(FilterString.CONTEXT_EXTRA_DATA);
         intentFilter.addAction(FilterString.REGULATION_EXTRA_DATA);
-        intentFilter.addAction(FilterString.ACTION_KNX_CONNECTED);
-        intentFilter.addAction(FilterString.ACTION_KNX_DISCONNECTED);
-        intentFilter.addAction(FilterString.KNX_EXTRA_DATA);
         intentFilter.addAction(FilterString.OEP_EXTRA_DATA);
         return intentFilter;
     }

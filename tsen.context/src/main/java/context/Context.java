@@ -10,6 +10,7 @@ import tsen.*;
 
 import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 public class Context {
@@ -20,13 +21,12 @@ public class Context {
     private Thread _bufferReader;
     private boolean _isProcessingBuffer;
 
-    private KnxManager _knxManager;
-
+    private Queue<GroupEvent> _eventBuffer;
 
     public Context (TsenUniverse universe){
-        _knxManager = new KnxManager();
         _universe = universe ;
         _dim0 = _universe.dimension(0L);
+        _eventBuffer = new ConcurrentLinkedQueue<>();
         initSensors();
         createBufferReader();
         startContext();
@@ -39,7 +39,7 @@ public class Context {
 
     public void stopContext(){
         _isProcessingBuffer = false;
-        _knxManager.CloseConnection();
+
     }
 
     public void createBufferReader(){
@@ -48,11 +48,11 @@ public class Context {
             @Override
             public void run() {
                 while(_isProcessingBuffer){
-                    Queue<GroupEvent> buf =  _knxManager.getKNXFrameBuffer();
 
-                    while(!buf.isEmpty()){
-                        System.out.println(buf);
-                        GroupEvent grpEvt = buf.poll();
+
+                    while(!_eventBuffer.isEmpty()){
+                        System.out.println(_eventBuffer);
+                        GroupEvent grpEvt = _eventBuffer.poll();
                         grpEvt.addToContext(_dim0);
                     }
                 }
@@ -77,19 +77,13 @@ public class Context {
         return _dim0;
     }
 
-    private String initSensors(){
+
+    private void initSensors(JsonNode groups){
 
         String result = "";
-
         System.out.println("sensor initialisation ...");
-
-        JsonNode groups = _knxManager.getGroups();
-
         for(JsonNode node : groups){
-
-
             TsenView view = _dim0.time(System.currentTimeMillis());
-
             view.select("/", new Callback<KObject[]>() {
                 @Override
                 public void on(KObject[] kObjects) {
@@ -176,15 +170,12 @@ public class Context {
             }
         });
 
-        return _knxManager.getGroups().asText();
     }
 
-    public KnxManager getKnxManager(){
-        return _knxManager;
-    }
+
 
     public boolean isRunning(){
-        return _isProcessingBuffer && _knxManager.isConnected();
+        return _isProcessingBuffer;
     }
 
 

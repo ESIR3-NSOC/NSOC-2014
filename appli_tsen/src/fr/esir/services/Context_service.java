@@ -1,10 +1,13 @@
 package fr.esir.services;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
-import fr.esir.ressources.FilterString;
+import context.Context;
+import tsen.TsenUniverse;
 
 public class Context_service extends Service {
 
@@ -12,6 +15,7 @@ public class Context_service extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
         return mBinder;
     }
 
@@ -27,12 +31,26 @@ public class Context_service extends Service {
     }
 
     public boolean initialize() {
-
-        return false;
+        Context ctx = new Context(new TsenUniverse());
+        ctx.startContext();
+        return true;
     }
 
-    private void broadcastUpdate(final String action) {
+    private void broadcastUpdate(String action, Object object) {
         final Intent intent = new Intent(action);
         sendBroadcast(intent);
+    }
+
+    private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(android.content.Context context, Intent intent) {
+            final String action = intent.getAction();
+
+        }
+    };
+
+    private static IntentFilter makeServicesUpdateIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        return intentFilter;
     }
 }
