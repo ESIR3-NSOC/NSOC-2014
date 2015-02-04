@@ -32,9 +32,7 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
 
     private static double minTemp = 0;
     private static double maxTemp = 0;
-    private static ArffGenerated arff;
     private static HashMap<Date, WeatherForecast> weatherMap = new HashMap<>();
-    private static SortedMap<Time, List<DatesInterval>> datesinte;
 
     private List<DatesInterval> list;
 
@@ -68,7 +66,7 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
         //weatherSearch();
         boolean wasInLoop = false;
 
-        datesinte = new TreeMap<>();
+        SortedMap<Time, List<DatesInterval>> datesinte = new TreeMap<>();
 
         if (!weatherMap.isEmpty())
             weatherMap.clear();
@@ -89,8 +87,11 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
                     weatherMap.put(dat, weather);
                 }
 
-                arff = new ArffGenerated();
+                ArffGenerated arff = new ArffGenerated();
                 arff.generateArff(result.getString(1));
+
+                //get information from context
+
                 arff.addDataGeneric();
 
                 // int id = result.getInt(1); // get the id of the student
@@ -121,8 +122,8 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
                 Time tm = result.getTime(2);
                 // execute the model on the data
                 Double tempC = arff.executeModel();
-                DatesInterval dateinterv = new DatesInterval(tm, result.getTime(3),
-                        verifSeuil(tempC), 0, weatherMap.get(dat));
+                DatesInterval dateinterv = new DatesInterval(result.getString(1),tm, result.getTime(3),
+                        verifSeuil(tempC), weatherMap.get(dat),result.getString(4));
 
                 if (!datesinte.containsKey(tm)) {
                     Log.w("tm",tm+"");
@@ -181,7 +182,8 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
             int nb = entry.getValue().size();
             datesTemp.add(new DatesInterval(entry.getKey(), entry.getValue()
                     .get(0).getStartEnd(), medianCalculation(entry.getValue()),
-                    nb, entry.getValue().get(0).getPrevision()));
+                    nb, entry.getValue().get(0).getPrevision(),entry.getValue()
+                    .get(0).getLesson()));
         }
         return datesTemp;
     }

@@ -90,6 +90,12 @@ public class MyActivity extends Activity {
         sendBroadcast(intent);
     }
 
+    private void broadcastUpdate(String action,String key,Bundle data) {
+        final Intent intent = new Intent(action);
+        intent.putExtra(key,data);
+        sendBroadcast(intent);
+    }
+
     /**
      * Called when the activity is first created.
      */

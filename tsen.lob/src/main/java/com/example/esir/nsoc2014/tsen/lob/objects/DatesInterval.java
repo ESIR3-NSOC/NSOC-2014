@@ -8,14 +8,35 @@ public class DatesInterval implements Comparable<DatesInterval> {
     private double consigne;
     private int nbPerson;
     private WeatherForecast prev;
+    private String lesson;
+    private String id;
 
     public DatesInterval(Time start, Time end, double consigne, int nbPerson,
-                         WeatherForecast prev) {
+                         WeatherForecast prev, String lesson) {
         this.start = start;
         this.end = end;
         this.consigne = consigne;
         this.nbPerson = nbPerson;
         this.prev = prev;
+        this.lesson = lesson;
+        this.id = id;
+    }
+
+    public DatesInterval(String id,Time start, Time end, double consigne,
+                         WeatherForecast prev, String lesson) {
+        this.start = start;
+        this.end = end;
+        this.consigne = consigne;
+        this.prev = prev;
+        this.lesson = lesson;
+    }
+
+    public String getId(){
+        return id;
+    }
+
+    public String getLesson(){
+        return lesson;
     }
 
     public int getNbPerson() {

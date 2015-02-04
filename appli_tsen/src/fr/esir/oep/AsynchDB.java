@@ -66,7 +66,7 @@ public class AsynchDB extends AsyncTask<Void, Void, ResultSet> {
         findIDRoom();
         if (conn != null) {
             Statement st = conn.createStatement();
-            String sql = "select DISTINCT ADE_ID,DTSTART,DTEND from tree_object_22 join (select ADE_ID, EVENT_ID from correspondence_22 join (SELECT UID FROM correspondence_22 join event_22 on event_22.UID = correspondence_22.EVENT_ID WHERE ADE_ID=\""
+            String sql = "select DISTINCT ADE_ID,DTSTART,DTEND,SUMMARY from tree_object_22 join (select ADE_ID, EVENT_ID from correspondence_22 join (SELECT UID FROM correspondence_22 join event_22 on event_22.UID = correspondence_22.EVENT_ID WHERE ADE_ID=\""
                     + "1005"
                     + "\" and date(event_22.DTSTART) LIKE '"
                     + "2015-02-06"
