@@ -27,9 +27,7 @@ public class MyActivity extends Activity {
     TextView oep_state;
     TextView regulation_state;
     TextView knx_state;
-    /*
-    * serviceConnection : context_service
-     */
+
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {

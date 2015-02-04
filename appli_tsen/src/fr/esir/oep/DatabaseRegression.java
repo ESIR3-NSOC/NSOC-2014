@@ -71,7 +71,7 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
             weatherMap.clear();
         // execute the linear regression model for each student included in the
         // above list
-        /*if (result != null) {
+        if (result != null) {
             while (result.next()) {
                 wasInLoop = true;
                 Time dat = result.getTime(2);
@@ -81,6 +81,7 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
 
                     Calendar calendar = new GregorianCalendar();
                     calendar.setTime(dat);
+                    Log.w("dateTime",Calendar.HOUR_OF_DAY+"");
                     weather.executeSearch(calendar.get(Calendar.HOUR_OF_DAY));
                     weatherMap.put(dat, weather);
                 }
@@ -119,16 +120,25 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
                 Double tempC = arff.executeModel();
                 DatesInterval dateinterv = new DatesInterval(tm, result.getTime(3),
                         verifSeuil(tempC), 0, weatherMap.get(dat));
+
                 if (!datesinte.containsKey(tm)) {
-                    datesinte.put(tm, new ArrayList<DatesInterval>());
+                    Log.w("tm",tm+"");
+                    datesinte.put(tm, new ArrayList<>());
                     datesinte.get(tm).add(dateinterv);
                 } else {
                     datesinte.get(tm).add(dateinterv);
                 }
             }
         }
-        if (wasInLoop)*/
-        Time dat = new Time(8, 0, 0);
+        if (wasInLoop)
+            list = calcultab(datesinte);
+
+
+        if (list != null)
+            Log.w("List not null", list.get(0).toString());
+        else
+            Log.w("List null", "The list is empty");
+       /* Time dat = new Time(8, 0, 0);
         if (!weatherMap.containsKey(dat)) {
             // SimpleDateFormat ft = new SimpleDateFormat(
             // "yyyy-MM-dd HH:mm:ss");
@@ -158,21 +168,13 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
             datesinte.get(tm).add(dateinterv);
         } else {
             datesinte.get(tm).add(dateinterv);
-        }
-
-        list = calcultab(datesinte);
-
-        if (list != null)
-            Log.w("List not null", list.get(0).toString());
-        else
-            Log.w("List null", "The list is empty");
+        }*/
     }
 
     private List<DatesInterval> calcultab(
             SortedMap<Time, List<DatesInterval>> datesinter) {
-        SortedMap<Time, List<DatesInterval>> dat = datesinter;
         List<DatesInterval> datesTemp = new ArrayList<>();
-        for (Entry<Time, List<DatesInterval>> entry : dat.entrySet()) {
+        for (Entry<Time, List<DatesInterval>> entry : datesinter.entrySet()) {
             int nb = entry.getValue().size();
             datesTemp.add(new DatesInterval(entry.getKey(), entry.getValue()
                     .get(0).getStartEnd(), medianCalculation(entry.getValue()),
@@ -244,7 +246,7 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
                         "maxValue:24";
                 createMyFile(content);
             }
-            Log.w("path", file.getAbsolutePath() + "");
+            //Log.w("path", file.getAbsolutePath() + "");
             FileReader fileToRead = new FileReader(file);
             BufferedReader bf = new BufferedReader(fileToRead);
             String aLine;
@@ -275,7 +277,7 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
 
     @Override
     public void onSearchCompleted(boolean o) {
-        if ((boolean) o) {
+        if (o) {
             try {
                 predict();
             } catch (Exception e) {
@@ -286,11 +288,16 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
     }
 
     @Override
-    public void onSearchbisCompleted(ResultSet o) {
+    public void onSearchCompleted(ResultSet o) {
         try {
             predictNext(o);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onSearchCompleted(String weather) {
+        //do nothing here;
     }
 }

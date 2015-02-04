@@ -2,19 +2,19 @@ package fr.esir.objects;
 
 import android.util.Log;
 import fr.esir.interfaces.OnSearchCompleted;
-import fr.esir.interfaces.OnTaskCompleted;
 import fr.esir.oep.AsynchWeather;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class WeatherForecast implements OnTaskCompleted {
+public class WeatherForecast implements OnSearchCompleted {
     private double humidity;
     private double temp;
     private double lum;
@@ -132,7 +132,17 @@ public class WeatherForecast implements OnTaskCompleted {
     }
 
     @Override
-    public void onTaskCompleted(String weath) {
+    public void onSearchCompleted(boolean o) {
+        //do nothing here
+    }
+
+    @Override
+    public void onSearchCompleted(ResultSet o) {
+        //do nothing here
+    }
+
+    @Override
+    public void onSearchCompleted(String weath) {
         // parsing JSON
         JSONObject result;
         try {

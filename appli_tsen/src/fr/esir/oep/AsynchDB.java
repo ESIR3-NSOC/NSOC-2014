@@ -51,7 +51,7 @@ public class AsynchDB extends AsyncTask<Void, Void, ResultSet> {
     @Override
     protected void onPostExecute(ResultSet res) {
 
-        listener.onSearchbisCompleted(res);
+        listener.onSearchCompleted(res);
         try {
             c.close();
         } catch (SQLException e) {
@@ -69,7 +69,7 @@ public class AsynchDB extends AsyncTask<Void, Void, ResultSet> {
             String sql = "select DISTINCT ADE_ID,DTSTART,DTEND from tree_object_22 join (select ADE_ID, EVENT_ID from correspondence_22 join (SELECT UID FROM correspondence_22 join event_22 on event_22.UID = correspondence_22.EVENT_ID WHERE ADE_ID=\""
                     + "1005"
                     + "\" and date(event_22.DTSTART) LIKE '"
-                    + "2015-01-23"
+                    + "2015-02-06"
                     + "') as tmp1 on correspondence_22.EVENT_ID = tmp1.UID) as tmp2 on tree_object_22.id=tmp2.ADE_ID join event_22 on tmp2.EVENT_ID=event_22.UID WHERE NAME NOT LIKE \"%"
                     + "104" + "%\"";
             return st.executeQuery(sql);
