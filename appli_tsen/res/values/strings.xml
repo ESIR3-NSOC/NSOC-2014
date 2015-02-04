@@ -4,6 +4,14 @@
     <string name="connected">Connected</string>
     <string name="disconnected">Disconnected</string>
 
+    <string name="NoValue">N/A</string>
+    <string name="IndoorTempLabel">Température intérieure : </string>
+    <string name="OutdoorTempLabel">Température extérieure : </string>
+    <string name="IndoorHumLabel">Humidité intérieure : </string>
+    <string name="OutdoorHumLabel">Humidité extérieure : </string>
+    <string name="IndoorLumLabel">Luminosité intérieure : </string>
+    <string name="CO2Label">Taux de CO2 : </string>
+
     <string name="contextetv">Context service</string>
     <string name="oeptv">Oep service</string>
     <string name="regulationtetv">Regulation service</string>
