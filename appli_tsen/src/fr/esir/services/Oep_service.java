@@ -6,14 +6,26 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
+import com.example.esir.nsoc2014.tsen.lob.interfaces.Prevision;
+import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
+import fr.esir.oep.AsynchDB;
+import fr.esir.oep.AsynchWeather;
+import fr.esir.oep.DatabaseRegression;
 import fr.esir.oep.PredictBroadcastReceiver;
+import fr.esir.ressources.FilterString;
 
+import java.io.IOException;
+import java.sql.ResultSet;
 import java.util.Calendar;
 
-public class Oep_service extends Service {
+public class Oep_service extends Service implements OnSearchCompleted, Service_oep {
     private final IBinder mBinder = new LocalBinder();
+
+    private Prevision db;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -53,5 +65,57 @@ public class Oep_service extends Service {
     private void broadcastUpdate(final String action) {
         final Intent intent = new Intent(action);
         sendBroadcast(intent);
+    }
+
+    private void broadcastUpdate(final String action, String key, Bundle data) {
+        final Intent intent = new Intent(action);
+        intent.putExtra(key, data);
+        sendBroadcast(intent);
+    }
+
+    public void weatherSearch() throws IOException {
+        Log.w("weathersearch", "OK");
+        AsynchWeather task = new AsynchWeather(this);
+        // System.out.println(retSrc);
+        task.execute();
+    }
+
+    public void predict() {
+        AsynchDB asynbd = new AsynchDB(this);
+        asynbd.execute();
+    }
+
+    @Override
+    public void onSearchCompleted(boolean o) {
+        if (o) {
+            try {
+                predict();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else
+            Log.e("OEP", "No WeatherForecast");
+    }
+
+    @Override
+    public void onSearchCompleted(ResultSet o) {
+        try {
+            db.predictNext(o);
+            Bundle extras = new Bundle();
+            extras.putSerializable("HashMap", db.getHashmap());
+            broadcastUpdate(FilterString.OEP_DATA_STUDENTS_OF_DAY, "HashMap", extras);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onSearchCompleted(String weath) {
+        db.getWeatherForecast().searchDone(weath);
+    }
+
+    public void startPrediction() throws IOException {
+        db = new DatabaseRegression();
+        weatherSearch();
     }
 }

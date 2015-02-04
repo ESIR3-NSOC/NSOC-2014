@@ -12,6 +12,7 @@
 
 package fr.esir.oep;
 
+import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
@@ -29,16 +30,23 @@ import java.util.Map.Entry;
 public class DatabaseRegression implements Prevision, OnSearchCompleted {
 
     private WeatherForecast weather;
-
-    private static double minTemp = 0;
-    private static double maxTemp = 0;
-    private static HashMap<Date, WeatherForecast> weatherMap = new HashMap<>();
-
+    private double minTemp = 0;
+    private double maxTemp = 0;
+    private HashMap<Time, List<DatesInterval>> datesinte;
     private List<DatesInterval> list;
 
     public DatabaseRegression() {
         this.weather = new WeatherForecast(this);
         this.list = null;
+        this.datesinte = null;
+    }
+
+    public HashMap<Time, List<DatesInterval>> getHashmap(){
+        return datesinte;
+    }
+
+    public WeatherForecast getWeatherForecast() {
+        return weather;
     }
 
     // public List<DatesInterval> getListData() {
@@ -65,8 +73,8 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
         Log.w("Start", "predict");
         //weatherSearch();
         boolean wasInLoop = false;
-
-        SortedMap<Time, List<DatesInterval>> datesinte = new TreeMap<>();
+        HashMap<Date, WeatherForecast> weatherMap = new HashMap<>();
+        datesinte = new HashMap<>();
 
         if (!weatherMap.isEmpty())
             weatherMap.clear();
@@ -82,7 +90,7 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
 
                     Calendar calendar = new GregorianCalendar();
                     calendar.setTime(dat);
-                    Log.w("dateTime",Calendar.HOUR_OF_DAY+"");
+                    Log.w("dateTime", Calendar.HOUR_OF_DAY + "");
                     weather.executeSearch(calendar.get(Calendar.HOUR_OF_DAY));
                     weatherMap.put(dat, weather);
                 }
@@ -122,11 +130,11 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
                 Time tm = result.getTime(2);
                 // execute the model on the data
                 Double tempC = arff.executeModel();
-                DatesInterval dateinterv = new DatesInterval(result.getString(1),tm, result.getTime(3),
-                        verifSeuil(tempC), weatherMap.get(dat),result.getString(4));
+                DatesInterval dateinterv = new DatesInterval(result.getString(1), tm, result.getTime(3),
+                        verifSeuil(tempC), weatherMap.get(dat), result.getString(4));
 
                 if (!datesinte.containsKey(tm)) {
-                    Log.w("tm",tm+"");
+                    Log.w("tm", tm + "");
                     datesinte.put(tm, new ArrayList<>());
                     datesinte.get(tm).add(dateinterv);
                 } else {
@@ -134,6 +142,7 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
                 }
             }
         }
+
         if (wasInLoop)
             list = calcultab(datesinte);
 
@@ -176,13 +185,13 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
     }
 
     private List<DatesInterval> calcultab(
-            SortedMap<Time, List<DatesInterval>> datesinter) {
+            HashMap<Time, List<DatesInterval>> datesinter) {
         List<DatesInterval> datesTemp = new ArrayList<>();
         for (Entry<Time, List<DatesInterval>> entry : datesinter.entrySet()) {
             int nb = entry.getValue().size();
             datesTemp.add(new DatesInterval(entry.getKey(), entry.getValue()
                     .get(0).getStartEnd(), medianCalculation(entry.getValue()),
-                    nb, entry.getValue().get(0).getPrevision(),entry.getValue()
+                    nb, entry.getValue().get(0).getPrevision(), entry.getValue()
                     .get(0).getLesson()));
         }
         return datesTemp;

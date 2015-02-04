@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
+import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
 import fr.esir.ressources.FilterString;
 import fr.esir.services.Context_service;
 import fr.esir.services.Knx_service;
@@ -15,7 +16,7 @@ import fr.esir.services.Regulation_service;
 public class MyActivity extends Activity {
     private final static String TAG = MyActivity.class.getSimpleName();
     public Context_service mContext_service;
-    public Oep_service mOep_service;
+    public static Service_oep mOep_service;
     public Knx_service mKnx_service;
     public Regulation_service mRegulation_service;
     TextView context_state;
