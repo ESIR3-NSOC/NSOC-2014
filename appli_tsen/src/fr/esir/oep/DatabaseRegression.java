@@ -12,7 +12,6 @@
 
 package fr.esir.oep;
 
-import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
@@ -41,7 +40,7 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
         this.datesinte = null;
     }
 
-    public HashMap<Time, List<DatesInterval>> getHashmap(){
+    public HashMap<Time, List<DatesInterval>> getHashmap() {
         return datesinte;
     }
 
@@ -147,9 +146,10 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
             list = calcultab(datesinte);
 
 
-        if (list != null)
-            Log.w("List not null", list.get(0).toString());
-        else
+        if (list != null) {
+            for (DatesInterval dt : list)
+                Log.w("List not null", dt.toString());
+        } else
             Log.w("List null", "The list is empty");
        /* Time dat = new Time(8, 0, 0);
         if (!weatherMap.containsKey(dat)) {

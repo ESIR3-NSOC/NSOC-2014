@@ -12,14 +12,18 @@ import java.io.IOException;
 public class PredictBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        MyActivity.mOep_service.startPrediction();
-        Prevision db = new DatabaseRegression();
-        //List<DatesInterval> list = null;
         try {
-            db.weatherSearch();
+            MyActivity.mOep_service.startPrediction();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //Prevision db = new DatabaseRegression();
+        //List<DatesInterval> list = null;
+        /*try {
+            db.weatherSearch();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
         /*if (list != null)
             Log.w("List not null", list.get(0).toString());
         else
