@@ -27,7 +27,6 @@ public class Context {
         _universe = universe ;
         _dim0 = _universe.dimension(0L);
         _eventBuffer = new ConcurrentLinkedQueue<>();
-        initSensors();
         createBufferReader();
         startContext();
     }

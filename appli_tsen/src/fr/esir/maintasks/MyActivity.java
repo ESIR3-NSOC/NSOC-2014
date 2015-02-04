@@ -1,21 +1,16 @@
 package fr.esir.maintasks;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.*;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
-import fr.esir.oep.PredictBroadcastReceiver;
 import fr.esir.ressources.FilterString;
 import fr.esir.services.Context_service;
 import fr.esir.services.Knx_service;
 import fr.esir.services.Oep_service;
 import fr.esir.services.Regulation_service;
-
-import java.util.Calendar;
 
 public class MyActivity extends Activity {
     private final static String TAG = MyActivity.class.getSimpleName();

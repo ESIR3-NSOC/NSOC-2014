@@ -45,6 +45,10 @@ public class Context_service extends Service {
         @Override
         public void onReceive(android.content.Context context, Intent intent) {
             final String action = intent.getAction();
+            String subAction = action.split(".")[1];
+
+
+
 
         }
     };
