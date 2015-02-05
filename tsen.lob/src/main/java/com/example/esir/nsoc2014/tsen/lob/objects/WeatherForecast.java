@@ -5,13 +5,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.ResultSet;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class WeatherForecast {
+public class WeatherForecast{
     private double humidity;
     private double temp;
     private double lum;

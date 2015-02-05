@@ -96,6 +96,12 @@ public class ArffGenerated {
         return true;
     }
 
+    public boolean addDataCustom(double humidity, double temp_e, double temp_i, double lum_e){
+        addData(humidity,temp_e,temp_i,lum_e);
+
+        return true;
+    }
+
     /**
      * @return boolean
      */

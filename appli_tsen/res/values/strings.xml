@@ -10,6 +10,7 @@
     <string name="IndoorHumLabel">Humidité intérieure : </string>
     <string name="OutdoorHumLabel">Humidité extérieure : </string>
     <string name="IndoorLumLabel">Luminosité intérieure : </string>
+    <string name="OutdoorLumLabel">Luminosité extérieure : </string>
     <string name="CO2Label">Taux de CO2 : </string>
 
     <string name="contextetv">Context service</string>

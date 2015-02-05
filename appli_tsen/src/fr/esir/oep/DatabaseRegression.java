@@ -26,7 +26,7 @@ import java.sql.Time;
 import java.util.*;
 import java.util.Map.Entry;
 
-public class DatabaseRegression implements Prevision, OnSearchCompleted {
+public class DatabaseRegression implements Prevision {
 
     private WeatherForecast weather;
     private double minTemp = 0;
@@ -34,10 +34,17 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
     private HashMap<Time, List<DatesInterval>> datesinte;
     private List<DatesInterval> list;
 
-    public DatabaseRegression() {
-        this.weather = new WeatherForecast(this);
+    private OnSearchCompleted listener;
+
+    public DatabaseRegression(OnSearchCompleted os) {
+        this.weather = new WeatherForecast(os);
         this.list = null;
         this.datesinte = null;
+        this.listener = os;
+    }
+
+    public List<DatesInterval> getList(){
+        return list;
     }
 
     public HashMap<Time, List<DatesInterval>> getHashmap() {
@@ -52,21 +59,6 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
     // return list;
     // }
 
-    /**
-     * @throws org.apache.http.client.ClientProtocolException
-     * @throws java.io.IOException
-     */
-    public void weatherSearch() throws IOException {
-        Log.w("weathersearch", "OK");
-        AsynchWeather task = new AsynchWeather(this);
-        // System.out.println(retSrc);
-        task.execute();
-    }
-
-    public void predict() {
-        AsynchDB asynbd = new AsynchDB(this);
-        asynbd.execute();
-    }
 
     public void predictNext(ResultSet result) throws Exception {
         Log.w("Start", "predict");
@@ -84,9 +76,6 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
                 wasInLoop = true;
                 Time dat = result.getTime(2);
                 if (!weatherMap.containsKey(dat)) {
-                    // SimpleDateFormat ft = new SimpleDateFormat(
-                    // "yyyy-MM-dd HH:mm:ss");
-
                     Calendar calendar = new GregorianCalendar();
                     calendar.setTime(dat);
                     Log.w("dateTime", Calendar.HOUR_OF_DAY + "");
@@ -97,8 +86,9 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
                 ArffGenerated arff = new ArffGenerated();
                 arff.generateArff(result.getString(1));
 
-                //get information from context
+                //get information from context -> addDataCustom
 
+                //if a student has not enough data (vote)
                 arff.addDataGeneric();
 
                 // int id = result.getInt(1); // get the id of the student
@@ -130,7 +120,7 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
                 // execute the model on the data
                 Double tempC = arff.executeModel();
                 DatesInterval dateinterv = new DatesInterval(result.getString(1), tm, result.getTime(3),
-                        verifSeuil(tempC), weatherMap.get(dat), result.getString(4));
+                        verifSeuil(tempC), weatherMap.get(dat).getTemp(), weatherMap.get(dat).getLum(), weatherMap.get(dat).getHumidity(), result.getString(4));
 
                 if (!datesinte.containsKey(tm)) {
                     Log.w("tm", tm + "");
@@ -142,46 +132,16 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
             }
         }
 
-        if (wasInLoop)
+        if (wasInLoop){
             list = calcultab(datesinte);
+            listener.onSearchCompleted();
+        }
 
 
         if (list != null) {
-            for (DatesInterval dt : list)
-                Log.w("List not null", dt.toString());
+            Log.w("List not null", "List not null");
         } else
             Log.w("List null", "The list is empty");
-       /* Time dat = new Time(8, 0, 0);
-        if (!weatherMap.containsKey(dat)) {
-            // SimpleDateFormat ft = new SimpleDateFormat(
-            // "yyyy-MM-dd HH:mm:ss");
-
-            Calendar calendar = new GregorianCalendar();
-            calendar.setTime(dat);
-            weather.executeSearch(calendar.get(Calendar.HOUR_OF_DAY));
-            weatherMap.put(dat, weather);
-        }
-        arff = new ArffGenerated();
-        //arff.generateArff(result.getString(1));
-        arff.generateArff("111");
-        arff.addDataGeneric();
-        Log.w("hum", weather.getHumidity() + "");
-        Log.w("temp", weather.getTemp() + "");
-        Log.w("hum", weather.getHumidity() + "");
-        arff.addInstance(weather.getHumidity(), weather.getTemp(),
-                weather.getLum());
-        Time tm = new Time(8, 0, 0);
-        // execute the model on the data
-        Double tempC = arff.executeModel();
-        Log.w("TempC", tempC + "");
-        DatesInterval dateinterv = new DatesInterval(tm, new Time(10, 0, 0),
-                verifSeuil(tempC), 0, weatherMap.get(dat));
-        if (!datesinte.containsKey(tm)) {
-            datesinte.put(tm, new ArrayList<>());
-            datesinte.get(tm).add(dateinterv);
-        } else {
-            datesinte.get(tm).add(dateinterv);
-        }*/
     }
 
     private List<DatesInterval> calcultab(
@@ -191,7 +151,7 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
             int nb = entry.getValue().size();
             datesTemp.add(new DatesInterval(entry.getKey(), entry.getValue()
                     .get(0).getStartEnd(), medianCalculation(entry.getValue()),
-                    nb, entry.getValue().get(0).getPrevision(), entry.getValue()
+                    nb, entry.getValue().get(0).getTemp(), entry.getValue().get(0).getlum(), entry.getValue().get(0).gethumidity(), entry.getValue()
                     .get(0).getLesson()));
         }
         return datesTemp;
@@ -287,31 +247,5 @@ public class DatabaseRegression implements Prevision, OnSearchCompleted {
         } catch (IOException e) {
             //nothing happened
         }
-    }
-
-    @Override
-    public void onSearchCompleted(boolean o) {
-        if (o) {
-            try {
-                predict();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else
-            Log.e("OEP", "No WeatherForecast");
-    }
-
-    @Override
-    public void onSearchCompleted(ResultSet o) {
-        try {
-            predictNext(o);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onSearchCompleted(String weath) {
-        weather.searchDone(weath);
     }
 }

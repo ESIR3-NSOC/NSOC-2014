@@ -5,106 +5,122 @@
               android:layout_height="fill_parent"
         >
     <LinearLayout
-            android:layout_marginTop="20dp"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/IndoorTempLabel"
-                    android:id="@+id/IndoorTempLabel"/>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/NoValue"
-                    android:id="@+id/IndoorTempValue"/>
-        </LinearLayout>
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/OutdoorTempLabel"
-                    android:id="@+id/OutdoorTempLabel"/>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/NoValue"
-                    android:id="@+id/OutdoorTempValue"/>
-        </LinearLayout>
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/IndoorHumLabel"
-                    android:id="@+id/IndoorHumLabel"/>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/NoValue"
-                    android:id="@+id/IndoorHumValue"/>
-        </LinearLayout>
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Humidité extérieure : "
-                    android:id="@+id/OutdoorHumLabel"/>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/NoValue"
-                    android:id="@+id/OutdoorHumValue"/>
-        </LinearLayout>
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Taux de CO2 "
-                    android:id="@+id/CO2Label"/>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/NoValue"
-                    android:id="@+id/CO2Value"/>
-        </LinearLayout>
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Luminosité intéreure : "
-                    android:id="@+id/IndoorLumLabel"/>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/NoValue"
-                    android:id="@+id/IndoorLumValue"/>
-        </LinearLayout>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/IndoorTempLabel"
+                android:id="@+id/IndoorTempLabel"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/NoValue"
+                android:id="@+id/IndoorTempValue"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/OutdoorTempLabel"
+                android:id="@+id/OutdoorTempLabel"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/NoValue"
+                android:id="@+id/OutdoorTempValue"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/IndoorHumLabel"
+                android:id="@+id/IndoorHumLabel"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/NoValue"
+                android:id="@+id/IndoorHumValue"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Humidité extérieure : "
+                android:id="@+id/OutdoorHumLabel"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/NoValue"
+                android:id="@+id/OutdoorHumValue"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Taux de CO2 "
+                android:id="@+id/CO2Label"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/NoValue"
+                android:id="@+id/CO2Value"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Luminosité intéreure : "
+                android:id="@+id/IndoorLumLabel"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/NoValue"
+                android:id="@+id/IndoorLumValue"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Luminosité extéreure : "
+                android:id="@+id/OutdoorLumLabel"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/NoValue"
+                android:id="@+id/OutdoorLumValue"/>
     </LinearLayout>
 
     <LinearLayout
             android:layout_marginTop="20dp"
-            android:orientation="horizontal" android:layout_width="wrap_content"
-                  android:layout_height="wrap_content">
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
         <TextView
                 android:id="@+id/contexttv"
                 android:layout_width="fill_parent"
@@ -119,7 +135,9 @@
                 android:layout_marginLeft="20dp"
                 />
     </LinearLayout>
-    <LinearLayout android:orientation="horizontal" android:layout_width="wrap_content"
+
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_width="wrap_content"
                   android:layout_height="wrap_content">
         <TextView
                 android:id="@+id/oeptv"
@@ -135,6 +153,7 @@
                 android:layout_marginLeft="20dp"
                 />
     </LinearLayout>
+
     <LinearLayout android:orientation="horizontal" android:layout_width="wrap_content"
                   android:layout_height="wrap_content">
         <TextView
@@ -151,6 +170,7 @@
                 android:layout_marginLeft="20dp"
                 />
     </LinearLayout>
+
     <LinearLayout android:orientation="horizontal" android:layout_width="wrap_content"
                   android:layout_height="wrap_content">
         <TextView

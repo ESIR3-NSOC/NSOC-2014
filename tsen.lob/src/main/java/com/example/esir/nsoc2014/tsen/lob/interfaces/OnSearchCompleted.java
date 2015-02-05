@@ -8,4 +8,6 @@ public interface OnSearchCompleted {
     void onSearchCompleted(ResultSet o);
 
     void onSearchCompleted(String weath);
+
+    void onSearchCompleted();
 }

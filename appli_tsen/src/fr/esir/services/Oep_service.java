@@ -19,6 +19,7 @@ import fr.esir.oep.PredictBroadcastReceiver;
 import fr.esir.ressources.FilterString;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.util.Calendar;
 
@@ -50,8 +51,8 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
         Calendar sixAMCalendar = Calendar.getInstance();
         sixAMCalendar.setTimeInMillis(System.currentTimeMillis());
         //set the time to 1AM
-        sixAMCalendar.set(Calendar.HOUR_OF_DAY, 13);
-        sixAMCalendar.set(Calendar.MINUTE, 52);
+        sixAMCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        sixAMCalendar.set(Calendar.MINUTE, 11);
         sixAMCalendar.set(Calendar.SECOND, 0);
         AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         //create a pending intent to be called at midnight
@@ -103,7 +104,7 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
             db.predictNext(o);
             Bundle extras = new Bundle();
             extras.putSerializable("HashMap", db.getHashmap());
-            broadcastUpdate(FilterString.OEP_DATA_STUDENTS_OF_DAY, "HashMap", extras);
+            broadcastUpdate(FilterString.OEP_DATA_STUDENTS_OF_DAY, "Data", extras);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,8 +115,16 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
         db.getWeatherForecast().searchDone(weath);
     }
 
+    @Override
+    public void onSearchCompleted() {
+        Log.w("oep","onsearchcomleted");
+        Bundle extras = new Bundle();
+        extras.putSerializable("List", (Serializable) db.getList());
+        broadcastUpdate(FilterString.OEP_DATA_CONSIGNES_OF_DAY, "Data", extras);
+    }
+
     public void startPrediction() throws IOException {
-        db = new DatabaseRegression();
+        db = new DatabaseRegression(this);
         weatherSearch();
     }
 }

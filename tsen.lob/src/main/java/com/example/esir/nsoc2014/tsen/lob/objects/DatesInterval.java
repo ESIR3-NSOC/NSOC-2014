@@ -1,8 +1,9 @@
 package com.example.esir.nsoc2014.tsen.lob.objects;
 
+import java.io.Serializable;
 import java.sql.Time;
 
-public class DatesInterval implements Comparable<DatesInterval> {
+public class DatesInterval implements Comparable<DatesInterval>, Serializable{
     private Time start;
     private Time end;
     private double consigne;
@@ -10,25 +11,44 @@ public class DatesInterval implements Comparable<DatesInterval> {
     private WeatherForecast prev;
     private String lesson;
     private String id;
+    private double temp;
+    private double lum;
+    private double humidity;
 
     public DatesInterval(Time start, Time end, double consigne, int nbPerson,
-                         WeatherForecast prev, String lesson) {
+                         double temp, double lum, double humidity, String lesson) {
         this.start = start;
         this.end = end;
         this.consigne = consigne;
         this.nbPerson = nbPerson;
-        this.prev = prev;
+        this.humidity = humidity;
+        this.temp = temp;
+        this.lum = lum;
         this.lesson = lesson;
-        this.id = id;
     }
 
     public DatesInterval(String id,Time start, Time end, double consigne,
-                         WeatherForecast prev, String lesson) {
+                         double temp, double lum, double humidity, String lesson) {
         this.start = start;
         this.end = end;
         this.consigne = consigne;
-        this.prev = prev;
         this.lesson = lesson;
+        this.humidity = humidity;
+        this.temp = temp;
+        this.lum = lum;
+        this.id = id;
+    }
+
+    public double getTemp(){
+        return temp;
+    }
+
+    public double getlum(){
+        return lum;
+    }
+
+    public double gethumidity(){
+        return humidity;
     }
 
     public String getId(){
@@ -67,10 +87,4 @@ public class DatesInterval implements Comparable<DatesInterval> {
         else
             return 1;
     }
-
-    public String toString() {
-        return "Start at " + start + " End at " + end + " Temp must be "
-                + consigne + " " + nbPerson + " people will be in the classroom.";
-    }
-
 }
