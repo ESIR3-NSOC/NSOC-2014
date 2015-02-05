@@ -7,17 +7,11 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
-import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import fr.esir.ressources.FilterString;
 import fr.esir.services.Context_service;
 import fr.esir.services.Knx_service;
 import fr.esir.services.Oep_service;
 import fr.esir.services.Regulation_service;
-
-import java.sql.Time;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class MyActivity extends Activity {
     private final static String TAG = MyActivity.class.getSimpleName();
@@ -37,8 +31,11 @@ public class MyActivity extends Activity {
             switch (name.getClassName()) {
                 case "fr.esir.services.Context_service":
                     mContext_service = ((Context_service.LocalBinder) service).getService();
+                    if (!mContext_service.initialize()) {
+                        Log.e(TAG, "Unable to initialize the context");
+                        finish();
+                    }
                     context_state.setText(R.string.connected);
-                    Log.e(TAG,"not here");
                     break;
                 case "fr.esir.services.Oep_service":
                     mOep_service = ((Oep_service.LocalBinder) service).getService();
@@ -51,10 +48,18 @@ public class MyActivity extends Activity {
                     break;
                 case "fr.esir.services.Regulation_service":
                     mRegulation_service = ((Regulation_service.LocalBinder) service).getService();
+                    if (!mRegulation_service.initialize()) {
+                        Log.e(TAG, "Unable to initialize the regulation");
+                        finish();
+                    }
                     regulation_state.setText(R.string.connected);
                     break;
                 case "fr.esir.services.Knx_service":
                     mKnx_service = ((Knx_service.LocalBinder) service).getService();
+                    if (!mKnx_service.initialize()) {
+                        Log.e(TAG, "Unable to initialize KNX");
+                        finish();
+                    }
                     knx_state.setText(R.string.connected);
                     break;
             }
@@ -89,36 +94,9 @@ public class MyActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
 
-            //test broadcast oep
-            Bundle bundle;
             switch (action) {
-                case FilterString.OEP_DATA_STUDENTS_OF_DAY:
-                    Log.w(TAG, "reception students ok");
-                    bundle = intent.getBundleExtra("Data");
-                    if (bundle != null) {
-                        HashMap<Time, List<DatesInterval>> map = (HashMap<Time, List<DatesInterval>>) bundle.getSerializable("HashMap");
-                        for (Map.Entry<Time, List<DatesInterval>> entry : map.entrySet()) {
-                            Log.w(TAG, entry.getKey() + "");
-                            for (DatesInterval entryDi : entry.getValue()) {
-                                Log.w(TAG, entryDi.getId() + " will be in classroom " + entryDi.getLesson()
-                                        + ". His consigne must be " + entryDi.getConsigne() + " °C");
-                            }
-                        }
-                    }
-                    break;
-                case FilterString.OEP_DATA_CONSIGNES_OF_DAY:
-                    Log.w(TAG, "reception sonsignes ok");
-                    bundle = intent.getBundleExtra("Data");
-                    if (bundle != null) {
-                        List<DatesInterval> listConsigne = (List<DatesInterval>) bundle.getSerializable("List");
-                        for (DatesInterval entry : listConsigne) {
-                            Log.w(TAG, "Between " + entry.getStartDate() + " and " + entry.getStartEnd()
-                                    + " the temperature in the classroom " + entry.getLesson()
-                                    + " must be " + entry.getConsigne() + " °C");
-                        }
-                    }
+
             }
-            //end test broadcast oep
         }
     };
 
@@ -147,8 +125,8 @@ public class MyActivity extends Activity {
         knx_state = (TextView) findViewById(R.id.knx_state);
 
         // start the service context_service
-        //Intent contextServiceIntent = new Intent(this.getApplicationContext(), Context_service.class);
-        //bindService(contextServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        Intent contextServiceIntent = new Intent(this.getApplicationContext(), Context_service.class);
+        bindService(contextServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // start the service oep_service
         //condition : the contexte_service is working
@@ -156,8 +134,8 @@ public class MyActivity extends Activity {
         bindService(oepServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // start the service regulation_service
-        //Intent regulationServiceIntent = new Intent(this.getApplicationContext(), Regulation_service.class);
-        //bindService(regulationServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        Intent regulationServiceIntent = new Intent(this.getApplicationContext(), Regulation_service.class);
+        bindService(regulationServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // start the service knx_service
         //Intent knxServiceIntent = new Intent(this.getApplicationContext(), Knx_service.class);
@@ -189,10 +167,6 @@ public class MyActivity extends Activity {
         intentFilter.addAction(FilterString.CONTEXT_EXTRA_DATA);
         intentFilter.addAction(FilterString.REGULATION_EXTRA_DATA);
         intentFilter.addAction(FilterString.OEP_EXTRA_DATA);
-
-        //filters to receive from oep service
-        intentFilter.addAction((FilterString.OEP_DATA_STUDENTS_OF_DAY));
-        intentFilter.addAction((FilterString.OEP_DATA_CONSIGNES_OF_DAY));
 
         return intentFilter;
     }

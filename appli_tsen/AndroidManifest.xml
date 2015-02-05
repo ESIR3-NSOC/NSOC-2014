@@ -14,8 +14,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="fr.esir.services.Regulation_service"/>
-        <activity android:name="fr.esir.services.Knx_service"/>
         <service android:name="fr.esir.services.Oep_service"/>
         <service android:name="fr.esir.services.Regulation_service"/>
         <service android:name="fr.esir.services.Knx_service"/>

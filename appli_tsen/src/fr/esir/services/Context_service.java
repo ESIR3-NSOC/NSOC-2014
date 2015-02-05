@@ -5,22 +5,31 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
-import context.Context;
-import tsen.TsenUniverse;
+import android.util.Log;
+import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
+import fr.esir.ressources.FilterString;
+
+import java.sql.Time;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+//import context.Context;
+//import tsen.TsenUniverse;
 
 public class Context_service extends Service {
-
+    private final static String TAG = Context_service.class.getSimpleName();
     private final IBinder mBinder = new LocalBinder();
 
     @Override
     public IBinder onBind(Intent intent) {
-        registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
         return mBinder;
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
+        unregisterReceiver(mServicesUpdateReceiver);
         return super.onUnbind(intent);
     }
 
@@ -31,8 +40,10 @@ public class Context_service extends Service {
     }
 
     public boolean initialize() {
-        Context ctx = new Context(new TsenUniverse());
-        ctx.startContext();
+        registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
+
+        /*Context ctx = new Context(new TsenUniverse());
+        ctx.startContext();*/
         return true;
     }
 
@@ -45,7 +56,23 @@ public class Context_service extends Service {
         @Override
         public void onReceive(android.content.Context context, Intent intent) {
             final String action = intent.getAction();
-            String subAction = action.split(".")[1];
+            Bundle bundle;
+            switch (action) {
+                case FilterString.OEP_DATA_STUDENTS_OF_DAY:
+                    Log.w(TAG, "reception students ok");
+                    bundle = intent.getBundleExtra("Data");
+                    if (bundle != null) {
+                        HashMap<Time, List<DatesInterval>> map = (HashMap<Time, List<DatesInterval>>) bundle.getSerializable("HashMap");
+                        for (Map.Entry<Time, List<DatesInterval>> entry : map.entrySet()) {
+                            Log.w(TAG, entry.getKey() + "");
+                            for (DatesInterval entryDi : entry.getValue()) {
+                                Log.w(TAG, entryDi.getId() + " will be in classroom " + entryDi.getLesson()
+                                        + ". His consigne must be " + entryDi.getConsigne() + " °C");
+                            }
+                        }
+                    }
+                    break;
+            }
 
 
 
@@ -55,6 +82,9 @@ public class Context_service extends Service {
 
     private static IntentFilter makeServicesUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
+        //students of the day, coming from oep
+        intentFilter.addAction((FilterString.OEP_DATA_STUDENTS_OF_DAY));
+
         return intentFilter;
     }
 }
