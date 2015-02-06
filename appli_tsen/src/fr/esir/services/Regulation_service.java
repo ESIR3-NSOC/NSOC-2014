@@ -1,22 +1,24 @@
 package fr.esir.services;
 
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
+import fr.esir.regulation.interface_service.Service_regulation;
 import fr.esir.ressources.FilterString;
 
 import java.util.List;
 
-public class Regulation_service extends Service {
+public class Regulation_service extends Service implements Service_regulation {
     private final static String TAG = Context_service.class.getSimpleName();
     private final IBinder mBinder = new LocalBinder();
+
+    private SharedPreferences sharedpreferences;
+
+    public static final String MyPREFERENCES = "MyPrefs" ;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -58,9 +60,14 @@ public class Regulation_service extends Service {
     };
 
     public boolean initialize() {
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
 
         return true;
+    }
+
+    public SharedPreferences getSharedpreferences(){
+        return sharedpreferences;
     }
 
     private void broadcastUpdate(final String action) {

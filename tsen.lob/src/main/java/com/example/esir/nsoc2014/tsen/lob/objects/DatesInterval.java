@@ -2,10 +2,11 @@ package com.example.esir.nsoc2014.tsen.lob.objects;
 
 import java.io.Serializable;
 import java.sql.Time;
+import java.util.Date;
 
 public class DatesInterval implements Comparable<DatesInterval>, Serializable{
-    private Time start;
-    private Time end;
+    private Date start;
+    private Date end;
     private double consigne;
     private int nbPerson;
     private WeatherForecast prev;
@@ -15,7 +16,7 @@ public class DatesInterval implements Comparable<DatesInterval>, Serializable{
     private double lum;
     private double humidity;
 
-    public DatesInterval(Time start, Time end, double consigne, int nbPerson,
+    public DatesInterval(Date start, Date end, double consigne, int nbPerson,
                          double temp, double lum, double humidity, String lesson) {
         this.start = start;
         this.end = end;
@@ -71,11 +72,11 @@ public class DatesInterval implements Comparable<DatesInterval>, Serializable{
         return consigne;
     }
 
-    public Time getStartDate() {
+    public Date getStartDate() {
         return start;
     }
 
-    public Time getStartEnd() {
+    public Date getStartEnd() {
         return end;
     }
 
