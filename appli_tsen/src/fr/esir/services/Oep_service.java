@@ -25,6 +25,7 @@ import java.util.Calendar;
 
 public class Oep_service extends Service implements OnSearchCompleted, Service_oep {
     private final IBinder mBinder = new LocalBinder();
+    private AlarmManager am;
 
     private Prevision db;
 
@@ -35,6 +36,7 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
 
     @Override
     public boolean onUnbind(Intent intent) {
+        am = null;
         return super.onUnbind(intent);
     }
 
@@ -54,7 +56,7 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
         sixAMCalendar.set(Calendar.HOUR_OF_DAY, 0);
         sixAMCalendar.set(Calendar.MINUTE, 11);
         sixAMCalendar.set(Calendar.SECOND, 0);
-        AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         //create a pending intent to be called at midnight
         Intent sixI = new Intent(this, PredictBroadcastReceiver.class);
         PendingIntent sixAMPI = PendingIntent.getBroadcast(this, 0, sixI, PendingIntent.FLAG_UPDATE_CURRENT);

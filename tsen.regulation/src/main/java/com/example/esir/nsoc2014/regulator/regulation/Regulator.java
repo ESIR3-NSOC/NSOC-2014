@@ -1,4 +1,4 @@
-package com.example.esir.nsoc2014.regulator;
+package com.example.esir.nsoc2014.regulator.regulation;
 
 public class Regulator implements Runnable{
 
@@ -6,6 +6,10 @@ public class Regulator implements Runnable{
 	private double Ki; // coefficient integrateur
 	private double Kd; // coefficient dérivateur
 	private boolean activated;
+    // recuperer valeur capteur sur contexte
+    double temp_int = 20; // temperature interieur, fixée pour test
+    // récuperer valeur consigne sur contexte ou optimisateur directement
+    double temp_cons = 21; // temperature de consigne, fixée pour test
 
 	public Regulator() {
 		this.Kp = 1;
@@ -28,16 +32,11 @@ public class Regulator implements Runnable{
 
 	public Regulator(double m_Kp, double m_Ki, double m_Kd) {
 		this.Kp = m_Kp;
-		this.Ki = m_Kp;
+		this.Ki = m_Ki;
 		this.Kd = m_Kd;
 	}
 
 	public void run() {
-		// recuperer valeur capteur sur contexte
-		double temp_int = 20; // temperature interieur, fixée pour test
-		// récuperer valeur consigne sur contexte ou optimisateur directement
-		double temp_cons = 21; // temperature de consigne, fixée pour test
-
 		// variable pour régulation
 		double diff_temp = 0; // erreur : différence entre temperature désirée
 								// et température mesurée
