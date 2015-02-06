@@ -97,7 +97,7 @@ public class ArffGenerated {
      * @param att params
      * @return true
      */
-    private boolean addData4lum(double... att) {
+    private boolean addData4Regul(double... att) {
         instance = new Instance(7);
         instance.setValue(data.attribute("i_temp"), att[0]);
         instance.setValue(data.attribute("o_temp"), att[1]);
@@ -112,7 +112,7 @@ public class ArffGenerated {
         return true;
     }
 
-    private boolean addData4Regul(double... att) {
+    private boolean addData4lum(double... att) {
         instance = new Instance(5);
         instance.setValue(data.attribute("season"), att[0]);
         instance.setValue(data.attribute("cloud"), att[1]);

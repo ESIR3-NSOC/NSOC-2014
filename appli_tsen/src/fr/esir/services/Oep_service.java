@@ -12,20 +12,20 @@ import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Prevision;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
-import fr.esir.oep.AsynchDB;
-import fr.esir.oep.AsynchWeather;
-import fr.esir.oep.DatabaseRegression;
-import fr.esir.oep.PredictBroadcastReceiver;
+import fr.esir.oep.*;
 import fr.esir.ressources.FilterString;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class Oep_service extends Service implements OnSearchCompleted, Service_oep {
     private final IBinder mBinder = new LocalBinder();
-    private AlarmManager am;
+    //private AlarmManager am;
+    private RepetetiveTask rt;
 
     private Prevision db;
 
@@ -36,7 +36,8 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
 
     @Override
     public boolean onUnbind(Intent intent) {
-        am = null;
+        //am = null;
+        rt.getScheduler().shutdown();
         return super.onUnbind(intent);
     }
 
@@ -50,18 +51,27 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
         //oep alarm manager
         //create new calendar instance
         Log.w("predictinitalarm", "ok");
-        Calendar sixAMCalendar = Calendar.getInstance();
-        sixAMCalendar.setTimeInMillis(System.currentTimeMillis());
-        //set the time to 1AM
-        sixAMCalendar.set(Calendar.HOUR_OF_DAY, 0);
-        sixAMCalendar.set(Calendar.MINUTE, 11);
-        sixAMCalendar.set(Calendar.SECOND, 0);
-        am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+
+
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        long howMany = (c.getTimeInMillis()-System.currentTimeMillis())+ (60*60*1000);
+        Date dt = new Date();
+        long l = dt.getTime();
+        Log.w("l",l+"");
+
+        rt = new RepetetiveTask(2);
+        //long firstDelay =
+         /*am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         //create a pending intent to be called at midnight
         Intent sixI = new Intent(this, PredictBroadcastReceiver.class);
         PendingIntent sixAMPI = PendingIntent.getBroadcast(this, 0, sixI, PendingIntent.FLAG_UPDATE_CURRENT);
         //schedule time for pending intent, and set the interval to day so that this event will repeat at the selected time every day
-        am.setRepeating(AlarmManager.RTC_WAKEUP, sixAMCalendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, sixAMPI);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, sixAMCalendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, sixAMPI);*/
         return true;
     }
 

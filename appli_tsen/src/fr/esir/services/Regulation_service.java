@@ -47,11 +47,11 @@ public class Regulation_service extends Service {
                     bundle = intent.getBundleExtra("Data");
                     if (bundle != null) {
                         List<DatesInterval> listConsigne = (List<DatesInterval>) bundle.getSerializable("List");
-                        for (DatesInterval entry : listConsigne) {
+                        /*for (DatesInterval entry : listConsigne) {
                             Log.w(TAG, "Between " + entry.getStartDate() + " and " + entry.getStartEnd()
                                     + " the temperature in the classroom " + entry.getLesson()
                                     + " must be " + entry.getConsigne() + " °C");
-                        }
+                        }*/
                     }
             }
         }

@@ -7,7 +7,6 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
-import fr.esir.regulation.interface_service.Service_regulation;
 import fr.esir.ressources.FilterString;
 import fr.esir.services.Context_service;
 import fr.esir.services.Knx_service;
@@ -19,7 +18,7 @@ public class MyActivity extends Activity {
     public Context_service mContext_service;
     public static Service_oep mOep_service;
     public Knx_service mKnx_service;
-    public static Service_regulation mRegulation_service;
+    public Regulation_service mRegulation_service;
     TextView context_state;
     TextView oep_state;
     TextView regulation_state;
@@ -135,8 +134,8 @@ public class MyActivity extends Activity {
         bindService(oepServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // start the service regulation_service
-        Intent regulationServiceIntent = new Intent(this.getApplicationContext(), Regulation_service.class);
-        bindService(regulationServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        //Intent regulationServiceIntent = new Intent(this.getApplicationContext(), Regulation_service.class);
+        //bindService(regulationServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // start the service knx_service
         //Intent knxServiceIntent = new Intent(this.getApplicationContext(), Knx_service.class);
