@@ -8,7 +8,6 @@ public class DataFromKNX {
     private double o_temp;
     private double i_hum;
     private double o_hum;
-    private double i_lum;
     private double o_lum;
 
     private double cons;
@@ -18,7 +17,6 @@ public class DataFromKNX {
         this.o_temp =0;
         this.i_hum = 0;
         this.o_hum = 0;
-        this.i_lum = 0;
         this.o_lum =0;
 
         this.cons = 0;
@@ -40,10 +38,6 @@ public class DataFromKNX {
         return o_hum;
     }
 
-    public double getI_lum(){
-        return i_lum;
-    }
-
     public double getO_lum(){
         return o_lum;
     }
@@ -52,31 +46,31 @@ public class DataFromKNX {
         return cons;
     }
 
-    public void setI_temp(){
+    public void setI_temp(double t){
 
     }
 
-    public void setO_temp(){
+    public void setO_temp(double t){
 
     }
 
-    public void setI_hum(){
+    public void setI_hum(double h){
 
     }
 
-    public void setO_hum(){
+    public void setO_hum(double h){
 
     }
 
-    public void setI_lum(){
+    public void setI_lum(double l){
 
     }
 
-    public void setO_lum(){
+    public void setO_lum(double l){
 
     }
 
-    public void setCons(){
+    public void setCons(double c){
 
     }
 }
