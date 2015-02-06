@@ -43,7 +43,7 @@ public class DatabaseRegression implements Prevision {
         this.listener = os;
     }
 
-    public List<DatesInterval> getList(){
+    public List<DatesInterval> getList() {
         return list;
     }
 
@@ -75,12 +75,11 @@ public class DatabaseRegression implements Prevision {
             while (result.next()) {
                 wasInLoop = true;
                 Time dat = result.getTime(2);
+                Calendar calendar = new GregorianCalendar();
+                calendar.setTime(dat);
                 if (!weatherMap.containsKey(dat)) {
-                    Calendar calendar = new GregorianCalendar();
-                    calendar.setTime(dat);
-                    Log.w("dateTime", Calendar.HOUR_OF_DAY + "");
                     weather.executeSearch(calendar.get(Calendar.HOUR_OF_DAY));
-                    weatherMap.put(dat, weather);
+                    weatherMap.put(calendar.getTime(), weather);
                 }
 
                 ArffGenerated arff = new ArffGenerated();
@@ -116,23 +115,22 @@ public class DatabaseRegression implements Prevision {
                 //
                 arff.addInstance(weather.getHumidity(), weather.getTemp(),
                         weather.getLum());
-                Time tm = result.getTime(2);
                 // execute the model on the data
                 Double tempC = arff.executeModel();
-                DatesInterval dateinterv = new DatesInterval(result.getString(1), tm, result.getTime(3),
-                        verifSeuil(tempC), weatherMap.get(dat).getTemp(), weatherMap.get(dat).getLum(), weatherMap.get(dat).getHumidity(), result.getString(4));
+                DatesInterval dateinterv = new DatesInterval(result.getString(1), dat, result.getTime(3),
+                        verifSeuil(tempC), weatherMap.get(calendar.getTime()).getTemp(), weatherMap.get(calendar.getTime()).getLum(), weatherMap.get(calendar.getTime()).getHumidity(), result.getString(4));
 
-                if (!datesinte.containsKey(tm)) {
-                    Log.w("tm", tm + "");
-                    datesinte.put(tm, new ArrayList<>());
-                    datesinte.get(tm).add(dateinterv);
+                if (!datesinte.containsKey(dat)) {
+                    Log.w("tm", dat + "");
+                    datesinte.put(dat, new ArrayList<>());
+                    datesinte.get(dat).add(dateinterv);
                 } else {
-                    datesinte.get(tm).add(dateinterv);
+                    datesinte.get(dat).add(dateinterv);
                 }
             }
         }
 
-        if (wasInLoop){
+        if (wasInLoop) {
             list = calcultab(datesinte);
             listener.onSearchCompleted();
         }
