@@ -134,8 +134,8 @@ public class MyActivity extends Activity {
         bindService(oepServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // start the service regulation_service
-        //Intent regulationServiceIntent = new Intent(this.getApplicationContext(), Regulation_service.class);
-        //bindService(regulationServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        Intent regulationServiceIntent = new Intent(this.getApplicationContext(), Regulation_service.class);
+        bindService(regulationServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // start the service knx_service
         //Intent knxServiceIntent = new Intent(this.getApplicationContext(), Knx_service.class);

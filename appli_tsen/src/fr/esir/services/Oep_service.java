@@ -64,7 +64,7 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
         long l = dt.getTime();
         Log.w("l",l+"");
 
-        rt = new RepetetiveTask(2);
+        rt = new RepetetiveTask(2,RepetetiveTask.ACTION_PREDICT);
         //long firstDelay =
          /*am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         //create a pending intent to be called at midnight

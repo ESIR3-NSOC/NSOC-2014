@@ -12,11 +12,14 @@ import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import fr.esir.ressources.FilterString;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Regulation_service extends Service {
     private final static String TAG = Context_service.class.getSimpleName();
     private final IBinder mBinder = new LocalBinder();
+    private List<DatesInterval> listConsigne;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -46,16 +49,33 @@ public class Regulation_service extends Service {
                     Log.w(TAG, "reception sonsignes ok");
                     bundle = intent.getBundleExtra("Data");
                     if (bundle != null) {
-                        List<DatesInterval> listConsigne = (List<DatesInterval>) bundle.getSerializable("List");
-                        /*for (DatesInterval entry : listConsigne) {
-                            Log.w(TAG, "Between " + entry.getStartDate() + " and " + entry.getStartEnd()
-                                    + " the temperature in the classroom " + entry.getLesson()
-                                    + " must be " + entry.getConsigne() + " °C");
-                        }*/
+                        listConsigne = (List<DatesInterval>) bundle.getSerializable("List");
+                        sortList(listConsigne);
                     }
             }
         }
     };
+
+    public void setAlarm30B4(){
+        listConsigne.get(0);
+    }
+
+    private void sortList(List<DatesInterval> l) {
+        Collections.sort(l, new Comparator<DatesInterval>() {
+            @Override
+            public int compare(DatesInterval lhs, DatesInterval rhs) {
+                return lhs.getStartDate().getTime() < rhs.getStartDate().getTime() ?
+                        -1 : lhs.getStartDate().getTime() > rhs.getStartDate().getTime() ?
+                        1 : 0;
+            }
+        });
+
+        for (DatesInterval entry : l) {
+            Log.w(TAG, "Between " + entry.getStartDate() + " and " + entry.getStartEnd()
+                    + " the temperature in the classroom " + entry.getLesson()
+                    + " must be " + entry.getConsigne() + " °C");
+        }
+    }
 
     public boolean initialize() {
         registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());

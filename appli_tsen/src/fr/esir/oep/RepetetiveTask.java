@@ -13,14 +13,27 @@ import java.util.concurrent.TimeUnit;
 public class RepetetiveTask {
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-    public RepetetiveTask(long firstDelay){
-        scheduler.scheduleWithFixedDelay(new DoSomethingTask(), firstDelay, 1440, TimeUnit.MINUTES);
+    public static int ACTION_PREDICT = 1;
+    public static int ACTION_REGUL = 2;
+
+    public RepetetiveTask(long firstDelay,int action){
+        if(action == ACTION_PREDICT)
+            scheduler.scheduleWithFixedDelay(new DoSomethingTask(), firstDelay, 1440, TimeUnit.MINUTES);
+        else if(action == ACTION_REGUL)
+            scheduler.scheduleWithFixedDelay(new DoOtherSomethingTask(), firstDelay, 1440, TimeUnit.MINUTES);
     }
 
     private class DoSomethingTask implements Runnable{
         @Override
         public void run(){
             doSomething();
+        }
+    }
+
+    private class DoOtherSomethingTask implements Runnable{
+        @Override
+        public void run(){
+            doOtherSomething();
         }
     }
 
@@ -34,5 +47,13 @@ public class RepetetiveTask {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void doOtherSomething(){
+        //look for sensors values -> put in a DataFromKNX
+        //use the new object in the MachineLearning class
+        //check i_temp sensor value and wait the temp is "consigne"
+        //calculate the difference between the start and end dates
+        //add the values to the arff file
     }
 }
