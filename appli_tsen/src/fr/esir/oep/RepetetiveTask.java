@@ -12,15 +12,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class RepetetiveTask {
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private double consigne;
 
-    public static int ACTION_PREDICT = 1;
-    public static int ACTION_REGUL = 2;
-
-    public RepetetiveTask(long firstDelay,int action){
-        if(action == ACTION_PREDICT)
+    public RepetetiveTask(long firstDelay){
             scheduler.scheduleWithFixedDelay(new DoSomethingTask(), firstDelay, 1440, TimeUnit.MINUTES);
-        else if(action == ACTION_REGUL)
-            scheduler.scheduleWithFixedDelay(new DoOtherSomethingTask(), firstDelay, 1440, TimeUnit.MINUTES);
+    }
+
+    public  RepetetiveTask(long delay, double consigne){
+        this.consigne = consigne;
+        scheduler.schedule(new DoOtherSomethingTask(), delay, TimeUnit.MINUTES);
     }
 
     private class DoSomethingTask implements Runnable{
@@ -50,7 +50,7 @@ public class RepetetiveTask {
     }
 
     private void doOtherSomething(){
-        //look for sensors values -> put in a DataFromKNX
+        //look for sensors values int the context service -> put in a DataFromKNX
         //use the new object in the MachineLearning class
         //check i_temp sensor value and wait the temp is "consigne"
         //calculate the difference between the start and end dates

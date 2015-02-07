@@ -9,7 +9,9 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import com.example.esir.nsoc2014.regulator.knx.DataFromKNX;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
+import fr.esir.oep.RepetetiveTask;
 import fr.esir.ressources.FilterString;
 
 import java.util.Collections;
@@ -20,6 +22,7 @@ public class Regulation_service extends Service {
     private final static String TAG = Context_service.class.getSimpleName();
     private final IBinder mBinder = new LocalBinder();
     private List<DatesInterval> listConsigne;
+    public RepetetiveTask rt;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -56,8 +59,16 @@ public class Regulation_service extends Service {
         }
     };
 
-    public void setAlarm30B4(){
-        listConsigne.get(0);
+    public void setAlarm30B4() {
+        long startDate = listConsigne.get(0).getStartDate().getTime();
+        //30 minutes before the lesson
+        long min30B4StartDate = startDate - (30 * 60 * 1000);
+
+        double cons = listConsigne.get(0).getConsigne();
+        long currentDate = System.currentTimeMillis();
+
+        //start a task 30 minutes before the lesson = predict the heat time
+        rt = new RepetetiveTask((startDate - currentDate) - min30B4StartDate, cons);
     }
 
     private void sortList(List<DatesInterval> l) {
@@ -75,6 +86,10 @@ public class Regulation_service extends Service {
                     + " the temperature in the classroom " + entry.getLesson()
                     + " must be " + entry.getConsigne() + " °C");
         }
+    }
+
+    public void getDataFromContext(){
+        DataFromKNX dfk = new DataFromKNX();
     }
 
     public boolean initialize() {
