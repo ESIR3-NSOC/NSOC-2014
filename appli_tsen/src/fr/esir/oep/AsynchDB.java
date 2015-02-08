@@ -77,6 +77,7 @@ public class AsynchDB extends AsyncTask<Void, Void, ResultSet> {
                     + sh.getString("DATE",datenow)
                     + "') as tmp1 on correspondence_22.EVENT_ID = tmp1.UID) as tmp2 on tree_object_22.id=tmp2.ADE_ID join event_22 on tmp2.EVENT_ID=event_22.UID WHERE NAME NOT LIKE \"%"
                     + sh.getString("NAMEROOM","104") + "%\"";
+            Log.w("sql",sql);
             return st.executeQuery(sql);
         }
         return null;

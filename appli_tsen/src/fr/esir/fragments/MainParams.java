@@ -20,7 +20,7 @@ import fr.esir.maintasks.R;
  */
 public class MainParams extends Fragment {
     FragmentManager fm;
-    Context context = ConfigParams.context;
+    Context context;
     SharedPreferences pref;
 
     EditText idr;
@@ -35,7 +35,7 @@ public class MainParams extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), android.R.style.Theme_Black);
         LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
-
+        context = ConfigParams.context;
         View v = localInflater.inflate(R.layout.main_params, container, false);
         pref = context.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
 

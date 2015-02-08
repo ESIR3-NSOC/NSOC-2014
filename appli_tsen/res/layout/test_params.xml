@@ -3,7 +3,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
     <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:layout_centerHorizontal="true" android:layout_marginTop="20dp" android:orientation="vertical">
+                  android:layout_centerHorizontal="true" android:layout_marginTop="20dp" android:orientation="vertical"
+                  android:id="@+id/linearLayout">
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -13,22 +14,31 @@
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp"
                   android:text="@string/prevision"
                   android:layout_marginTop="15dp"/>
-    </LinearLayout>
-    <TableLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-                 android:layout_marginTop="100dp">
-        <TableRow android:layout_marginBottom="15dp">
+        <!--
+                <TableRow android:layout_marginBottom="15dp">--><!--
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:text="@string/date" android:textSize="18sp" android:layout_marginRight="5dp"/>
-            <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/date"
-                      android:hint="@string/date_spe" android:textSize="18sp" android:inputType="textMultiLine"
-                      android:scrollHorizontally="false"/>
-        </TableRow>
-        <TableRow>
+                      android:text="@string/date" android:textSize="18sp" android:layout_marginRight="5dp"/>-->
+        <!--<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/date"
+                  android:hint="@string/date_spe" android:textSize="18sp" android:inputType="textMultiLine"
+                  android:scrollHorizontally="false"/>-->
+
+        <!--</TableRow>
+        <TableRow>-->
+        <include
+                android:id="@+id/subCategory"
+                layout="@layout/calview"/>
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:orientation="horizontal" android:layout_marginTop="25dp">
+
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:text="@string/delay" android:textSize="18sp" android:layout_marginRight="5dp"/>
             <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/delay"
                       android:hint="@string/delay_spe" android:textSize="18sp" android:inputType="textMultiLine"/>
-        </TableRow>
+        </LinearLayout>
+        <!--</TableRow>-->
+    </LinearLayout>
+    <TableLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                 android:layout_marginTop="100dp" android:id="@+id/tableLayout">
     </TableLayout>
     <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:layout_centerHorizontal="true"
