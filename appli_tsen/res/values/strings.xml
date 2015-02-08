@@ -34,6 +34,10 @@
     <string name="date_spe">Retrieve the information \n of this specific day yyyy-mm-dd</string>
     <string name="delay">Starting delay</string>
     <string name="delay_spe">Set up the delay before \n starting the prevision</string>
+    <string name="tmini">Temp. min</string>
+    <string name="tmaxi">Temp. max</string>
+    <string name="ctmin">Minimum temperature in °C</string>
+    <string name="ctmax">Maximum temperature in °C</string>
 
     <string name="def">Default</string>
 </resources>

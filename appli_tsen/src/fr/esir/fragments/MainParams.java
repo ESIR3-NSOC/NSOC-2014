@@ -25,10 +25,14 @@ public class MainParams extends Fragment {
 
     EditText idr;
     EditText nr;
+    EditText mt;
+    EditText tm;
 
-    private void setSharedPref(){
+    private void setSharedPref() {
         pref.edit().putString("IDROOM", idr.getText().toString()).apply();
         pref.edit().putString("NAMEROOM", nr.getText().toString()).apply();
+        pref.edit().putString("TEMPMIN", mt.getText().toString()).apply();
+        pref.edit().putString("TEMPMAX", tm.getText().toString()).apply();
     }
 
     @Override
@@ -39,20 +43,26 @@ public class MainParams extends Fragment {
         View v = localInflater.inflate(R.layout.main_params, container, false);
         pref = context.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
 
+        mt = (EditText) v.findViewById(R.id.tmin);
+        mt.setText(pref.getString("TEMPMIN", "20"));
+
+        tm = (EditText) v.findViewById(R.id.tmax);
+        tm.setText(pref.getString("TEMPMAX", "25"));
+
         idr = (EditText) v.findViewById(R.id.idRoom);
         idr.setText(pref.getString("IDROOM", "1005"));
 
         nr = (EditText) v.findViewById(R.id.nameRoom);
-        nr.setText(pref.getString("NAMEROOM","104"));
+        nr.setText(pref.getString("NAMEROOM", "104"));
 
-                (v.findViewById(R.id.button_test)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        setSharedPref();
-                        TestParams tp = new TestParams();
-                        fm.beginTransaction().replace(R.id.container, tp).commit();
-                    }
-                });
+        (v.findViewById(R.id.button_test)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSharedPref();
+                TestParams tp = new TestParams();
+                fm.beginTransaction().replace(R.id.container, tp).commit();
+            }
+        });
 
         (v.findViewById(R.id.button_start)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +78,8 @@ public class MainParams extends Fragment {
             public void onClick(View v) {
                 idr.setText("1005");
                 nr.setText("104");
+                mt.setText("20");
+                tm.setText("25");
             }
         });
 

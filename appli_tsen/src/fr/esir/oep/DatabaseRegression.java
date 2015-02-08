@@ -12,6 +12,8 @@
 
 package fr.esir.oep;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
@@ -19,6 +21,7 @@ import com.example.esir.nsoc2014.tsen.lob.interfaces.Prevision;
 import com.example.esir.nsoc2014.tsen.lob.objects.ArffGenerated;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import com.example.esir.nsoc2014.tsen.lob.objects.WeatherForecast;
+import fr.esir.maintasks.ConfigParams;
 
 import java.io.*;
 import java.sql.ResultSet;
@@ -29,8 +32,6 @@ import java.util.Map.Entry;
 public class DatabaseRegression implements Prevision {
 
     private WeatherForecast weather;
-    private double minTemp = 0;
-    private double maxTemp = 0;
     private HashMap<Time, List<DatesInterval>> datesinte;
     private List<DatesInterval> list;
 
@@ -178,72 +179,10 @@ public class DatabaseRegression implements Prevision {
     }
 
     private double verifSeuil(double temp) {
-        findMinMax();
+        SharedPreferences sh = ConfigParams.context.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
+        Double minTemp = Double.parseDouble(sh.getString("TEMPMIN","20"));
+        Double maxTemp = Double.parseDouble(sh.getString("TEMPMAX","25"));
         return temp < minTemp ? minTemp : (temp > maxTemp ? maxTemp
                 : temp);
-    }
-
-    private void createMyFile(String content) {
-        try {
-            String externalStorage = Environment.getExternalStorageDirectory().getAbsolutePath();
-            File myFile = new File(externalStorage + File.separator + "DCIM", "tsen_confData.txt");
-
-            FileWriter fileWriter = new FileWriter(myFile);
-            fileWriter.append(content);
-            fileWriter.flush();
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     *
-     */
-    private void findMinMax() {
-        try {
-            String externalStorage = Environment.getExternalStorageDirectory().getAbsolutePath();
-
-            File file = new File(externalStorage + File.separator + "DCIM" + File.separator + "tsen_confData.txt");
-            //File file = new File("data/tsen_confData.txt");
-            if (!file.exists()) {
-                String content = "ADE_ID:1005\n" +
-                        "SALLE:104\n" +
-                        "tres chaud:-1\n" +
-                        "chaud:-0.5\n" +
-                        "bon:0\n" +
-                        "froid:0.5\n" +
-                        "tres froid:1\n" +
-                        "minValue:20\n" +
-                        "maxValue:24";
-                createMyFile(content);
-            }
-            //Log.w("path", file.getAbsolutePath() + "");
-            FileReader fileToRead = new FileReader(file);
-            BufferedReader bf = new BufferedReader(fileToRead);
-            String aLine;
-            String[] values;
-            boolean okmin = false;
-            boolean okmax = false;
-            while ((aLine = bf.readLine()) != null || (!okmin && !okmax)) {
-                if (aLine.startsWith("minValue")) {
-                    values = aLine.split(":");
-                    minTemp = Double.parseDouble(values[1]);
-
-                    okmin = true;
-                } else if (aLine.startsWith("maxValue")) {
-                    values = aLine.split(":");
-                    maxTemp = Double.parseDouble(values[1]);
-                    okmax = true;
-                }
-            }
-            if (!okmin)
-                minTemp = 20;
-            if (!okmax)
-                maxTemp = 24;
-            bf.close();
-        } catch (IOException e) {
-            //nothing happened
-        }
     }
 }

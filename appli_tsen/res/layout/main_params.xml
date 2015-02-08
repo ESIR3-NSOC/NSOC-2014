@@ -23,13 +23,29 @@
                           android:textSize="18sp"
                           android:hint="@string/idRoom" android:id="@+id/idRoom"/>
             </TableRow>
-            <TableRow>
+            <TableRow android:layout_marginBottom="20dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:textSize="18sp"
                           android:text="@string/name" android:layout_marginRight="20dp"/>
                 <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:textSize="18sp"
                           android:hint="@string/nameRoom" android:id="@+id/nameRoom"/>
+            </TableRow>
+            <TableRow android:layout_marginBottom="20dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp"
+                          android:text="@string/tmini"/>
+                <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp"
+                          android:hint="@string/ctmin" android:id="@+id/tmin"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp"
+                          android:text="@string/tmaxi" android:layout_marginRight="20dp"/>
+                <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp"
+                          android:hint="@string/ctmax" android:id="@+id/tmax"/>
             </TableRow>
         </TableLayout>
     </LinearLayout>
