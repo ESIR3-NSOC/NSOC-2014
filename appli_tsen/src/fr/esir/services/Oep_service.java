@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -12,6 +13,7 @@ import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Prevision;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
+import fr.esir.maintasks.ConfigParams;
 import fr.esir.oep.*;
 import fr.esir.ressources.FilterString;
 
@@ -26,6 +28,7 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
     private final IBinder mBinder = new LocalBinder();
     //private AlarmManager am;
     private RepetetiveTask rt;
+    private Context context = ConfigParams.context;
 
     private Prevision db;
 
@@ -48,6 +51,7 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
     }
 
     public boolean initialize() {
+        SharedPreferences sh = context.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
         //oep alarm manager
         //create new calendar instance
         Log.w("predictinitalarm", "ok");
@@ -55,16 +59,16 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
 
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DAY_OF_MONTH, 1);
-        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.HOUR_OF_DAY, 1);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
-        long howMany = (c.getTimeInMillis()-System.currentTimeMillis())+ (60*60*1000);
+        long howMany = c.getTimeInMillis()-System.currentTimeMillis();
         Date dt = new Date();
         long l = dt.getTime();
         Log.w("l",l+"");
-
-        rt = new RepetetiveTask(2);
+        Log.w("DELAY", sh.getLong("DELAY",howMany)+"");
+        rt = new RepetetiveTask(sh.getLong("DELAY",howMany));
         //long firstDelay =
          /*am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         //create a pending intent to be called at midnight

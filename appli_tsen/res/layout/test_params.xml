@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:layout_centerHorizontal="true" android:layout_marginTop="20dp" android:orientation="vertical">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/testParamsTitle"
+                android:id="@+id/textView"
+                android:textSize="25sp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp"
+                  android:text="@string/prevision"
+                  android:layout_marginTop="15dp"/>
+    </LinearLayout>
+    <TableLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                 android:layout_marginTop="100dp">
+        <TableRow android:layout_marginBottom="15dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="@string/date" android:textSize="18sp" android:layout_marginRight="5dp"/>
+            <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/date"
+                      android:hint="@string/date_spe" android:textSize="18sp" android:inputType="textMultiLine"
+                      android:scrollHorizontally="false"/>
+        </TableRow>
+        <TableRow>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="@string/delay" android:textSize="18sp" android:layout_marginRight="5dp"/>
+            <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/delay"
+                      android:hint="@string/delay_spe" android:textSize="18sp" android:inputType="textMultiLine"/>
+        </TableRow>
+    </TableLayout>
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:layout_centerHorizontal="true"
+                  android:layout_alignParentBottom="true">
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/def" android:id="@+id/but_def"/>
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/main_params" android:id="@+id/button_main"/>
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/start"
+                android:id="@+id/button_start"/>
+    </LinearLayout>
+</RelativeLayout>

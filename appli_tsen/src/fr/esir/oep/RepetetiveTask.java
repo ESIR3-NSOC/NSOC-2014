@@ -15,7 +15,7 @@ public class RepetetiveTask {
     private double consigne;
 
     public RepetetiveTask(long firstDelay){
-            scheduler.scheduleWithFixedDelay(new DoSomethingTask(), firstDelay, 1440, TimeUnit.MINUTES);
+            scheduler.scheduleWithFixedDelay(new DoSomethingTask(), firstDelay, 86400000, TimeUnit.MILLISECONDS);
     }
 
     public  RepetetiveTask(long delay, double consigne){

@@ -1,8 +1,11 @@
 package fr.esir.oep;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
+import fr.esir.maintasks.ConfigParams;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,6 +18,7 @@ import java.util.Date;
 public class AsynchDB extends AsyncTask<Void, Void, ResultSet> {
     private String room;
     private String id;
+    private Context context = ConfigParams.context;
 
     private OnSearchCompleted listener;
 
@@ -60,6 +64,7 @@ public class AsynchDB extends AsyncTask<Void, Void, ResultSet> {
     }
 
     public ResultSet getDataFromDB(Connection conn) throws SQLException {
+        SharedPreferences sh = context.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
         Date dt = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
         String datenow = ft.format(dt);
@@ -67,11 +72,11 @@ public class AsynchDB extends AsyncTask<Void, Void, ResultSet> {
         if (conn != null) {
             Statement st = conn.createStatement();
             String sql = "select DISTINCT ADE_ID,DTSTART,DTEND,SUMMARY from tree_object_22 join (select ADE_ID, EVENT_ID from correspondence_22 join (SELECT UID FROM correspondence_22 join event_22 on event_22.UID = correspondence_22.EVENT_ID WHERE ADE_ID=\""
-                    + "1005"
+                    + sh.getString("IDROOM", "1005")
                     + "\" and date(event_22.DTSTART) LIKE '"
-                    + "2015-02-06"
+                    + sh.getString("DATE",datenow)
                     + "') as tmp1 on correspondence_22.EVENT_ID = tmp1.UID) as tmp2 on tree_object_22.id=tmp2.ADE_ID join event_22 on tmp2.EVENT_ID=event_22.UID WHERE NAME NOT LIKE \"%"
-                    + "104" + "%\"";
+                    + sh.getString("NAMEROOM","104") + "%\"";
             return st.executeQuery(sql);
         }
         return null;
