@@ -49,7 +49,7 @@ public class Regulation_service extends Service {
             Bundle bundle;
             switch (action) {
                 case FilterString.OEP_DATA_CONSIGNES_OF_DAY:
-                    Log.w(TAG, "reception sonsignes ok");
+                    Log.w(TAG, "reception consignes ok");
                     bundle = intent.getBundleExtra("Data");
                     if (bundle != null) {
                         listConsigne = (List<DatesInterval>) bundle.getSerializable("List");

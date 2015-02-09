@@ -5,25 +5,21 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
 import fr.esir.maintasks.ConfigParams;
 import fr.esir.maintasks.MyActivity;
 import fr.esir.maintasks.R;
 
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Nicolas on 08/02/2015.
@@ -37,15 +33,15 @@ public class TestParams extends Fragment {
     EditText idr;
     CalendarView calendar;
 
-    private void setSharedPref(){
-        pref.edit().putLong("DELAY", Long.valueOf(idr.getText().toString()).longValue()).apply();
+    private void setSharedPref() {
+        pref.edit().putLong("DELAY", Long.valueOf(idr.getText().toString()).longValue() * 60000).apply();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), android.R.style.Theme_Black);
-        LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
-        v =  localInflater.inflate(R.layout.test_params, container, false);
+        //final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), android.R.style.Theme_Holo_);
+        //LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
+        v = inflater.inflate(R.layout.test_params, container, false);
         pref = context.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
         calendar = (CalendarView) v.findViewById(R.id.calendarView);
         idr = (EditText) v.findViewById(R.id.delay);
@@ -73,22 +69,26 @@ public class TestParams extends Fragment {
             public void onClick(View v) {
                 setSharedPref();
                 MainParams mp = new MainParams();
-                fm.beginTransaction().replace(R.id.container,mp).commit();
+                fm.beginTransaction().replace(R.id.container, mp).commit();
             }
         });
 
         return v;
     }
 
-    private void setTv(){
+    private void setTv() {
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DAY_OF_MONTH, 1);
         c.set(Calendar.HOUR_OF_DAY, 1);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
-        long howMany = c.getTimeInMillis()-System.currentTimeMillis();
-        idr.setText(pref.getLong("DELAY", howMany)+"");
+        long howMany = c.getTimeInMillis() - System.currentTimeMillis();
+        long d = pref.getLong("DELAY", howMany);
+        String st = String.format("%d",
+                TimeUnit.MILLISECONDS.toMinutes(d)
+        );
+        idr.setText(st);
 
         Date dt = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
@@ -96,15 +96,18 @@ public class TestParams extends Fragment {
         //nr.setText(pref.getString("DATE",datenow));
     }
 
-    private void setDefault(){
+    private void setDefault() {
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DAY_OF_MONTH, 1);
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
-        long howMany = c.getTimeInMillis()-System.currentTimeMillis();
-        idr.setText(howMany+"");
+        long howMany = c.getTimeInMillis() - System.currentTimeMillis();
+        String s = String.format("%d",
+                TimeUnit.MILLISECONDS.toMinutes(howMany)
+        );
+        idr.setText(s);
 
 /*
         Date dt = new Date();
@@ -120,7 +123,7 @@ public class TestParams extends Fragment {
     }
 
     public void initializeCalendar() {
-        calendar.setBackgroundColor(Color.BLACK);
+        //calendar.setBackgroundColor(Color.BLACK);
         // sets whether to show the week number.
         calendar.setShowWeekNumber(false);
 
@@ -146,8 +149,8 @@ public class TestParams extends Fragment {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
                 month += 1;
-                String m = month < 10 ? "0"+month : month+"";
-                String d = day < 10 ? "0"+day : day+"";
+                String m = month < 10 ? "0" + month : month + "";
+                String d = day < 10 ? "0" + day : day + "";
                 Log.w("Date", year + "-" + m + "-" + d);
                 pref.edit().putString("DATE", year + "-" + m + "-" + d).apply();
             }

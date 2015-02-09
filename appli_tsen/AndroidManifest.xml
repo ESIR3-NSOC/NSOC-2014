@@ -14,7 +14,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".MyActivity" android:theme="@android:style/Theme.Light"/>
+        <activity android:name=".MyActivity"/>
         <service android:name="fr.esir.services.Oep_service"/>
         <service android:name="fr.esir.services.Regulation_service"/>
         <service android:name="fr.esir.services.Knx_service"/>

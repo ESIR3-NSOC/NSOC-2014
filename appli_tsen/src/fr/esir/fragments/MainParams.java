@@ -37,10 +37,10 @@ public class MainParams extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), android.R.style.Theme_Black);
-        LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
+        //final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), android.R.style.Theme_Holo_Light);
+        //LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
         context = ConfigParams.context;
-        View v = localInflater.inflate(R.layout.main_params, container, false);
+        View v = inflater.inflate(R.layout.main_params, container, false);
         pref = context.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
 
         mt = (EditText) v.findViewById(R.id.tmin);

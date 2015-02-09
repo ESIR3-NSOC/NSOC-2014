@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 public class Oep_service extends Service implements OnSearchCompleted, Service_oep {
     private final IBinder mBinder = new LocalBinder();
@@ -64,9 +65,6 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
         long howMany = c.getTimeInMillis()-System.currentTimeMillis();
-        Date dt = new Date();
-        long l = dt.getTime();
-        Log.w("l",l+"");
         Log.w("DELAY", sh.getLong("DELAY",howMany)+"");
         rt = new RepetetiveTask(sh.getLong("DELAY",howMany));
         //long firstDelay =
