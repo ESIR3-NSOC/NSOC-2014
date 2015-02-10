@@ -18,4 +18,7 @@ public class FilterString {
 
     public final static String OEP_EXTRA_DATA =
             "fr.esir.services.Oep_service.EXTRA_DATA";
+
+    public final static String RECEIVE_VOTE =
+            "fr.esir.context.vote";
 }

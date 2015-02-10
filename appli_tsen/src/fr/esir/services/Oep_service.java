@@ -42,6 +42,7 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
     public boolean onUnbind(Intent intent) {
         //am = null;
         rt.getScheduler().shutdown();
+        rt = null;
         return super.onUnbind(intent);
     }
 
@@ -56,7 +57,6 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
         //oep alarm manager
         //create new calendar instance
         Log.w("predictinitalarm", "ok");
-
 
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DAY_OF_MONTH, 1);

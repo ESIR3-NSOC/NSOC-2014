@@ -55,5 +55,6 @@ public class RepetetiveTask {
         //check i_temp sensor value and wait the temp is "consigne"
         //calculate the difference between the start and end dates
         //add the values to the arff file
+        scheduler.shutdown();
     }
 }

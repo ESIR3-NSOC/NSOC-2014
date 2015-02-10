@@ -16,6 +16,7 @@ public class DatesInterval implements Comparable<DatesInterval>, Serializable{
     private double lum;
     private double humidity;
 
+    //constructor sent to the regul.
     public DatesInterval(Date start, Date end, double consigne, int nbPerson,
                          double temp, double lum, double humidity, String lesson) {
         this.start = start;
@@ -28,6 +29,7 @@ public class DatesInterval implements Comparable<DatesInterval>, Serializable{
         this.lesson = lesson;
     }
 
+    //constructor sent to the context
     public DatesInterval(String id,Time start, Time end, double consigne,
                          double temp, double lum, double humidity, String lesson) {
         this.start = start;
