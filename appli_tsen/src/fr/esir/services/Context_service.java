@@ -5,18 +5,22 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
-import context.Context;
+import android.util.Log;
 import fr.esir.ressources.FilterString;
 import org.codehaus.jackson.JsonNode;
+
+
+import context.Context;
 import tsen.TsenUniverse;
+
+import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 
 import java.sql.Time;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-//import context.Context;
-//import tsen.TsenUniverse;
 
 public class Context_service extends Service {
     private final static String TAG = Context_service.class.getSimpleName();

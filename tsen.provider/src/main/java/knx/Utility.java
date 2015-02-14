@@ -2,23 +2,14 @@ package knx;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.json.JSONObject;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-import tuwien.auto.calimero.KNXListener;
 import tuwien.auto.calimero.exception.KNXException;
-import tuwien.auto.calimero.knxnetip.Discoverer;
-import tuwien.auto.calimero.knxnetip.servicetype.SearchResponse;
 import tuwien.auto.calimero.link.KNXNetworkLinkIP;
 import tuwien.auto.calimero.link.medium.TPSettings;
-import weka.core.json.JSONNode;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class Utility {

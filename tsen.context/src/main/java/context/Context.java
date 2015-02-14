@@ -1,13 +1,15 @@
 package context;
 
 import knx.GroupEvent;
-import knx.KnxManager;
 import knx.SensorType;
 import org.codehaus.jackson.JsonNode;
 import org.kevoree.modeling.api.Callback;
 import org.kevoree.modeling.api.KObject;
+import org.webbitserver.WebServers;
 import tsen.*;
+import webSocketServer.WebSocketHandler;
 
+import java.net.MalformedURLException;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -18,6 +20,9 @@ public class Context {
     private TsenUniverse _universe;
     private TsenDimension _dim0;
 
+    private org.webbitserver.WebServer _wss;
+    public static final int TSEN_WS_PORT = 8081;
+
     private Thread _bufferReader;
     private boolean _isProcessingBuffer;
 
@@ -27,8 +32,13 @@ public class Context {
         _universe = universe ;
         _dim0 = _universe.dimension(0L);
         _eventBuffer = new ConcurrentLinkedQueue<>();
-        createBufferReader();
-        startContext();
+        //createBufferReader();
+        _wss = WebServers.createWebServer(TSEN_WS_PORT).add("/data",new WebSocketHandler(_wss));
+        _wss.start();
+        System.out.println("Web socket server running at : " + _wss.getUri());
+
+
+        //startContext();
     }
 
     public void startContext(){
@@ -171,11 +181,10 @@ public class Context {
 
     }
 
-
-
     public boolean isRunning(){
         return _isProcessingBuffer;
     }
+
 
 
 
