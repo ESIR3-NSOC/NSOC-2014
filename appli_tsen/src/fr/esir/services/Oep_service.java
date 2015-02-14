@@ -1,7 +1,5 @@
 package fr.esir.services;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -15,15 +13,12 @@ import com.example.esir.nsoc2014.tsen.lob.interfaces.Prevision;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
 import fr.esir.maintasks.ConfigParams;
 import fr.esir.oep.*;
-import fr.esir.ressources.FilterString;
+import fr.esir.resources.FilterString;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.concurrent.TimeUnit;
 
 public class Oep_service extends Service implements OnSearchCompleted, Service_oep {
     private final IBinder mBinder = new LocalBinder();

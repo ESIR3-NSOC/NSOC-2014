@@ -8,7 +8,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import fr.esir.ressources.FilterString;
+import fr.esir.resources.FilterString;
 import org.codehaus.jackson.JsonNode;
 
 
