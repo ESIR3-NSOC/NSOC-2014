@@ -1,5 +1,6 @@
 package fr.esir.oep;
 
+import com.example.esir.nsoc2014.regulator.knx.DataFromKNX;
 import fr.esir.maintasks.MyActivity;
 
 import java.io.IOException;
@@ -52,6 +53,14 @@ public class RepetetiveTask {
     private void doOtherSomething(){
         //look for sensors values int the context service -> put in a DataFromKNX
         //use the new object in the MachineLearning class
+        DataFromKNX dfk = new DataFromKNX();
+        dfk.setCons(consigne);
+
+        scheduler.shutdown();
+    }
+
+    private void calculateTrueHeatTime(){
+        //send cons value to regulator when it's the estimated time
         //check i_temp sensor value and wait the temp is "consigne"
         //calculate the difference between the start and end dates
         //add the values to the arff file

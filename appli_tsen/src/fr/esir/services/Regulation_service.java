@@ -12,7 +12,7 @@ import android.util.Log;
 import com.example.esir.nsoc2014.regulator.knx.DataFromKNX;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import fr.esir.oep.RepetetiveTask;
-import fr.esir.ressources.FilterString;
+import fr.esir.resources.FilterString;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -59,12 +59,12 @@ public class Regulation_service extends Service {
         }
     };
 
-    public void setAlarm30B4() {
-        long startDate = listConsigne.get(0).getStartDate().getTime();
+    public void setAlarm30B4(DatesInterval entry) {
+        long startDate = entry.getStartDate().getTime();
         //30 minutes before the lesson
         long min30B4StartDate = startDate - (30 * 60 * 1000);
 
-        double cons = listConsigne.get(0).getConsigne();
+        double cons = entry.getConsigne();
         long currentDate = System.currentTimeMillis();
 
         //start a task 30 minutes before the lesson = predict the heat time
@@ -85,6 +85,7 @@ public class Regulation_service extends Service {
             Log.w(TAG, "Between " + entry.getStartDate() + " and " + entry.getStartEnd()
                     + " the temperature in the classroom " + entry.getLesson()
                     + " must be " + entry.getConsigne() + " °C");
+            //setAlarm30B4(entry);
         }
     }
 

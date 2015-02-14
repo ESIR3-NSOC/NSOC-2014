@@ -7,7 +7,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
-import fr.esir.ressources.FilterString;
+import fr.esir.resources.FilterString;
 import fr.esir.services.Context_service;
 import fr.esir.services.Knx_service;
 import fr.esir.services.Oep_service;
@@ -138,8 +138,8 @@ public class MyActivity extends Activity {
         bindService(regulationServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // start the service knx_service
-        //Intent knxServiceIntent = new Intent(this.getApplicationContext(), Knx_service.class);
-        //bindService(knxServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        Intent knxServiceIntent = new Intent(this.getApplicationContext(), Knx_service.class);
+        bindService(knxServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
     }
 
 
