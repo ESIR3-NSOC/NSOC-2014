@@ -2,15 +2,11 @@
 class tsen.Room  {
     @id
     name : String
-
-
     @contained
     Measurement : tsen.Sensor[0,*]
-    @contained
-    lesson : tsen.Activity[0,*]
-    @contained
-    members : tsen.User[0,*]
 
+    @contained
+    member : tsen.User[0,*]
 }
 
 class tsen.Sensor {
@@ -26,20 +22,14 @@ class tsen.Sensor {
 }
 
 
-class tsen.Activity  {
-
-    @id
-    hour : String
-
-    targetTemperature : Double
-}
 
 class tsen.User  {
     @id
     id : String
-    name : String
-    surname : String
+    lesson : String
     targetTemp : Double
+
+    vote : String
 
 }
 

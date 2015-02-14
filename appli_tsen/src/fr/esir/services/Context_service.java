@@ -9,13 +9,17 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import fr.esir.ressources.FilterString;
-import org.codehaus.jackson.JsonNode;
 
 
 import context.Context;
+import org.kevoree.modeling.api.Callback;
+import org.kevoree.modeling.api.KObject;
+import tsen.Room;
 import tsen.TsenUniverse;
 
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
+import tsen.TsenView;
+import tsen.User;
 
 import java.sql.Time;
 import java.util.HashMap;
@@ -23,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Context_service extends Service {
+
     private final static String TAG = Context_service.class.getSimpleName();
     private final IBinder mBinder = new LocalBinder();
     private Context ctx;
@@ -62,8 +67,7 @@ public class Context_service extends Service {
         return true;
     }
 
-    private void broadcastUpdate(String action, Object object) {
-        final Intent intent = new Intent(action);
+    private void broadcastUpdate(Intent intent) {
         sendBroadcast(intent);
     }
 
@@ -74,7 +78,7 @@ public class Context_service extends Service {
             Bundle bundle;
             switch (action) {
                 case FilterString.OEP_DATA_STUDENTS_OF_DAY:
-                    Log.w(TAG, "reception students ok");
+                    Log.i(TAG, "reception students ok");
                     bundle = intent.getBundleExtra("Data");
                     if (bundle != null) {
                         HashMap<Time, List<DatesInterval>> map = (HashMap<Time, List<DatesInterval>>) bundle.getSerializable("HashMap");
@@ -83,21 +87,46 @@ public class Context_service extends Service {
                             for (DatesInterval entryDi : entry.getValue()) {
                                 Log.w(TAG, entryDi.getId() + " will be in classroom " + entryDi.getLesson()
                                         + ". His consigne must be " + entryDi.getConsigne() + " °C");
+                                addStudent(entryDi.getStartDate().getTime(),entryDi.getStartEnd().getTime(),entryDi.getId(),entryDi.getConsigne(),entryDi.getLesson());
                             }
                         }
                     }
                     break;
+
             }
-
-            switch(action){
-                case FilterString.CONTEXT_INIT_SENSOR : ctx.initSensors((JsonNode)intent.getExtras().get("plop")); break;
-                case FilterString.CONTEXT_UPDATE_VALUE : break;
-            }
-
-
-
         }
     };
+
+    private void addStudent(long start, long end, String studentId, double consigne, String lesson){
+        TsenView startView = ctx.getDimension().time(start);
+
+        User user = startView.createUser();
+        user.setId(studentId);
+        user.setLesson(lesson);
+        user.setTargetTemp(consigne);
+
+
+        startView.select("/", new Callback<KObject[]>() {
+            @Override
+            public void on(KObject[] kObjects) {
+                if(kObjects!=null && kObjects.length!=0){
+                    Room room = (Room)kObjects[0];
+                    room.addMember(user);
+                }
+            }
+        });
+        TsenView endView = ctx.getDimension().time(end);
+
+        startView.select("/", new Callback<KObject[]>() {
+            @Override
+            public void on(KObject[] kObjects) {
+                if(kObjects!=null && kObjects.length!=0){
+                    Room room = (Room)kObjects[0];
+                    room.removeMember(user);
+                }
+            }
+        });
+    }
 
     private static IntentFilter makeServicesUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
@@ -106,4 +135,6 @@ public class Context_service extends Service {
 
         return intentFilter;
     }
+
+
 }

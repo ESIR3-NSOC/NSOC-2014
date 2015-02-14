@@ -6,12 +6,11 @@ import org.codehaus.jackson.JsonNode;
 import org.kevoree.modeling.api.Callback;
 import org.kevoree.modeling.api.KObject;
 import org.webbitserver.WebServers;
+import org.webbitserver.WebSocketConnection;
 import tsen.*;
 import webSocketServer.WebSocketHandler;
 
-import java.net.MalformedURLException;
-import java.util.Queue;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
@@ -21,6 +20,8 @@ public class Context {
     private TsenDimension _dim0;
 
     private org.webbitserver.WebServer _wss;
+    private Map<String,WebSocketConnection> _connections;
+
     public static final int TSEN_WS_PORT = 8081;
 
     private Thread _bufferReader;
@@ -32,8 +33,9 @@ public class Context {
         _universe = universe ;
         _dim0 = _universe.dimension(0L);
         _eventBuffer = new ConcurrentLinkedQueue<>();
+
         //createBufferReader();
-        _wss = WebServers.createWebServer(TSEN_WS_PORT).add("/data",new WebSocketHandler(_wss));
+        _wss = WebServers.createWebServer(TSEN_WS_PORT).add("/data",new WebSocketHandler(_wss, this));
         _wss.start();
         System.out.println("Web socket server running at : " + _wss.getUri());
 
@@ -48,6 +50,7 @@ public class Context {
 
     public void stopContext(){
         _isProcessingBuffer = false;
+        _wss.stop();
 
     }
 
@@ -183,6 +186,41 @@ public class Context {
 
     public boolean isRunning(){
         return _isProcessingBuffer;
+    }
+
+    public void setVote(String id, String vote, long ts, WebSocketConnection connection){
+
+        TsenView view = _dim0.time(ts);
+
+        view.select("/", new Callback<KObject[]>() {
+            @Override
+            public void on(KObject[] kObjects) {
+                if(kObjects!=null && kObjects.length!=0){
+                    Room room = (Room) kObjects[0];
+
+                    room.eachMember(new Callback<User[]>() {
+                        @Override
+                        public void on(User[] users) {
+
+                            boolean findUser = false ;
+                            for(User user : users){
+                                if(user.getId().compareTo(id)==0){
+                                    user.setVote(vote);
+                                    findUser = true;
+                                }
+                            }
+
+                            if(findUser){
+                                connection.send("200");
+                            }else{
+                                connection.send("404");
+                            }
+                        }
+                    });
+
+                }
+            }
+        });
     }
 
 

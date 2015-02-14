@@ -26,11 +26,6 @@
             <version>${kmf.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.webbitserver</groupId>
-            <artifactId>webbit</artifactId>
-            <version>0.4.16-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>tsen</groupId>
             <artifactId>tsen.model</artifactId>
             <version>1.0-SNAPSHOT</version>
@@ -41,10 +36,16 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>org.webbitserver</groupId>
+            <artifactId>webbit</artifactId>
+            <version>0.4.16-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.netty</groupId>
             <artifactId>netty</artifactId>
             <version>3.2.10.Final</version>
         </dependency>
+
 
 
     </dependencies>

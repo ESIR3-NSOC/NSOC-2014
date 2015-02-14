@@ -4,14 +4,23 @@ package fr.esir.ressources;
  * Created by mathi_000 on 04/02/2015.
  */
 public class FilterString {
+
+
+    // Data send from OEP
     public final static String OEP_DATA_STUDENTS_OF_DAY =
             "Oep_service.STUDENTS_OF_DAY";
 
     public final static String OEP_DATA_CONSIGNES_OF_DAY =
             "Oep_service.CONSIGNES_OF_DAY";
 
-    public final static String CONTEXT_INIT_SENSOR =
-            "Context.InitSensor";
+
+    //Data send from Context
+
+
+
+
+
+    //Data send from KNX manager
 
     public final static String CONTEXT_UPDATE_VALUE = "Context.updateValue";
 
@@ -23,4 +32,6 @@ public class FilterString {
 
     public final static String RECEIVE_VOTE =
             "fr.esir.context.vote";
+
+
 }
