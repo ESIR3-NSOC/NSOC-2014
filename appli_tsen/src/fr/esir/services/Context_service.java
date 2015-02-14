@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import fr.esir.ressources.FilterString;
+import fr.esir.resources.FilterString;
+import org.codehaus.jackson.JsonNode;
 
 
 import context.Context;
@@ -27,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Context_service extends Service {
-
     private final static String TAG = Context_service.class.getSimpleName();
     private final IBinder mBinder = new LocalBinder();
     private Context ctx;
@@ -67,7 +68,8 @@ public class Context_service extends Service {
         return true;
     }
 
-    private void broadcastUpdate(Intent intent) {
+    private void broadcastUpdate(String action, Object object) {
+        final Intent intent = new Intent(action);
         sendBroadcast(intent);
     }
 

@@ -4,8 +4,11 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import fr.esir.knx.AsyncKNX;
+import fr.esir.knx.KnxManager;
 
 public class Knx_service extends Service {
+    private KnxManager km = new KnxManager();
     private final IBinder mBinder = new LocalBinder();
 
     @Override
@@ -15,6 +18,7 @@ public class Knx_service extends Service {
 
     @Override
     public boolean onUnbind(Intent intent) {
+        km.CloseConnection();
         return super.onUnbind(intent);
     }
 
@@ -25,8 +29,9 @@ public class Knx_service extends Service {
     }
 
     public boolean initialize() {
-
-        return false;
+        AsyncKNX aknx = new AsyncKNX();
+        aknx.execute(km);
+        return true;
     }
 
     private void broadcastUpdate(final String action) {

@@ -7,7 +7,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
-import fr.esir.ressources.FilterString;
+import fr.esir.resources.FilterString;
 import fr.esir.services.Context_service;
 import fr.esir.services.Knx_service;
 import fr.esir.services.Oep_service;
@@ -23,6 +23,14 @@ public class MyActivity extends Activity {
     TextView oep_state;
     TextView regulation_state;
     TextView knx_state;
+
+    TextView hum_out;
+    TextView hum_in;
+    TextView temp_ou;
+    TextView temp_in;
+    TextView lum_ou;
+    TextView lum_in;
+    TextView co2;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
@@ -124,6 +132,14 @@ public class MyActivity extends Activity {
         regulation_state = (TextView) findViewById(R.id.regulation_state);
         knx_state = (TextView) findViewById(R.id.knx_state);
 
+        temp_in = (TextView) findViewById(R.id.IndoorTempValue);
+        temp_ou = (TextView) findViewById(R.id.OutdoorTempValue);
+        hum_in = (TextView) findViewById(R.id.IndoorHumValue);
+        hum_out = (TextView) findViewById(R.id.OutdoorHumValue);
+        lum_ou = (TextView) findViewById(R.id.OutdoorLumValue);
+        lum_in = (TextView) findViewById(R.id.IndoorLumValue);
+        co2 = (TextView) findViewById(R.id.CO2Value);
+
         // start the service context_service
         Intent contextServiceIntent = new Intent(this.getApplicationContext(), Context_service.class);
         bindService(contextServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
@@ -138,8 +154,8 @@ public class MyActivity extends Activity {
         bindService(regulationServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // start the service knx_service
-        //Intent knxServiceIntent = new Intent(this.getApplicationContext(), Knx_service.class);
-        //bindService(knxServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        Intent knxServiceIntent = new Intent(this.getApplicationContext(), Knx_service.class);
+        bindService(knxServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
     }
 
 
@@ -164,7 +180,6 @@ public class MyActivity extends Activity {
 
     private static IntentFilter makeServicesUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(FilterString.CONTEXT_EXTRA_DATA);
         intentFilter.addAction(FilterString.REGULATION_EXTRA_DATA);
         intentFilter.addAction(FilterString.OEP_EXTRA_DATA);
 

@@ -1,4 +1,4 @@
-package fr.esir.ressources;
+package fr.esir.resources;
 
 /**
  * Created by mathi_000 on 04/02/2015.
