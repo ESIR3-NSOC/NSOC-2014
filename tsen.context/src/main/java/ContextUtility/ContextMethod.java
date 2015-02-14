@@ -18,7 +18,7 @@ public class ContextMethod {
 
 
     public static Context initContext(String roomName) {
-        TsenUniverse universe = new TsenUniverse();
+      TsenUniverse universe = new TsenUniverse();
         //connectToDataBase(universe);
         createRoom(universe.dimension(0),roomName);
         return new Context(universe);

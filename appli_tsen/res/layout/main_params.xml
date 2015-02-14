@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@drawable/app_background">
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:layout_centerHorizontal="true" android:layout_marginTop="20dp">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:text="@string/mainParams"
+                android:id="@+id/MainParams"/>
+    </LinearLayout>
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:layout_marginTop="70dp" android:layout_centerHorizontal="true">
+        <TableLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                >
+            <TableRow android:layout_marginBottom="20dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp"
+                          android:text="@string/id"/>
+                <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp"
+                          android:hint="@string/idRoom" android:id="@+id/idRoom"/>
+            </TableRow>
+            <TableRow android:layout_marginBottom="20dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp"
+                          android:text="@string/name" android:layout_marginRight="20dp"/>
+                <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp"
+                          android:hint="@string/nameRoom" android:id="@+id/nameRoom"/>
+            </TableRow>
+            <TableRow android:layout_marginBottom="20dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp"
+                          android:text="@string/tmini"/>
+                <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp"
+                          android:hint="@string/ctmin" android:id="@+id/tmin"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp"
+                          android:text="@string/tmaxi" android:layout_marginRight="20dp"/>
+                <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp"
+                          android:hint="@string/ctmax" android:id="@+id/tmax"/>
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:layout_centerHorizontal="true" android:layout_alignParentBottom="true"
+                  android:orientation="horizontal">
+        <Button android:layout_width="75dp" android:layout_height="wrap_content"
+                android:text="@string/def" android:id="@+id/but_def" android:background="@drawable/button_style1" android:layout_marginRight="15dp"/>
+        <Button android:layout_width="120dp" android:layout_height="wrap_content"
+                android:text="@string/testparams" android:id="@+id/button_test" android:background="@drawable/button_style1" android:layout_marginRight="15dp"/>
+        <Button android:layout_width="100dp" android:layout_height="wrap_content" android:text="@string/start"
+                android:id="@+id/button_start" android:background="@drawable/button_style1"/>
+    </LinearLayout>
+</RelativeLayout>

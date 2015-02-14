@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
+import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
 import fr.esir.ressources.FilterString;
 import fr.esir.services.Context_service;
 import fr.esir.services.Knx_service;
@@ -15,7 +16,7 @@ import fr.esir.services.Regulation_service;
 public class MyActivity extends Activity {
     private final static String TAG = MyActivity.class.getSimpleName();
     public Context_service mContext_service;
-    public Oep_service mOep_service;
+    public static Service_oep mOep_service;
     public Knx_service mKnx_service;
     public Regulation_service mRegulation_service;
     TextView context_state;
@@ -27,12 +28,16 @@ public class MyActivity extends Activity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             //there 4 services so we need to know which is started
-            switch(name.getClassName()){
-                case "fr.esir.services.Context_service" :
+            switch (name.getClassName()) {
+                case "fr.esir.services.Context_service":
                     mContext_service = ((Context_service.LocalBinder) service).getService();
+                    if (!mContext_service.initialize()) {
+                        Log.e(TAG, "Unable to initialize the context");
+                        finish();
+                    }
                     context_state.setText(R.string.connected);
                     break;
-                case "fr.esir.services.Oep_service" :
+                case "fr.esir.services.Oep_service":
                     mOep_service = ((Oep_service.LocalBinder) service).getService();
                     if (!mOep_service.initialize()) {
                         Log.e(TAG, "Unable to initialize the oep");
@@ -41,12 +46,20 @@ public class MyActivity extends Activity {
                     oep_state.setText(R.string.connected);
                     Log.w(TAG, "Oep initialized");
                     break;
-                case "fr.esir.services.Regulation_service" :
+                case "fr.esir.services.Regulation_service":
                     mRegulation_service = ((Regulation_service.LocalBinder) service).getService();
+                    if (!mRegulation_service.initialize()) {
+                        Log.e(TAG, "Unable to initialize the regulation");
+                        finish();
+                    }
                     regulation_state.setText(R.string.connected);
                     break;
-                case "fr.esir.services.Knx_service" :
+                case "fr.esir.services.Knx_service":
                     mKnx_service = ((Knx_service.LocalBinder) service).getService();
+                    if (!mKnx_service.initialize()) {
+                        Log.e(TAG, "Unable to initialize KNX");
+                        finish();
+                    }
                     knx_state.setText(R.string.connected);
                     break;
             }
@@ -55,25 +68,24 @@ public class MyActivity extends Activity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            switch(name.getClassName()){
-                case "fr.esir.services.Context_service" :
+            switch (name.getClassName()) {
+                case "fr.esir.services.Context_service":
                     mContext_service = null;
                     context_state.setText(R.string.disconnected);
                     break;
-                case "fr.esir.services.Oep_service" :
+                case "fr.esir.services.Oep_service":
                     mOep_service = null;
                     oep_state.setText(R.string.disconnected);
                     break;
-                case "fr.esir.services.Regulation_service" :
+                case "fr.esir.services.Regulation_service":
                     mRegulation_service = null;
                     regulation_state.setText(R.string.disconnected);
                     break;
-                case "fr.esir.services.Knx_service" :
+                case "fr.esir.services.Knx_service":
                     mKnx_service = null;
                     knx_state.setText(R.string.disconnected);
                     break;
             }
-            mContext_service = null;
         }
     };
 
@@ -82,11 +94,20 @@ public class MyActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
 
+            switch (action) {
+
+            }
         }
     };
 
     private void broadcastUpdate(final String action) {
         final Intent intent = new Intent(action);
+        sendBroadcast(intent);
+    }
+
+    private void broadcastUpdate(String action, String key, Bundle data) {
+        final Intent intent = new Intent(action);
+        intent.putExtra(key, data);
         sendBroadcast(intent);
     }
 
@@ -97,14 +118,15 @@ public class MyActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
         context_state = (TextView) findViewById(R.id.context_state);
         oep_state = (TextView) findViewById(R.id.oep_state);
         regulation_state = (TextView) findViewById(R.id.regulation_state);
         knx_state = (TextView) findViewById(R.id.knx_state);
 
         // start the service context_service
-        //Intent contextServiceIntent = new Intent(this.getApplicationContext(), Context_service.class);
-        //bindService(contextServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        Intent contextServiceIntent = new Intent(this.getApplicationContext(), Context_service.class);
+        bindService(contextServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // start the service oep_service
         //condition : the contexte_service is working
@@ -112,8 +134,8 @@ public class MyActivity extends Activity {
         bindService(oepServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // start the service regulation_service
-        //Intent regulationServiceIntent = new Intent(this.getApplicationContext(), Regulation_service.class);
-        //bindService(regulationServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        Intent regulationServiceIntent = new Intent(this.getApplicationContext(), Regulation_service.class);
+        bindService(regulationServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // start the service knx_service
         //Intent knxServiceIntent = new Intent(this.getApplicationContext(), Knx_service.class);
@@ -131,13 +153,13 @@ public class MyActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        //unregisterReceiver(mServicesUpdateReceiver);
+        unregisterReceiver(mServicesUpdateReceiver);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
+        registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
     }
 
     private static IntentFilter makeServicesUpdateIntentFilter() {
@@ -145,6 +167,7 @@ public class MyActivity extends Activity {
         intentFilter.addAction(FilterString.CONTEXT_EXTRA_DATA);
         intentFilter.addAction(FilterString.REGULATION_EXTRA_DATA);
         intentFilter.addAction(FilterString.OEP_EXTRA_DATA);
+
         return intentFilter;
     }
 }

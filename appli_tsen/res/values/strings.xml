@@ -5,15 +5,39 @@
     <string name="disconnected">Disconnected</string>
 
     <string name="NoValue">N/A</string>
-    <string name="IndoorTempLabel">Température intérieure : </string>
-    <string name="OutdoorTempLabel">Température extérieure : </string>
-    <string name="IndoorHumLabel">Humidité intérieure : </string>
-    <string name="OutdoorHumLabel">Humidité extérieure : </string>
-    <string name="IndoorLumLabel">Luminosité intérieure : </string>
-    <string name="CO2Label">Taux de CO2 : </string>
+    <string name="IndoorTempLabel">Indoor Temperature : </string>
+    <string name="OutdoorTempLabel">Outdoor Temperature : </string>
+    <string name="IndoorHumLabel">Indoor Humidity : </string>
+    <string name="OutdoorHumLabel">Outdoor Humidity : </string>
+    <string name="IndoorLumLabel">Indoor Luminosity : </string>
+    <string name="OutdoorLumLabel">Outdoor Luminosity : </string>
+    <string name="CO2Label">CO2 rate : </string>
 
     <string name="contextetv">Context service</string>
     <string name="oeptv">Oep service</string>
     <string name="regulationtetv">Regulation service</string>
     <string name="knxtv">Knx service</string>
+
+    <string name="mainParams">Main Parameters</string>
+    <string name="idRoom">Enter the id of the room</string>
+    <string name="nameRoom">Enter the name of the room</string>
+    <string name="testparams">Test Params</string>
+    <string name="start">Start Tsen</string>
+    <string name="main_params">Main Params</string>
+
+    <string name="id">Room id</string>
+    <string name="name">Room name</string>
+
+    <string name="testParamsTitle">Test Parameters</string>
+    <string name="prevision">Prevision Parameters</string>
+    <string name="date">Date</string>
+    <string name="date_spe">Retrieve the information \n of this specific day yyyy-mm-dd</string>
+    <string name="delay">Starting delay</string>
+    <string name="delay_spe">Set up the delay before \n starting the prevision</string>
+    <string name="tmini">Temp. min</string>
+    <string name="tmaxi">Temp. max</string>
+    <string name="ctmin">Minimum temperature in °C</string>
+    <string name="ctmax">Maximum temperature in °C</string>
+
+    <string name="def">Default</string>
 </resources>

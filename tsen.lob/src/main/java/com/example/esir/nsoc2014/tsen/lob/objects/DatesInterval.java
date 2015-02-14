@@ -1,21 +1,65 @@
 package com.example.esir.nsoc2014.tsen.lob.objects;
 
+import java.io.Serializable;
 import java.sql.Time;
+import java.util.Date;
 
-public class DatesInterval implements Comparable<DatesInterval> {
-    private Time start;
-    private Time end;
+public class DatesInterval implements Comparable<DatesInterval>, Serializable{
+    private Date start;
+    private Date end;
     private double consigne;
     private int nbPerson;
     private WeatherForecast prev;
+    private String lesson;
+    private String id;
+    private double temp;
+    private double lum;
+    private double humidity;
 
-    public DatesInterval(Time start, Time end, double consigne, int nbPerson,
-                         WeatherForecast prev) {
+    //constructor sent to the regul.
+    public DatesInterval(Date start, Date end, double consigne, int nbPerson,
+                         double temp, double lum, double humidity, String lesson) {
         this.start = start;
         this.end = end;
         this.consigne = consigne;
         this.nbPerson = nbPerson;
-        this.prev = prev;
+        this.humidity = humidity;
+        this.temp = temp;
+        this.lum = lum;
+        this.lesson = lesson;
+    }
+
+    //constructor sent to the context
+    public DatesInterval(String id,Time start, Time end, double consigne,
+                         double temp, double lum, double humidity, String lesson) {
+        this.start = start;
+        this.end = end;
+        this.consigne = consigne;
+        this.lesson = lesson;
+        this.humidity = humidity;
+        this.temp = temp;
+        this.lum = lum;
+        this.id = id;
+    }
+
+    public double getTemp(){
+        return temp;
+    }
+
+    public double getlum(){
+        return lum;
+    }
+
+    public double gethumidity(){
+        return humidity;
+    }
+
+    public String getId(){
+        return id;
+    }
+
+    public String getLesson(){
+        return lesson;
     }
 
     public int getNbPerson() {
@@ -30,11 +74,11 @@ public class DatesInterval implements Comparable<DatesInterval> {
         return consigne;
     }
 
-    public Time getStartDate() {
+    public Date getStartDate() {
         return start;
     }
 
-    public Time getStartEnd() {
+    public Date getStartEnd() {
         return end;
     }
 
@@ -46,10 +90,4 @@ public class DatesInterval implements Comparable<DatesInterval> {
         else
             return 1;
     }
-
-    public String toString() {
-        return "Start at " + start + " End at " + end + " Temp must be "
-                + consigne + " " + nbPerson + " people will be in the classroom.";
-    }
-
 }

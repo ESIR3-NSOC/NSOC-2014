@@ -5,7 +5,10 @@ import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.converters.ArffSaver;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ArffGenerated {
@@ -50,17 +53,40 @@ public class ArffGenerated {
         }
     };
 
+    private ArrayList<Attribute> attsregul = new ArrayList<Attribute>() {
+        private static final long serialVersionUID = 1L;
+
+        {
+            add(new Attribute("i_temp"));
+            add(new Attribute("o_temp"));
+            add(new Attribute("i_hum"));
+            add(new Attribute("o_hum"));
+            add(new Attribute("i_lum"));
+            add(new Attribute("o_lum"));
+            add(new Attribute("consigne"));
+            add(new Attribute("heat-time"));
+        }
+    };
+
+    public void generateArffRegul() {
+        FastVector fvWekaAttributes = new FastVector(4);
+        for (int i = 0; i < 7; i++) {
+            fvWekaAttributes.addElement(attsregul.get(i));
+        }
+        data = new Instances("regulation", fvWekaAttributes, 0);
+    }
+
     public void generateArff(String user_id) {
         FastVector fvWekaAttributes = new FastVector(4);
-        for(int i = 0 ; i < 4 ; i++){
+        for (int i = 0; i < 4; i++) {
             fvWekaAttributes.addElement(atts.get(i));
         }
-        data = new Instances(user_id,fvWekaAttributes,0);
+        data = new Instances(user_id, fvWekaAttributes, 0);
     }
 
     public void generateArfflum() {
         FastVector fvWekaAttributes = new FastVector(5);
-        for(int i = 0 ; i < 5 ; i++){
+        for (int i = 0; i < 5; i++) {
             fvWekaAttributes.addElement(attslum.get(i));
         }
         data = new Instances("Check_lum", fvWekaAttributes, 0);
@@ -71,6 +97,21 @@ public class ArffGenerated {
      * @param att params
      * @return true
      */
+    private boolean addData4Regul(double... att) {
+        instance = new Instance(7);
+        instance.setValue(data.attribute("i_temp"), att[0]);
+        instance.setValue(data.attribute("o_temp"), att[1]);
+        instance.setValue(data.attribute("i_hum"), att[2]);
+        instance.setValue(data.attribute("o_hum"), att[3]);
+        instance.setValue(data.attribute("o_lum"), att[4]);
+        instance.setValue(data.attribute("consigne"), att[5]);
+        instance.setValue(data.attribute("heat_time"), att[6]);
+
+        data.add(instance);
+
+        return true;
+    }
+
     private boolean addData4lum(double... att) {
         instance = new Instance(5);
         instance.setValue(data.attribute("season"), att[0]);
@@ -92,6 +133,41 @@ public class ArffGenerated {
         instance.setValue(data.attribute("lum_ext"), att[3]);
 
         data.add(instance);
+
+        return true;
+    }
+
+    public boolean addDataCustom(double humidity, double temp_e, double temp_i, double lum_e) {
+        addData(humidity, temp_e, temp_i, lum_e);
+
+        return true;
+    }
+
+    public boolean addDataCustomRegul(double i_temp, double o_temp, double i_hum, double o_hum, double o_lum, double consigne, double millitime) {
+        addData(i_temp, o_temp, i_hum, o_hum, o_lum, consigne, millitime);
+
+        return true;
+    }
+
+    public boolean addDataRegulGeneric() {
+        addData4Regul(18, 6, 30, 50, 40000, 23, 900000);
+        addData4Regul(18, 20, 20, 30, 70000, 21, 300000);
+        addData4Regul(18, 12, 35, 95, 10000, 22, 400000);
+        addData4Regul(19, 6, 30, 50, 40000, 23, 780000);
+        addData4Regul(19, 20, 20, 30, 70000, 21, 200000);
+        addData4Regul(19, 12, 35, 95, 10000, 22, 300000);
+        addData4Regul(20, 6, 30, 50, 40000, 23, 690000);
+        addData4Regul(20, 20, 20, 30, 70000, 21, 160000);
+        addData4Regul(20, 12, 35, 95, 10000, 22, 245000);
+        addData4Regul(21, 6, 30, 50, 40000, 23, 360000);
+        addData4Regul(21, 20, 20, 30, 70000, 21, 0);
+        addData4Regul(21, 12, 35, 95, 10000, 22, 280000);
+        addData4Regul(22, 6, 30, 50, 40000, 23, 120000);
+        addData4Regul(22, 20, 20, 30, 70000, 21, 0);
+        addData4Regul(22, 12, 35, 95, 10000, 22, 0);
+        addData4Regul(23, 6, 30, 50, 40000, 23, 0);
+        addData4Regul(23, 20, 20, 30, 70000, 21, 0);
+        addData4Regul(23, 12, 35, 95, 10000, 22, 0);
 
         return true;
     }
@@ -132,6 +208,7 @@ public class ArffGenerated {
         return true;
     }
 
+
     public double executeModel() throws Exception {
 
         data.setClassIndex(data.numAttributes() - 1); // checks for the //
@@ -159,6 +236,28 @@ public class ArffGenerated {
         value_futur.setValue(data.attribute("cloud"), cloud);
         value_futur.setValue(data.attribute("season"), season);
         data.add(value_futur);
+    }
+
+    public void addInstance(double i_temp, double o_temp, double i_hum, double o_hum, double o_lum, double consigne) {
+        Instance value_futur = new Instance(7);
+        value_futur.setValue(data.attribute("i_temp"), i_temp);
+        value_futur.setValue(data.attribute("o_temp"), o_temp);
+        value_futur.setValue(data.attribute("i_hum"), i_hum);
+        value_futur.setValue(data.attribute("o_hum"), o_hum);
+        value_futur.setValue(data.attribute("o_lum"), o_lum);
+        value_futur.setValue(data.attribute("consigne"), consigne);
+
+        data.add(value_futur);
+    }
+
+    public static boolean saveInstancesInArffFile(Instances dataSet, String path)
+            throws IOException {
+        ArffSaver saver = new ArffSaver();
+        saver.setInstances(dataSet);
+        saver.setFile(new File(path));
+        saver.writeBatch();
+
+        return true;
     }
 
 }

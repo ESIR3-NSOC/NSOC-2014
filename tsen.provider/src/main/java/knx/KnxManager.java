@@ -20,6 +20,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 public class KnxManager {
+    /**
+     * A listener class used to capture KNX events
+     */
+    private KnxListener listener = null;
+
+    /**
+     * The object used to read and write from the KNX network
+     */
+    private ProcessCommunicator pc = null;
 
     private KNXNetworkLinkIP _netLinkIp ;
     private Queue<GroupEvent> _eventBuffer;
@@ -44,6 +53,7 @@ public class KnxManager {
         KNXNetworkLinkIP netLinkIp = null;
 
         try {
+            listener = new KnxListener(this);
             _netLinkIp = Utility.openKnxConnection(InetAddress.getByName(Reference.KNX_ADDRESS));
         } catch (UnknownHostException e) {
             System.out.println("Could not open KNX connection");
@@ -52,7 +62,8 @@ public class KnxManager {
 
         if(netLinkIp != null ){
             try {
-                ProcessCommunicator communicator = new ProcessCommunicatorImpl(netLinkIp);
+                pc = new ProcessCommunicatorImpl(netLinkIp);
+                getPc().addProcessListener(listener);
                 createKNXListener();
             } catch (KNXLinkClosedException e) {
                 e.printStackTrace();
@@ -115,6 +126,10 @@ public class KnxManager {
 
     public boolean isConnected(){
         return _netLinkIp.isOpen();
+    }
+
+    public ProcessCommunicator getPc() {
+        return pc;
     }
 
 

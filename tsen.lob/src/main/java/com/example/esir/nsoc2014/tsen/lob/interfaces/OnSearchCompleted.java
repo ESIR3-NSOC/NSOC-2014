@@ -4,6 +4,10 @@ import java.sql.ResultSet;
 
 public interface OnSearchCompleted {
     void onSearchCompleted(boolean o);
+
     void onSearchCompleted(ResultSet o);
+
     void onSearchCompleted(String weath);
+
+    void onSearchCompleted();
 }
