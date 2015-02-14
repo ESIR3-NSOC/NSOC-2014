@@ -7,11 +7,14 @@ import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
 import context.Context;
+import fr.esir.ressources.FilterString;
+import org.codehaus.jackson.JsonNode;
 import tsen.TsenUniverse;
 
 public class Context_service extends Service {
 
     private final IBinder mBinder = new LocalBinder();
+    private Context ctx;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -31,7 +34,15 @@ public class Context_service extends Service {
     }
 
     public boolean initialize() {
-        Context ctx = new Context(new TsenUniverse());
+
+        if(ctx!=null){
+            ctx = new Context(new TsenUniverse());
+            ctx.startContext();
+            return true;
+        }else{
+
+        }
+        ctx = new Context(new TsenUniverse());
         ctx.startContext();
         return true;
     }
@@ -47,6 +58,10 @@ public class Context_service extends Service {
             final String action = intent.getAction();
             String subAction = action.split(".")[1];
 
+            switch(action){
+                case FilterString.CONTEXT_INIT_SENSOR : ctx.initSensors((JsonNode)intent.getExtras().get("plop")); break;
+                case FilterString.CONTEXT_UPDATE_VALUE : break;
+            }
 
 
 

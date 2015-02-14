@@ -77,7 +77,7 @@ public class Context {
     }
 
 
-    private void initSensors(JsonNode groups){
+    public void initSensors(JsonNode groups){
 
         String result = "";
         System.out.println("sensor initialisation ...");
