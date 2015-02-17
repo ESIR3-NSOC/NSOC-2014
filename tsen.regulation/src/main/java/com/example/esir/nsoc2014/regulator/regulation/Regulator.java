@@ -67,5 +67,11 @@ public class Regulator implements Runnable{
 	public void stop(){
 		this.activated= false;
 	}
+    public void setConsigne(double consigne){
+        this.temp_cons = consigne;
+    }
+    public void setTempInterieur(double tempInt){
+        this.temp_int = tempInt;
+    }
 
 }
