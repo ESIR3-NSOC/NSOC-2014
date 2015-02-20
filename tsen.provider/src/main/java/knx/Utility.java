@@ -40,38 +40,5 @@ public class Utility {
         return netLinkIp;
     }
 
-    public static JsonNode importGroup(){
-
-       ObjectMapper mapper = new ObjectMapper();
-        JsonNode node;
-        StringBuilder AllConf = new StringBuilder();
-
-        try {
-
-            File groupConfiguration = new File("tsen.provider/src/main/resources/knxGroup.txt");
-            InputStream read = new FileInputStream(groupConfiguration);
-            InputStreamReader lecture = new InputStreamReader(read);
-            BufferedReader br = new BufferedReader(lecture);
-            String line ;
-            while((line=br.readLine())!=null){
-                AllConf.append(line);
-            }
-            br.close();
-
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try{
-            node = mapper.readTree(AllConf.toString());
-        }catch (Exception e){
-            System.out.println("Could not import KNXGroup");
-            node =  null;
-        }
-        return node;
-    }
 
 }

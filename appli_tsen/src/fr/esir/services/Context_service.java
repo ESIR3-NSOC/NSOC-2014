@@ -8,14 +8,15 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import fr.esir.ressources.FilterString;
+import fr.esir.context.WebSocketHandler;
 import fr.esir.resources.FilterString;
-import org.codehaus.jackson.JsonNode;
 
 
 import context.Context;
 import org.kevoree.modeling.api.Callback;
 import org.kevoree.modeling.api.KObject;
+import org.webbitserver.WebServer;
+import org.webbitserver.WebServers;
 import tsen.Room;
 import tsen.TsenUniverse;
 
@@ -29,8 +30,14 @@ import java.util.List;
 import java.util.Map;
 
 public class Context_service extends Service {
+
     private final static String TAG = Context_service.class.getSimpleName();
     private final IBinder mBinder = new LocalBinder();
+
+    public static final int TSEN_WS_PORT = 8081;
+
+    private WebServer _wss;
+
     private Context ctx;
 
     @Override
@@ -52,23 +59,16 @@ public class Context_service extends Service {
 
     public boolean initialize() {
 
-        if(ctx!=null){
-            ctx = new Context(new TsenUniverse());
-            ctx.startContext();
-            return true;
-        }else{
 
-        }
+        _wss = WebServers.createWebServer(TSEN_WS_PORT).add("",new WebSocketHandler(_wss,this));
+
         ctx = new Context(new TsenUniverse());
-        ctx.startContext();
         registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
 
-        /*Context ctx = new Context(new TsenUniverse());
-        ctx.startContext();*/
         return true;
     }
 
-    private void broadcastUpdate(String action, Object object) {
+    public void broadcastUpdate(String action, String data) {
         final Intent intent = new Intent(action);
         sendBroadcast(intent);
     }
@@ -136,6 +136,10 @@ public class Context_service extends Service {
         intentFilter.addAction((FilterString.OEP_DATA_STUDENTS_OF_DAY));
 
         return intentFilter;
+    }
+
+    public Context getContext(){
+        return ctx;
     }
 
 
