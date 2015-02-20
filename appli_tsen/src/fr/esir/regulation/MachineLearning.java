@@ -1,7 +1,6 @@
 package fr.esir.regulation;
 
 import android.os.Environment;
-import com.example.esir.nsoc2014.regulator.knx.DataFromKNX;
 import com.example.esir.nsoc2014.tsen.lob.objects.ArffGenerated;
 
 import java.io.File;

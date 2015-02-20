@@ -1,4 +1,6 @@
-package com.example.esir.nsoc2014.regulator.knx;
+package fr.esir.regulation;
+
+import fr.esir.maintasks.MyActivity;
 
 /**
  * Created by Nicolas on 06/02/2015.
@@ -12,14 +14,14 @@ public class DataFromKNX {
 
     private double cons;
 
-    public DataFromKNX(){
+    public DataFromKNX(double cons){
         this.i_temp = 0;
         this.o_temp =0;
         this.i_hum = 0;
         this.o_hum = 0;
         this.o_lum =0;
 
-        this.cons = 0;
+        this.cons = cons;
     }
 
     public double getI_temp(){
@@ -46,31 +48,11 @@ public class DataFromKNX {
         return cons;
     }
 
-    public void setI_temp(double t){
-
-    }
-
-    public void setO_temp(double t){
-
-    }
-
-    public void setI_hum(double h){
-
-    }
-
-    public void setO_hum(double h){
-
-    }
-
-    public void setI_lum(double l){
-
-    }
-
-    public void setO_lum(double l){
-
-    }
-
-    public void setCons(double c){
-
+    public void setAll(){
+        i_temp = MyActivity.lastTemp_in;
+        o_temp = MyActivity.lastTemp_out;
+        i_hum = MyActivity.lastHum_in;
+        o_hum = MyActivity.lastHum_out;
+        o_lum = MyActivity.lastLum_out;
     }
 }

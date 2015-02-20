@@ -32,6 +32,12 @@ public class MyActivity extends Activity {
     TextView lum_in;
     TextView co2;
 
+    public static double lastHum_in = 0;
+    public static double lastHum_out = 0;
+    public static double lastTemp_in = 0;
+    public static double lastTemp_out = 0;
+    public static double lastLum_out = 0;
+
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {

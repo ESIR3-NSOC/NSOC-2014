@@ -78,6 +78,7 @@ public class ICSExtractor implements Callable<Boolean> {
 		HTTP_Response httpResp = httpReq.sendGet("ade/custom/modules/plannings/direct_cal.jsp", parameters);
 		
 		if (DEBUG) System.out.println(httpResp.getCode()==200 ? httpResp.getCode() : "err");
+		System.out.println("ADEID = " + treeObject.getId());
 		return httpResp.getContent();
 	}
 

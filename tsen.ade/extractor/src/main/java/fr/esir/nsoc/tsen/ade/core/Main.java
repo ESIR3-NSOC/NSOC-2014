@@ -19,6 +19,7 @@ public class Main {
 
 	public static void main(String[] args) {
 
+
 		// connect to local DB
 		//DataBase db = new SQLiteDB("test1.db");
 		DataBase db = new MySQLDB("tsen_ade");
@@ -28,7 +29,7 @@ public class Main {
 		// brows ADE Tree
 		ADE_Tree at = new ADE_Tree(db);
 		
-		at.browseTree();
+		//at.browseTree();
 		at.setProject(22);
 
 		// get project
@@ -49,10 +50,10 @@ public class Main {
 		scope.addChildrenToScope(new TreeObject(project, -1, "", "2302", "",
 				"leaf")); // eric beaty
 */
-		scope.addChildrenToScope(new TreeObject(project, -1, "", "5238", "", "branch")); // esir etu 
-		scope.addChildrenToScope(new TreeObject(project, -1, "", "5833", "", "branch")); // esir prof
-		//scope.addChildrenToScope(new TreeObject(project, -1, "", "1149", "", "branch")); // scelva prof
-		//scope.addChildrenToScope(new TreeObject(project, -1, "", "4217", "", "branch")); // istic prof
+		//scope.addChildrenToScope(new TreeObject(project, -1, "", "5238", "", "branch")); // esir etu 
+		//scope.addChildrenToScope(new TreeObject(project, -1, "", "5833", "", "branch")); // esir prof
+		scope.addChildrenToScope(new TreeObject(project, -1, "", "1149", "", "branch")); // scelva prof
+		scope.addChildrenToScope(new TreeObject(project, -1, "", "4217", "", "branch")); // istic prof
 		scope.addChildrenToScope(new TreeObject(project, -1, "",  "346", "", "branch")); // esir salles
 //		scope.addChildrenToScope(new TreeObject(project, -1, "", "3635", "", "branch")); // b5 salles
 //		scope.addChildrenToScope(new TreeObject(project, -1, "", "3972", "", "branch")); // 12d salles
@@ -79,7 +80,7 @@ public class Main {
 		}
 
 		scope.setStartPoint(parseDate("02/02/2015"));
-		scope.setEndPoint(parseDate("08/02/2015"));
+		scope.setEndPoint(parseDate("14/02/2015"));
 
 		// retrieve planning
 		ADE_Planning planning = new ADE_Planning(db, scope);

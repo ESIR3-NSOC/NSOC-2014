@@ -14,16 +14,14 @@ package fr.esir.oep;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Environment;
 import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Prevision;
 import com.example.esir.nsoc2014.tsen.lob.objects.ArffGenerated;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
-import com.example.esir.nsoc2014.tsen.lob.objects.WeatherForecast;
 import fr.esir.maintasks.ConfigParams;
+import fr.esir.maintasks.MyActivity;
 
-import java.io.*;
 import java.sql.ResultSet;
 import java.sql.Time;
 import java.util.*;
@@ -31,17 +29,16 @@ import java.util.Map.Entry;
 
 public class DatabaseRegression implements Prevision {
 
-    private WeatherForecast weather;
     private HashMap<Time, List<DatesInterval>> datesinte;
     private List<DatesInterval> list;
-
+    private WeatherForecast wf;
     private OnSearchCompleted listener;
 
-    public DatabaseRegression(OnSearchCompleted os) {
-        this.weather = new WeatherForecast(os);
+    public DatabaseRegression(WeatherForecast wf, OnSearchCompleted listener) {
+        this.wf = wf;
         this.list = null;
         this.datesinte = null;
-        this.listener = os;
+        this.listener = listener;
     }
 
     public List<DatesInterval> getList() {
@@ -52,20 +49,12 @@ public class DatabaseRegression implements Prevision {
         return datesinte;
     }
 
-    public WeatherForecast getWeatherForecast() {
-        return weather;
-    }
-
-    // public List<DatesInterval> getListData() {
-    // return list;
-    // }
-
 
     public void predictNext(ResultSet result) throws Exception {
         Log.w("Start", "predict");
         //weatherSearch();
         boolean wasInLoop = false;
-        HashMap<Date, WeatherForecast> weatherMap = new HashMap<>();
+        HashMap<Time, Weather> weatherMap = new HashMap<>();
         datesinte = new HashMap<>();
 
         if (!weatherMap.isEmpty())
@@ -74,14 +63,20 @@ public class DatabaseRegression implements Prevision {
         // above list
         if (result != null) {
             while (result.next()) {
+                Log.i("INFO", result.getString(1) + " " + result.getTime(2) + " " + result.getTime(3) + " " + result.getString(4));
+
                 wasInLoop = true;
                 Time dat = result.getTime(2);
                 Calendar calendar = new GregorianCalendar();
                 calendar.setTime(dat);
+                Log.i("dat", dat + "");
                 if (!weatherMap.containsKey(dat)) {
+                    Weather weather = new Weather(wf);
                     weather.executeSearch(calendar.get(Calendar.HOUR_OF_DAY));
-                    weatherMap.put(calendar.getTime(), weather);
+                    weatherMap.put(dat, weather);
                 }
+
+                String user = result.getString(1);
 
                 ArffGenerated arff = new ArffGenerated();
                 arff.generateArff(result.getString(1));
@@ -91,42 +86,23 @@ public class DatabaseRegression implements Prevision {
                 //if a student has not enough data (vote)
                 arff.addDataGeneric();
 
-                // int id = result.getInt(1); // get the id of the student
-                // System.out.println("id= " + id);
-                // query.setQuery("SELECT * FROM preference_student WHERE student_id="
-                // + id); // mysql command
-                // Instances datapref = query.retrieveInstances(); // database to
-                // arff
-                // // format
-                // if (datapref.isEmpty()) {
-                // //JdbcData.connexionBase(id.toString());
-                // query.setQuery("SELECT * FROM preference_student WHERE student_id="
-                // + id);
-                // datapref = query.retrieveInstances();
-                // }
-                //
-                // // filter studen_id
-                // Remove remove = new Remove();
-                // remove.setAttributeIndices("1");
-                // remove.setInvertSelection(false);
-                // remove.setInputFormat(datapref);
-                // Instances instNew = Filter.useFilter(datapref, remove);
-                //
-                // // System.out.println(instNew);
-                //
-                arff.addInstance(weather.getHumidity(), weather.getTemp(),
-                        weather.getLum());
+                arff.addInstance(weatherMap.get(dat).getHumidity(), weatherMap.get(dat).getTemp(),
+                        weatherMap.get(dat).getLum());
+                Log.w("weather", "lum " + weatherMap.get(dat).getLum() + " hum " + weatherMap.get(dat).getHumidity() + " temp " + weatherMap.get(dat).getTemp());
+
                 // execute the model on the data
                 Double tempC = arff.executeModel();
-                DatesInterval dateinterv = new DatesInterval(result.getString(1), dat, result.getTime(3),
-                        verifSeuil(tempC), weatherMap.get(calendar.getTime()).getTemp(), weatherMap.get(calendar.getTime()).getLum(), weatherMap.get(calendar.getTime()).getHumidity(), result.getString(4));
-
+                //user,start time, end time, cons, temp ext, lum ext, hum ext, lesson
                 if (!datesinte.containsKey(dat)) {
                     Log.w("tm", dat + "");
                     datesinte.put(dat, new ArrayList<>());
-                    datesinte.get(dat).add(dateinterv);
+                    datesinte.get(dat).add(new DatesInterval(user, dat, result.getTime(3),
+                            verifSeuil(tempC), weatherMap.get(dat).getTemp(),
+                            weatherMap.get(dat).getLum(), weatherMap.get(dat).getHumidity(), result.getString(4)));
                 } else {
-                    datesinte.get(dat).add(dateinterv);
+                    datesinte.get(dat).add(new DatesInterval(user, dat, result.getTime(3),
+                            verifSeuil(tempC), weatherMap.get(dat).getTemp(),
+                            weatherMap.get(dat).getLum(), weatherMap.get(dat).getHumidity(), result.getString(4)));
                 }
             }
         }
@@ -148,8 +124,9 @@ public class DatabaseRegression implements Prevision {
         List<DatesInterval> datesTemp = new ArrayList<>();
         for (Entry<Time, List<DatesInterval>> entry : datesinter.entrySet()) {
             int nb = entry.getValue().size();
+            Log.i("ENTRYDATE", entry.getKey() + "");
             datesTemp.add(new DatesInterval(entry.getKey(), entry.getValue()
-                    .get(0).getStartEnd(), medianCalculation(entry.getValue()),
+                    .get(0).getEndDate(), medianCalculation(entry.getValue()),
                     nb, entry.getValue().get(0).getTemp(), entry.getValue().get(0).getlum(), entry.getValue().get(0).gethumidity(), entry.getValue()
                     .get(0).getLesson()));
         }
@@ -179,9 +156,10 @@ public class DatabaseRegression implements Prevision {
     }
 
     private double verifSeuil(double temp) {
+        Log.w("Cons", temp + "");
         SharedPreferences sh = ConfigParams.context.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
-        Double minTemp = Double.parseDouble(sh.getString("TEMPMIN","20"));
-        Double maxTemp = Double.parseDouble(sh.getString("TEMPMAX","25"));
+        Double minTemp = Double.parseDouble(sh.getString("TEMPMIN", "20"));
+        Double maxTemp = Double.parseDouble(sh.getString("TEMPMAX", "25"));
         return temp < minTemp ? minTemp : (temp > maxTemp ? maxTemp
                 : temp);
     }

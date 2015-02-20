@@ -9,7 +9,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import com.example.esir.nsoc2014.regulator.knx.DataFromKNX;
+import fr.esir.regulation.DataFromKNX;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import fr.esir.oep.RepetetiveTask;
 import fr.esir.resources.FilterString;
@@ -31,6 +31,7 @@ public class Regulation_service extends Service {
 
     @Override
     public boolean onUnbind(Intent intent) {
+        rt = null;
         unregisterReceiver(mServicesUpdateReceiver);
         return super.onUnbind(intent);
     }
@@ -68,7 +69,7 @@ public class Regulation_service extends Service {
         long currentDate = System.currentTimeMillis();
 
         //start a task 30 minutes before the lesson = predict the heat time
-        rt = new RepetetiveTask((startDate - currentDate) - min30B4StartDate, cons);
+        rt = new RepetetiveTask((startDate - currentDate) - min30B4StartDate, cons, entry.getEndDate());
     }
 
     private void sortList(List<DatesInterval> l) {
@@ -82,15 +83,11 @@ public class Regulation_service extends Service {
         });
 
         for (DatesInterval entry : l) {
-            Log.w(TAG, "Between " + entry.getStartDate() + " and " + entry.getStartEnd()
+            Log.w(TAG, "Between " + entry.getStartDate() + " and " + entry.getEndDate()
                     + " the temperature in the classroom " + entry.getLesson()
                     + " must be " + entry.getConsigne() + " °C");
-            //setAlarm30B4(entry);
+            setAlarm30B4(entry);
         }
-    }
-
-    public void getDataFromContext(){
-        DataFromKNX dfk = new DataFromKNX();
     }
 
     public boolean initialize() {
