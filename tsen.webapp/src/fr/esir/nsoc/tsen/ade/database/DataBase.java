@@ -15,10 +15,12 @@ public interface DataBase {
 	public boolean addProject(Project project);
 	public void fillProject(HashSet<Project> projects);
 	public Project getProject(int projectId);
+	public HashSet<Project> getProjects();
 	
 	public void createTreeObjectTable(int projectid);
 	public boolean addTreeObject(TreeObject treeObject);
 	public HashSet<TreeObject> getTreeObjectChildren(TreeObject treeObject);
+	public TreeObject getTreeObject(String id);
 	
 	public void createEventTable(int project_ID);
 	public boolean addEvent(Event event, Project project);
@@ -32,5 +34,7 @@ public interface DataBase {
 	public boolean addCorrespondence(Event event, TreeObject treeObject);
 	public boolean fillCorrespondence(HashSet<Event> events, TreeObject treeObject);
 	public HashSet<TreeObject> getTreeObjectSession(String UID, Project projet);
+
+	
 
 }

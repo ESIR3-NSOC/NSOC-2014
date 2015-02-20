@@ -29,14 +29,14 @@ public class MySQLDB implements DataBase {
 	public MySQLDB(String name) {
 		String driver = "com.mysql.jdbc.Driver";
 
-		String url="jdbc:mysql://tsen.uion.fr:3306/" + name;
-		//String url="jdbc:mysql://localhost:3306/" + name;
-		readFiletext("./Data/login MySQL.txt");
+		String url="jdbc:mysql://" + name;
+		/*readFiletext("./data/login.txt");
 		System.out.println(_login +" " +_password);
-
+*/
 			try {
 				Class.forName(driver);
-				_connection = DriverManager.getConnection(url, _login, _password);
+				//_connection = DriverManager.getConnection(url, _login, _password);
+				_connection = DriverManager.getConnection(url, "xxx", "xxx");
 				if(_connection.isValid(5000)) _connected=true;
 				
 			} catch (ClassNotFoundException e) {
@@ -47,7 +47,7 @@ public class MySQLDB implements DataBase {
 				e.printStackTrace();
 			}
 	}
-	
+	/*
 	private void readFiletext(String path_file) {
 		try {
 			FileReader fileToRead = new FileReader(path_file);
@@ -65,7 +65,7 @@ public class MySQLDB implements DataBase {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
-	}
+	}*/
 
 	@Override
 	public boolean isConnected() {
@@ -430,6 +430,28 @@ public class MySQLDB implements DataBase {
 	}
 
 	@Override
+	public HashSet<Project> getProjects() {
+
+		Statement stmt = null;
+		HashSet<Project> projects = new HashSet<Project>();
+		try {
+
+			stmt = _connection.createStatement();
+			String sql = "SELECT ID, NAME FROM project;";
+			ResultSet rs = stmt.executeQuery(sql);
+
+			while (rs.next()) {
+				projects.add(new Project(rs.getInt(1), rs.getString(2)));
+			} 
+
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return projects;
+	}
+	
+	@Override
 	public synchronized boolean addEvent(Event event, Project project) {
 		if (!existTable("event_" + project.getId())) {
 			createEventTable(project.getId());
@@ -513,6 +535,49 @@ public class MySQLDB implements DataBase {
 			addCorrespondence(event, treeObject);
 		}
 		return true;
+	}
+
+	@Override
+	public TreeObject getTreeObject(String id) {
+/*
+		if (existTable("tree_object_" + treeObject.getProject().getId())){
+			
+			Statement stmt = null;
+			
+			int level;
+			String name;
+			String id;
+			String parentId;
+			String type;
+			
+			try {
+				stmt = _connection.createStatement();
+				ResultSet rs = stmt
+						.executeQuery("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`TYPE` FROM tree_object_" + Integer.toString(treeObject.getProject().getId()) + " WHERE PARENT_ID=" + treeObject.getId()+";");
+				System.out.println("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`TYPE` FROM tree_object_" + Integer.toString(treeObject.getProject().getId()) + " WHERE PARENT_ID=" + treeObject.getId()+";");
+				while(rs.next()){
+					id=rs.getString(1);
+					name=rs.getString(2);
+					level=rs.getInt(3);
+					parentId=rs.getString(4);
+					type=rs.getString(5);
+					Project project=treeObject.getProject();
+	
+					TreeObjectChildren.add(new TreeObject(project, level, name, id, parentId, type));
+				}
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return TreeObjectChildren;
+		}
+		//Si pas de table existante, retourne un HashSet vide
+		return TreeObjectChildren;
+		
+		
+		
+		*/
+		return null;
 	}
 
 }

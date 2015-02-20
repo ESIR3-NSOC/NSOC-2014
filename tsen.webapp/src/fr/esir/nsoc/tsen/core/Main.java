@@ -1,6 +1,5 @@
 package fr.esir.nsoc.tsen.core;
 
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -8,11 +7,14 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import fr.esir.nsoc.tsen.ade.database.DataBase;
+import fr.esir.nsoc.tsen.ade.database.MySQLDB;
+
 
 
 @WebListener
 public class Main implements ServletContextListener {
-	private static final boolean DEBUG = false;
+	private final static String DB_Name = "db.uion.fr:3306/tsen_ade";
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
@@ -24,8 +26,13 @@ public class Main implements ServletContextListener {
 		ServletContext context = ServletContext.getServletContext();
 		Logger logger = Logger.getLogger(this.getClass().getName());
 		
-		Universe universe = new Universe();
 		
+		// connect to DB
+		DataBase db = new MySQLDB(DB_Name);
+		logger.info("Database \"" + DB_Name + "\" " + (db.isConnected() ? "connected" : "not connected"));
+		
+		
+		Universe universe = new Universe(new ADE_Scope(db));		
 		context.setAttribute("universe", universe);
 	}
 
