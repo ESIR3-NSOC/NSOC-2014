@@ -24,14 +24,14 @@ public class RepetetiveTask {
         scheduler.scheduleWithFixedDelay(new DoSomethingTask(), firstDelay, 86400000, TimeUnit.MILLISECONDS);
     }
 
-    public RepetetiveTask(long firstDelay, double consigne){
+    public RepetetiveTask(long firstDelay, double consigne) {
         scheduler.schedule(new CalculatedHeatTime(consigne), firstDelay, TimeUnit.MILLISECONDS);
     }
 
-    public RepetetiveTask(long delay, double consigne, Date date) {
+    public RepetetiveTask(long delay, double consigne, double nb_pers, Date date) {
         long time = date.getTime();
-        Log.w("TIME", time+"");
-        scheduler.schedule(new DoOtherSomethingTask(consigne, time), delay, TimeUnit.MINUTES);
+        Log.w("TIME", time + "");
+        scheduler.schedule(new DoOtherSomethingTask(consigne, nb_pers, time), delay, TimeUnit.MINUTES);
     }
 
     private class DoSomethingTask implements Runnable {
@@ -44,21 +44,27 @@ public class RepetetiveTask {
     private class DoOtherSomethingTask implements Runnable {
         private double consigne;
         private long time;
-        public DoOtherSomethingTask(double consigne, long time){
+        private double nb_pers;
+
+        public DoOtherSomethingTask(double consigne, double nb_pers, long time) {
             this.consigne = consigne;
             this.time = time;
+            this.nb_pers = nb_pers;
         }
+
         @Override
         public void run() {
-            doOtherSomething(consigne, time);
+            doOtherSomething(consigne, nb_pers, time);
         }
     }
 
     private class CalculatedHeatTime implements Runnable {
         private double consigne;
-        public CalculatedHeatTime(double consigne){
+
+        public CalculatedHeatTime(double consigne) {
             this.consigne = consigne;
         }
+
         @Override
         public void run() {
             calculatedTrueHeatTime(consigne);
@@ -77,15 +83,15 @@ public class RepetetiveTask {
         }
     }
 
-    private void doOtherSomething(double consigne, long time) {
+    private void doOtherSomething(double consigne, double nb_pers, long time) {
         //look for sensors values int the context service -> put in a DataFromKNX
         //use the new object in the MachineLearning class
-        DataFromKNX dfk = new DataFromKNX(consigne);
+        DataFromKNX dfk = new DataFromKNX(consigne, nb_pers);
         dfk.setAll();
         MachineLearning ml = new MachineLearning(dfk);
         long heatTime = ml.setDataInArff();
         long diff = time - heatTime;
-        new RepetetiveTask(diff,consigne);
+        new RepetetiveTask(diff, consigne);
 
         String s1 = String.format("%d min, %d sec",
                 TimeUnit.MILLISECONDS.toMinutes(time),

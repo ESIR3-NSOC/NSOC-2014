@@ -65,10 +65,11 @@ public class Regulation_service extends Service {
         long min30B4StartDate = startDate - (30 * 60 * 1000);
 
         double cons = entry.getConsigne();
+        double nb_pers = entry.getNbPerson();
         long currentDate = System.currentTimeMillis();
 
         //start a task 30 minutes before the lesson = predict the heat time
-        rt = new RepetetiveTask((startDate - currentDate) - min30B4StartDate, cons, entry.getEndDate());
+        rt = new RepetetiveTask((startDate - currentDate) - min30B4StartDate, cons, nb_pers,entry.getEndDate());
     }
 
     private void sortList(List<DatesInterval> l) {
