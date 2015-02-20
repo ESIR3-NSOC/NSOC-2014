@@ -10,6 +10,12 @@ public class FilterString {
     public final static String OEP_DATA_CONSIGNES_OF_DAY =
             "Oep_service.CONSIGNES_OF_DAY";
 
+    public final static String CONTEXT_INIT_SENSOR =
+            "Context_service.INIT_SENSOR";
+
+    public final static String CONTEXT_UPDATE_VALUE =
+            "Context_service.UPDATE_VALUES";
+
     public final static String CONTEXT_EXTRA_DATA =
             "fr.esir.services.Context_service.EXTRA_DATA";
 
