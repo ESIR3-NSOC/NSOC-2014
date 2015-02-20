@@ -1,6 +1,5 @@
-package com.example.esir.nsoc2014.regulator.objects;
+package fr.esir.regulation;
 
-import com.example.esir.nsoc2014.regulator.knx.DataFromKNX;
 import com.example.esir.nsoc2014.tsen.lob.objects.ArffGenerated;
 
 import java.util.Date;
