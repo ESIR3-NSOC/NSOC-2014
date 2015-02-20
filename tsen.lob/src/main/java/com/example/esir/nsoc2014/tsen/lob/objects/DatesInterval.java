@@ -29,7 +29,7 @@ public class DatesInterval implements Comparable<DatesInterval>, Serializable{
     }
 
     //constructor sent to the context
-    public DatesInterval(String id,Time start, Time end, double consigne,
+    public DatesInterval(String id,Date start, Date end, double consigne,
                          double temp, double lum, double humidity, String lesson) {
         this.start = start;
         this.end = end;

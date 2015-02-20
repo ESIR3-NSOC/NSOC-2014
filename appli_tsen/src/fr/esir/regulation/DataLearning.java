@@ -29,6 +29,7 @@ public class DataLearning {
     }
 
     public void setInArff(ArffGenerated arff) {
-        arff.addDataCustomRegul(mknx.getI_temp(), mknx.getO_temp(), mknx.getI_hum(), mknx.getO_hum(), mknx.getO_lum(), mknx.getCons(), heat_time);
+        arff.addDataCustomRegul(mknx.getI_temp(), mknx.getO_temp(), mknx.getI_hum(), mknx.getO_hum(),
+                mknx.getO_lum(), mknx.getCons(), mknx.getNb_pers(), heat_time);
     }
 }
