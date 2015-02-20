@@ -25,6 +25,7 @@
         <module>tsen.ihm</module>
         <module>tsen.lob</module>
         <module>tsen.ade</module>
+        <module>tsen.webapp</module>
         <module>tsen.provider</module>
         <module>appli_tsen</module>
         <module>Restful</module>
