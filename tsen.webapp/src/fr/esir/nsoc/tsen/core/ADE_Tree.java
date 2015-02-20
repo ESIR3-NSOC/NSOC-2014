@@ -22,102 +22,92 @@ public class ADE_Tree {
 	private final static String ADE_INTERFACE_PATH = "ade/standard/gui/interface.jsp";
 	
 	private DataBase dataBase;
-	private Project project;
 	
+	private HTTP_Requester httpReq;
+	private HTTP_Response httpResp;
+	private HashSet<Project> projectList;
 	
 	public ADE_Tree(DataBase dataBase) {
 		super();
 		this.dataBase = dataBase;
-		this.project = null;
 	}
 
-	public String browseTree(String jSessionId, Project project) {
-
-		// setup
-		boolean _continue = true;
-
-		// get a valid ADE JSESSION ID
-		if (!((jSessionId.length() == 32) && (isHexNumber(jSessionId)))){
-			return "Bad cookie";
-		}
-
+	
+	public int listProject(String jSessionId) {
+		if (!checkCookie(jSessionId)) return 2; // bad cookie format
+		if (DEBUG) System.out.println(jSessionId);
+		
 		// test ADE JSESSION ID
-		HTTP_Requester httpReq = new HTTP_Requester(ADE_SERVER_URL, jSessionId);
-		HTTP_Response httpResp = httpReq.sendGet(ADE_PROJECT_PATH, null);
-		if (DEBUG)
-			System.out.println(httpResp.getCode());
-		_continue = httpResp.getCode() == 200;
+		httpReq = new HTTP_Requester(ADE_SERVER_URL, jSessionId);
+		httpResp = httpReq.sendGet(ADE_PROJECT_PATH, null);
+		
+		if (httpResp.getCode() != 200) return 3; // invalid ade cookie	
+		if (DEBUG) System.out.println(httpResp.getCode());
 
 		// list, select & store ADE projects
-		if (_continue) {
-			ProjectParser pp = new ProjectParser(httpResp.getContent());
-			HashSet<Project> projectList = pp.Parse();
+		ProjectParser pp = new ProjectParser(httpResp.getContent());
+		projectList = pp.Parse();
 
-			// Get an iterator
-			Iterator<Project> i = projectList.iterator();
-			// Display elements
-			while (i.hasNext() && DEBUG) {
-				Project p = i.next();
-				System.out.println(p.getId() + ": " + p.getName());
-			}
-			
-			dataBase.createProjectTable();
-			dataBase.fillProject(projectList);
-			
-
-			boolean loop = true;
-	
-
-				i = projectList.iterator();
-				while (i.hasNext()) {
-					Project p = i.next();
-					if (p.getId() == project.getId())
-					{
-						project = p;
-						loop = false;
-					}
-				}
-				if(loop){
-					return "Unknown project id : " + project.getId();
-				}
+		// Display elements
+		Iterator<Project> i = projectList.iterator();
+		while (i.hasNext() && DEBUG) {
+			Project p = i.next();
+			System.out.println(p.getId() + ": " + p.getName());
 		}
 		
+		dataBase.createProjectTable();
+		dataBase.fillProject(projectList);
+		
+		return 0; // all good
+	}		
+		
+		
+		
+		
+		
+
+
+
+		
+		
+
+	public int browseTree(String jSessionId, Project project) {
+
+		int errCode = listProject(jSessionId);
+		if (errCode!=0) return errCode;
+		
 		// select an ADE project
-
-		if (_continue) {
-
-			try {
-				HashSet<HTTP_Parameter> parameters = new HashSet<HTTP_Parameter>();
-				parameters.add(new HTTP_Parameter("projectId", Integer
-						.toString(project.getId())));
-				httpResp = httpReq.sendPost(ADE_INTERFACE_PATH, parameters);
-			} catch (Exception e) {
-				e.printStackTrace();
-				_continue = false;
+		boolean exist = false;
+		Iterator<Project>i = projectList.iterator();
+		while (i.hasNext()) {
+			Project p = i.next();
+			if (p.getId() == project.getId())
+			{
+				project = p;
+				exist = true;
 			}
+		}
+		if(!exist) return 4; // Unknown project id
+
+		try {
+			HashSet<HTTP_Parameter> parameters = new HashSet<HTTP_Parameter>();
+			parameters.add(new HTTP_Parameter("projectId", Integer
+					.toString(project.getId())));
+			httpResp = httpReq.sendPost(ADE_INTERFACE_PATH, parameters);
+		} catch (Exception e) {
+			if (DEBUG) e.printStackTrace();
+			return 1; // unknown error
 		}
 		
 		
 		// start browsing ADE tree
-		
-		if (_continue)
-		{
-			dataBase.createTreeObjectTable(project.getId());
-			TreeBrowser tb = new TreeBrowser(new TreeObject(project, -1, "root", "", "root"), httpReq, dataBase);
-			_continue = tb.browse();
-		}
-	
-		return "OK";
+		dataBase.createTreeObjectTable(project.getId());
+		TreeBrowser tb = new TreeBrowser(new TreeObject(project, -1, "root", "", "root"), httpReq, dataBase);
+		return (tb.browse() ? 0 : 5); // all good | browsing tree error
 	}
 	
-	
-	
-	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(int projectId) {
-		this.project = dataBase.getProject(projectId);
+	private boolean checkCookie(String cookie){
+		return ((cookie.length() == 32) && (isHexNumber(cookie)));
 	}
 
 	private static boolean isHexNumber(String input) {

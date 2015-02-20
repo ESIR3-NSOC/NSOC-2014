@@ -12,9 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
-
-import fr.esir.nsoc.tsen.ade.object.Project;
 import fr.esir.nsoc.tsen.core.ADE_Tree;
 import fr.esir.nsoc.tsen.core.Universe;
 
@@ -63,10 +60,51 @@ public class ADE extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String function = request.getParameter("function");
 		String cookie = request.getParameter("cookie");
+		int code = -1;
 		String info = "";
-		if(function.equals("browse") && cookie!=null){
-			ADE_Tree at = new ADE_Tree(universe.getScope().getDataBase());
-			info = at.browseTree(cookie, universe.getScope().getProject());
+		if (function!=null) 
+		{
+			
+			if(function.equals("browse") && cookie!=null){
+				ADE_Tree at = new ADE_Tree(universe.getScope().getDataBase());
+				code = at.browseTree(cookie, universe.getScope().getProject());
+			} else if(function.equals("list_project") && cookie!=null){
+				ADE_Tree at = new ADE_Tree(universe.getScope().getDataBase());
+				code = at.listProject(cookie);
+			}
+			switch (code)
+			{
+				case -1 : 
+					info = "Unknown function";
+					break;
+				case 0 :
+					info = "All good";
+					break;
+				case 1 :
+					info = "Unknown error";
+					break;
+				case 2 :
+					info = "Bad cookie format";
+					break;
+				case 3 :
+					info = "Invalid ade cookie";
+					break;
+				case 4 :
+					info = "Unknown project id";
+					break;
+				case 5 :
+					info = "Browsing tree error";
+					break;
+				default :
+					info = "Unknown error";
+					break;
+					
+			}
+		
+		}
+		else
+		{
+			info = "function parameter not recieved";
 		}
 		PrintWriter pw = response.getWriter();
 		String s = "{\"info\" : \"" + info + "\"}";
