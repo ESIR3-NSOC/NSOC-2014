@@ -9,9 +9,9 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import fr.esir.oep.RepetetiveTask;
 import fr.esir.regulation.DataFromKNX;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
-import fr.esir.oep.RepetetiveTask;
 import fr.esir.resources.FilterString;
 
 import java.util.Collections;
