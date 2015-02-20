@@ -18,8 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class RepetetiveTask {
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-    public static String ACTION_PREDICT = "schedule_prediction";
-    public static String ACTION_REGULATION = "schedule_heating";
+    MyActivity ctx = (MyActivity) MyActivity.ct;
 
     public RepetetiveTask(long firstDelay) {
         scheduler.scheduleWithFixedDelay(new DoSomethingTask(), firstDelay, 86400000, TimeUnit.MILLISECONDS);
@@ -51,7 +50,7 @@ public class RepetetiveTask {
         }
         @Override
         public void run() {
-            doOtherSomething(consigne,time);
+            doOtherSomething(consigne, time);
         }
     }
 
@@ -87,7 +86,30 @@ public class RepetetiveTask {
         long heatTime = ml.setDataInArff();
         long diff = time - heatTime;
         new RepetetiveTask(diff,consigne);
+
+        String s1 = String.format("%d min, %d sec",
+                TimeUnit.MILLISECONDS.toMinutes(time),
+                TimeUnit.MILLISECONDS.toSeconds(time) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time))
+        );
+
+        String s2 = String.format("%d min, %d sec",
+                TimeUnit.MILLISECONDS.toMinutes(diff),
+                TimeUnit.MILLISECONDS.toSeconds(diff) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(diff))
+        );
+
+        updateTvProg("Next Programming at " + s2 + " to have " + consigne + " at " + time);
         scheduler.shutdown();
+    }
+
+    private void updateTvProg(String string) {
+        ctx.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ctx.setTvProg(string);
+            }
+        });
     }
 
     private void calculatedTrueHeatTime(double consigne) {

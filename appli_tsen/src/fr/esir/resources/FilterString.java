@@ -10,10 +10,8 @@ public class FilterString {
     public final static String OEP_DATA_CONSIGNES_OF_DAY =
             "Oep_service.CONSIGNES_OF_DAY";
 
-    public final static String CONTEXT_INIT_SENSOR =
-            "Context.InitSensor";
-
-    public final static String CONTEXT_UPDATE_VALUE = "Context.updateValue";
+    public final static String CONTEXT_EXTRA_DATA =
+            "fr.esir.services.Context_service.EXTRA_DATA";
 
     public final static String REGULATION_EXTRA_DATA =
             "fr.esir.services.Regulation_service.EXTRA_DATA";
@@ -23,4 +21,7 @@ public class FilterString {
 
     public final static String RECEIVE_VOTE =
             "fr.esir.context.vote";
+
+    public final static String RECEIVE_DATA_KNX =
+            "fr.esir.services.Knx_service.DATA_TO_DISPLAY";
 }
