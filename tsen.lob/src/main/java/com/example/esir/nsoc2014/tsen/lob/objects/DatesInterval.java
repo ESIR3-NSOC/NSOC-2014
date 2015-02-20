@@ -9,7 +9,6 @@ public class DatesInterval implements Comparable<DatesInterval>, Serializable{
     private Date end;
     private double consigne;
     private int nbPerson;
-    private WeatherForecast prev;
     private String lesson;
     private String id;
     private double temp;
@@ -66,9 +65,6 @@ public class DatesInterval implements Comparable<DatesInterval>, Serializable{
         return nbPerson;
     }
 
-    public WeatherForecast getPrevision() {
-        return prev;
-    }
 
     public double getConsigne() {
         return consigne;
@@ -78,7 +74,7 @@ public class DatesInterval implements Comparable<DatesInterval>, Serializable{
         return start;
     }
 
-    public Date getStartEnd() {
+    public Date getEndDate() {
         return end;
     }
 

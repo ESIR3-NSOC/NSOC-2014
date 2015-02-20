@@ -11,6 +11,8 @@ import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Prevision;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
+import fr.esir.maintasks.MyActivity;
+import fr.esir.oep.WeatherForecast;
 import fr.esir.maintasks.ConfigParams;
 import fr.esir.oep.*;
 import fr.esir.resources.FilterString;
@@ -27,6 +29,8 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
     private Context context = ConfigParams.context;
 
     private Prevision db;
+
+    public WeatherForecast wf;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -59,9 +63,9 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
-        long howMany = c.getTimeInMillis()-System.currentTimeMillis();
-        Log.w("DELAY", sh.getLong("DELAY",howMany)+"");
-        rt = new RepetetiveTask(sh.getLong("DELAY",howMany));
+        long howMany = c.getTimeInMillis() - System.currentTimeMillis();
+        Log.w("DELAY", sh.getLong("DELAY", howMany) + "");
+        rt = new RepetetiveTask(sh.getLong("DELAY", howMany), RepetetiveTask.ACTION_PREDICT);
         //long firstDelay =
          /*am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         //create a pending intent to be called at midnight
@@ -110,6 +114,7 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
     @Override
     public void onSearchCompleted(ResultSet o) {
         try {
+            db = new DatabaseRegression(wf, this);
             db.predictNext(o);
             Bundle extras = new Bundle();
             extras.putSerializable("HashMap", db.getHashmap());
@@ -121,19 +126,20 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
 
     @Override
     public void onSearchCompleted(String weath) {
-        db.getWeatherForecast().searchDone(weath);
+        wf.searchDone(weath);
     }
 
     @Override
     public void onSearchCompleted() {
-        Log.w("oep","onsearchcomleted");
+        Log.w("oep", "onsearchcomleted");
         Bundle extras = new Bundle();
         extras.putSerializable("List", (Serializable) db.getList());
         broadcastUpdate(FilterString.OEP_DATA_CONSIGNES_OF_DAY, "Data", extras);
     }
 
     public void startPrediction() throws IOException {
-        db = new DatabaseRegression(this);
+        //db = new DatabaseRegression(this);
+        wf = new WeatherForecast(this);
         weatherSearch();
     }
 }
