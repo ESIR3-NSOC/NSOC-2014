@@ -29,8 +29,8 @@ public class MySQLDB implements DataBase {
 	public MySQLDB(String name) {
 		String driver = "com.mysql.jdbc.Driver";
 
-		//String url="jdbc:mysql://tsen.uion.fr:3306/" + name;
-		String url="jdbc:mysql://localhost:3306/" + name;
+		String url="jdbc:mysql://tsen.uion.fr:3306/" + name;
+		//String url="jdbc:mysql://localhost:3306/" + name;
 		readFiletext("./Data/login MySQL.txt");
 		System.out.println(_login +" " +_password);
 
@@ -104,14 +104,27 @@ public class MySQLDB implements DataBase {
 
 	@Override
 	public boolean addProject(Project project) {
-		PreparedStatement stmt;
+		if (!existTable("project"))
+			createProjectTable();
 		try {
-			String sql = "INSERT INTO project (ID,NAME) " + "VALUES (?, ?);";
-			stmt = _connection.prepareStatement(sql);
-			stmt.setLong(1, project.getId());
-			stmt.setString(2, project.getName());
-			stmt.executeUpdate();
-			stmt.close();
+			Statement stmtQuery;
+			stmtQuery = _connection.createStatement();
+			String sqlQuery = "SELECT ID, NAME FROM project WHERE ID = "
+					+ project.getId() + ";";
+			ResultSet rs = stmtQuery.executeQuery(sqlQuery);
+
+			if (!rs.next()) {
+				PreparedStatement stmtUpdate;
+
+				String sqlUpdate = "INSERT INTO project (ID,NAME) "
+						+ "VALUES (?, ?);";
+				stmtUpdate = _connection.prepareStatement(sqlUpdate);
+				stmtUpdate.setLong(1, project.getId());
+				stmtUpdate.setString(2, project.getName());
+				stmtUpdate.executeUpdate();
+				stmtUpdate.close();
+
+			}
 		} catch (SQLException e) {
 			if (DEBUG)
 				e.printStackTrace();
@@ -355,7 +368,7 @@ public class MySQLDB implements DataBase {
 		Statement stmt = null;
 		try {
 			stmt = _connection.createStatement();
-			stmt.executeUpdate("DROP TABLE '" + name + "';");
+			stmt.executeUpdate("DROP TABLE " + name + ";");
 			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
