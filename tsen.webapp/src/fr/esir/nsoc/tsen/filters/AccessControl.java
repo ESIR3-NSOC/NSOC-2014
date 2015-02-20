@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Servlet Filter implementation class AccessControl
  */
-@WebFilter("/*")
+@WebFilter()
 public class AccessControl implements Filter {
 
 	public static final String LOGIN_ACCESS  			= "/login";
@@ -59,7 +59,7 @@ public class AccessControl implements Filter {
         
         /**
          * Si l'objet utilisateur n'existe pas dans la session en cours, alors
-         * l'utilisateur n'est pas connecté.
+         * l'utilisateur n'est pas connectï¿½.
          */
         if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
         	request.setAttribute( ATT_PAGE_PATH_REQUESTED, request.getRequestURI() );

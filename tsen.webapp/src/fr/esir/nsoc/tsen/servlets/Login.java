@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fr.esir.nsoc.tsen.core.Universe;
+
+
 /**
  * Servlet implementation class login
  */
@@ -19,7 +22,7 @@ public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	
-    public static final String VUE              		= "/login.html";
+    public static final String VUE              		= "/WEB-INF/login.jsp";
     public static final String ATT_USER         		= "user";
     public static final String ATT_FORM         		= "form";
     public static final String ATT_SESSION_USER 		= "user";
@@ -28,6 +31,7 @@ public class Login extends HttpServlet {
 	private ServletConfig config;
 	private ServletContext context;
 	private Logger logger;
+	private Universe universe;
 	
 	
     /**
@@ -48,6 +52,13 @@ public class Login extends HttpServlet {
 		context = sc.getServletContext();
 
 		logger = Logger.getLogger(this.getClass().getName());
+		Object obj = context.getAttribute("universe");
+		if (obj==null || (!(obj instanceof fr.esir.nsoc.tsen.core.Universe))) 
+		{
+		   obj = new fr.esir.nsoc.tsen.core.Universe();
+		   this.getServletContext().setAttribute("universe", obj);
+		}
+		universe = (fr.esir.nsoc.tsen.core.Universe)obj;
 	}
 
 

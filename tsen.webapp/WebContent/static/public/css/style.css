@@ -16,7 +16,7 @@ body{
 	bottom: -40px;
 	width: auto;
 	height: auto;
-	background-image: url(/tsen/static/public/image/snow_school.jpg);
+	background-image: url(../image/snow_school.jpg);
 	background-size: cover;
 	-webkit-filter: blur(5px);
 	filter: blur(5px);
