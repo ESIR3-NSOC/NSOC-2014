@@ -26,9 +26,8 @@ public class FilterString {
 
     //Data send from KNX manager
 
-    public final static String CONTEXT_UPDATE_VALUE = "Context.updateValue";
     public final static String CONTEXT_UPDATE_VALUE =
-            "Context_service.UPDATE_VALUES";
+            "Context.updateValue";
 
     public final static String CONTEXT_EXTRA_DATA =
             "fr.esir.services.Context_service.EXTRA_DATA";

@@ -11,8 +11,6 @@ import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Prevision;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
-import fr.esir.maintasks.MyActivity;
-import fr.esir.oep.WeatherForecast;
 import fr.esir.maintasks.ConfigParams;
 import fr.esir.oep.*;
 import fr.esir.resources.FilterString;
@@ -24,13 +22,11 @@ import java.util.Calendar;
 
 public class Oep_service extends Service implements OnSearchCompleted, Service_oep {
     private final IBinder mBinder = new LocalBinder();
+    public WeatherForecast wf;
     //private AlarmManager am;
     private RepetetiveTask rt;
     private Context context = ConfigParams.context;
-
     private Prevision db;
-
-    public WeatherForecast wf;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -43,12 +39,6 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
         rt.getScheduler().shutdown();
         rt = null;
         return super.onUnbind(intent);
-    }
-
-    public class LocalBinder extends Binder {
-        public Oep_service getService() {
-            return Oep_service.this;
-        }
     }
 
     public boolean initialize() {
@@ -141,5 +131,11 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
         //db = new DatabaseRegression(this);
         wf = new WeatherForecast(this);
         weatherSearch();
+    }
+
+    public class LocalBinder extends Binder {
+        public Oep_service getService() {
+            return Oep_service.this;
+        }
     }
 }

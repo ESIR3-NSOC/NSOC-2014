@@ -30,7 +30,7 @@ public class MachineLearning {
             }
         }
 
-        arff.addInstance(dfk.getI_temp(), dfk.getO_temp(), dfk.getI_hum(), dfk.getO_hum(), dfk.getO_lum(), dfk.getCons(),dfk.getNb_pers());
+        arff.addInstance(dfk.getI_temp(), dfk.getO_temp(), dfk.getI_hum(), dfk.getO_hum(), dfk.getO_lum(), dfk.getCons(), dfk.getNb_pers());
 
         try {
             return (long) arff.executeModel();
