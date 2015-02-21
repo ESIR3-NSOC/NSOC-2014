@@ -1,6 +1,7 @@
 package fr.esir.nsoc.tsen.servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
@@ -12,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
+
+
+import com.google.gson.Gson;
 
 import fr.esir.nsoc.tsen.ade.database.DataBase;
 import fr.esir.nsoc.tsen.core.Universe;
@@ -60,8 +64,13 @@ public class TreeObject extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String id = request.getParameter("id");
+		String s = "";
 		DataBase db = universe.getScope().getDataBase();
-		
+		PrintWriter pw = response.getWriter();
+		Gson gson = new Gson();
+		if (id!=null) s = gson.toJson(db.getTreeObject(id, universe.getScope().getProject())); // TODO null
+		pw.write(s);
+		pw.close();
 		
 		
 		

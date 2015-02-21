@@ -26,7 +26,7 @@ public class MySQLDB implements DataBase {
 	private String _login;
 	private String _password;
 
-	public MySQLDB(String name) {
+	public MySQLDB(String name, String login, String Password) {
 		String driver = "com.mysql.jdbc.Driver";
 
 		String url="jdbc:mysql://" + name;
@@ -36,7 +36,7 @@ public class MySQLDB implements DataBase {
 			try {
 				Class.forName(driver);
 				//_connection = DriverManager.getConnection(url, _login, _password);
-				_connection = DriverManager.getConnection(url, "xxx", "xxx");
+				_connection = DriverManager.getConnection(url, login, Password);
 				if(_connection.isValid(5000)) _connected=true;
 				
 			} catch (ClassNotFoundException e) {
@@ -538,46 +538,38 @@ public class MySQLDB implements DataBase {
 	}
 
 	@Override
-	public TreeObject getTreeObject(String id) {
-/*
-		if (existTable("tree_object_" + treeObject.getProject().getId())){
+	public TreeObject getTreeObject(String id, Project project) {
+
+		TreeObject to = null;
+		if (existTable("tree_object_" + project.getId())){
 			
 			Statement stmt = null;
 			
 			int level;
 			String name;
-			String id;
 			String parentId;
 			String type;
+			
 			
 			try {
 				stmt = _connection.createStatement();
 				ResultSet rs = stmt
-						.executeQuery("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`TYPE` FROM tree_object_" + Integer.toString(treeObject.getProject().getId()) + " WHERE PARENT_ID=" + treeObject.getId()+";");
-				System.out.println("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`TYPE` FROM tree_object_" + Integer.toString(treeObject.getProject().getId()) + " WHERE PARENT_ID=" + treeObject.getId()+";");
+						.executeQuery("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`TYPE` FROM tree_object_" + Integer.toString(project.getId()) + " WHERE ID=" + id + ";");
 				while(rs.next()){
-					id=rs.getString(1);
 					name=rs.getString(2);
 					level=rs.getInt(3);
 					parentId=rs.getString(4);
 					type=rs.getString(5);
-					Project project=treeObject.getProject();
 	
-					TreeObjectChildren.add(new TreeObject(project, level, name, id, parentId, type));
+					to = new TreeObject(project, level, name, id, parentId, type);
 				}
 				stmt.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				if (DEBUG) e.printStackTrace();
 			}
-			return TreeObjectChildren;
 		}
-		//Si pas de table existante, retourne un HashSet vide
-		return TreeObjectChildren;
+		return to;
 		
-		
-		
-		*/
-		return null;
 	}
 
 }
