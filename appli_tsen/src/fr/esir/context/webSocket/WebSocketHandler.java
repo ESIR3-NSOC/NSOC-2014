@@ -1,6 +1,7 @@
-package fr.esir.context;
+package fr.esir.context.webSocket;
 
 import context.Context;
+import fr.esir.resources.FilterString;
 import fr.esir.services.Context_service;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -37,7 +38,7 @@ public class WebSocketHandler extends BaseWebSocketHandler {
     }
 
     public void onMessage(WebSocketConnection connection, String message) {
-        _ctxService.broadcastUpdate(message);
+        _ctxService.broadcastUpdate(FilterString.WEBSOCKET_VOTE_UPDATE,message);
         JsonNode jsonRpc;
         try {
             jsonRpc = new ObjectMapper().readTree(message);

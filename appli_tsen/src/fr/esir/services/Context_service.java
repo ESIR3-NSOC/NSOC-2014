@@ -8,21 +8,21 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import fr.esir.context.WebSocketHandler;
+import fr.esir.context.dataPackage.EnvironmentData;
+import fr.esir.context.dataPackage.StudentData;
+import fr.esir.context.webSocket.WebSocketHandler;
 import fr.esir.resources.FilterString;
 
 
 import context.Context;
+import knx.SensorType;
 import org.kevoree.modeling.api.Callback;
 import org.kevoree.modeling.api.KObject;
 import org.webbitserver.WebServer;
 import org.webbitserver.WebServers;
-import tsen.Room;
-import tsen.TsenUniverse;
+import tsen.*;
 
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
-import tsen.TsenView;
-import tsen.User;
 
 import java.sql.Time;
 import java.util.HashMap;
@@ -89,7 +89,7 @@ public class Context_service extends Service {
                             for (DatesInterval entryDi : entry.getValue()) {
                                 Log.w(TAG, entryDi.getId() + " will be in classroom " + entryDi.getLesson()
                                         + ". His consigne must be " + entryDi.getConsigne() + " °C");
-                                addStudent(entryDi.getStartDate().getTime(),entryDi.getStartEnd().getTime(),entryDi.getId(),entryDi.getConsigne(),entryDi.getLesson());
+                                addStudent(entryDi.getStartDate().getTime(),entryDi.getEndDate().getTime(),entryDi.getId(),entryDi.getConsigne(),entryDi.getLesson());
                             }
                         }
                     }
@@ -142,5 +142,53 @@ public class Context_service extends Service {
         return ctx;
     }
 
+    // get student data for time (in milliseconde) with 3h step
+    public StudentData getStudentData(String studentId, long time){
+        StudentData sd  = new StudentData(studentId);
+
+        for(long i = System.currentTimeMillis()-time ; i<System.currentTimeMillis(); i+=3*60*60){
+            final long CURRENT_TIMESTAMP =  i;
+            TsenView view = ctx.getDimension().time(i);
+            view.select("/", new Callback<KObject[]>() {
+                @Override
+                public void on(KObject[] kObjects) {
+                    if(kObjects!=null && kObjects.length!=0){
+                        Room room = (Room) kObjects[0];
+
+                        room.eachMember(new Callback<User[]>() {
+                            @Override
+                            public void on(User[] users) {
+                                for(User user : users){
+                                    if(user.getId().compareTo(sd.get_studentId())==0){
+                                        sd.addEnvironmentData(new EnvironmentData(time));
+                                        sd.setCurrentVote(user.getVote());
+                                        sd.setTargetTemp(user.getTargetTemp());
+
+                                        room.eachMeasurement(new Callback<Sensor[]>() {
+                                            @Override
+                                            public void on(Sensor[] sensors) {
+
+                                                for(Sensor s : sensors){
+                                                    switch(s.getSensorType()){
+                                                        case SensorType.OUTDOOR_BRIGHTNESS : sd.getEnvironmentData(CURRENT_TIMESTAMP).setOutdoorLum(Double.parseDouble(s.getValue()));
+                                                        case SensorType.OUTDOOR_HUMIDITY : sd.getEnvironmentData(CURRENT_TIMESTAMP).setOutdoorHum(Double.parseDouble(s.getValue()));
+                                                        case SensorType.OUTDOOR_TEMPERATURE : sd.getEnvironmentData(CURRENT_TIMESTAMP).setOutdoorTemp(Double.parseDouble(s.getValue()));
+                                                        case SensorType.INDOOR_TEMPERATURE :sd.getEnvironmentData(CURRENT_TIMESTAMP).setIndoorTemp(Double.parseDouble(s.getValue()));
+
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        return sd;
+    }
 
 }

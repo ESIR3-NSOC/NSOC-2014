@@ -17,7 +17,9 @@ public class FilterString {
     //Data send from Context
 
 
+    //Data send from Websocket
 
+    public final static String WEBSOCKET_VOTE_UPDATE = "WebSocket.VoteUpdate";
 
 
     //Data send from KNX manager

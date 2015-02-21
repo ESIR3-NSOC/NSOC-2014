@@ -184,6 +184,8 @@ public class Context {
                 }
             }
         });
+
+        return _indooTempValue;
     }
 
     private void setIndoorTemp(double t){
