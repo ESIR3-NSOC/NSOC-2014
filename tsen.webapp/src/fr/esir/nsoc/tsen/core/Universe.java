@@ -9,6 +9,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import fr.esir.nsoc.tsen.ade.database.DataBase;
+import fr.esir.nsoc.tsen.config.Config;
 
 public class Universe {
 
@@ -95,6 +96,11 @@ public class Universe {
 		}
 	}
 	
+	public void refreshConfig() {
+		loadConfig();
+		scope.setProject(dataBase.getProject(config.getProjectId()));
+	}
+	
 	private void createDefaultConfig() {
 		config = new Config();
 		
@@ -104,7 +110,7 @@ public class Universe {
 		
 		config.setProjectId(22);
 		//config.setId(1);
-		config.setAge(25);
+		config.setIcsThreadPoolSize(30);
 		config.setName("Pankaj");
 		config.setGender("Male");
 		config.setRole("Developer");

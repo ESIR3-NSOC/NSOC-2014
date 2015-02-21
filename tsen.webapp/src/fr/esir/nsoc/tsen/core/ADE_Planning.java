@@ -46,13 +46,6 @@ public class ADE_Planning {
 
 	}
 
-	public DataBase getDataBase() {
-		return dataBase;
-	}
-
-	public ADE_Scope getScope() {
-		return scope;
-	}
 
 	private void solve(final ExecutorService executor,
 			List<Callable<Boolean>> taches) {

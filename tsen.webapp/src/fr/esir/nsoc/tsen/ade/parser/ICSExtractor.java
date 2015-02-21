@@ -83,18 +83,7 @@ public class ICSExtractor implements Callable<Boolean> {
 	}
 
 	
-	public static LocalDate parseDate (String input) {
-		LocalDate date = null;
-		try {
-		    DateTimeFormatter formatter =
-		                      DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		    date = LocalDate.parse(input, formatter);
-		}
-		catch (DateTimeParseException exc) {
-			exc.printStackTrace();
-		}
-		return date;
-	}
+
 
 	public static String formatDate (LocalDate input) {
 		String string = null;

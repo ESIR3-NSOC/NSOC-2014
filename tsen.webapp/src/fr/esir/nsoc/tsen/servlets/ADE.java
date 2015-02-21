@@ -2,6 +2,10 @@ package fr.esir.nsoc.tsen.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
@@ -12,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fr.esir.nsoc.tsen.core.ADE_Planning;
 import fr.esir.nsoc.tsen.core.ADE_Tree;
 import fr.esir.nsoc.tsen.core.Universe;
 
@@ -60,6 +65,8 @@ public class ADE extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String function = request.getParameter("function");
 		String cookie = request.getParameter("cookie");
+		String startDate = request.getParameter("startDate");
+		String stopDate = request.getParameter("stopDate");
 		int code = -1;
 		String info = "";
 		if (function!=null) 
@@ -71,7 +78,14 @@ public class ADE extends HttpServlet {
 			} else if(function.equals("list_project") && cookie!=null){
 				ADE_Tree at = new ADE_Tree(universe.getDataBase());
 				code = at.listProject(cookie);
+			} else if(function.equals("sync_planning") && startDate!=null && stopDate!=null) {
+				universe.getScope().setStartPoint(parseDate(startDate));
+				universe.getScope().setEndPoint(parseDate(stopDate));
+				ADE_Planning planning = new ADE_Planning(universe.getDataBase(), universe.getScope());
+				planning.retrieve(universe.getConfig().getIcsThreadPoolSize());
+				code = 0;
 			}
+			
 			switch (code)
 			{
 				case -1 : 
@@ -117,6 +131,30 @@ public class ADE extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+	}
+	
+	private static LocalDate parseDate(String input) {
+		LocalDate date = null;
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter
+					.ofPattern("dd-MM-yyyy");
+			date = LocalDate.parse(input, formatter);
+		} catch (DateTimeParseException exc) {
+			exc.printStackTrace();
+		}
+		return date;
+	}
+
+	private static String formatDate(LocalDate input) {
+		String string = null;
+		try {
+			DateTimeFormatter format = DateTimeFormatter
+					.ofPattern("yyyy-MM-dd");
+			string = input.format(format);
+		} catch (DateTimeException exc) {
+			exc.printStackTrace();
+		}
+		return string;
 	}
 
 }

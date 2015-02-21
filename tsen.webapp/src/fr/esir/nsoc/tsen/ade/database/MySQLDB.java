@@ -393,7 +393,7 @@ public class MySQLDB implements DataBase {
 		boolean exist = false;
 		try {
 			stmt = _connection.createStatement();
-			ResultSet rs = stmt.executeQuery("SHOW TABLES LIKE '%" + name + "%';");		
+			ResultSet rs = stmt.executeQuery("SHOW TABLES LIKE '" + name + "';");		
 			if(rs.next()){
 				exist = true;
 			}	

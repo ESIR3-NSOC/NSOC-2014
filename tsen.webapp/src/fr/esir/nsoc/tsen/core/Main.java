@@ -32,6 +32,9 @@ public class Main implements ServletContextListener {
 		logger.info("Database \"" + universe.getConfig().getDb_name() + "\" " + (db.isConnected() ? "connected" : "not connected"));
 
 		universe.setScope(new ADE_Scope(db));
+		universe.setDataBase(db);
+		
+		universe.refreshConfig();
 		
 		context.setAttribute("universe", universe);
 	}
