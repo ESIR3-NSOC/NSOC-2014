@@ -39,5 +39,11 @@
     <string name="ctmin">Minimum temperature in °C</string>
     <string name="ctmax">Maximum temperature in °C</string>
 
+    <string name="user">User</string>
+    <string name="vote">Vote</string>
+    <string name="send">Send</string>
+
+    <string name="prog_none">Next programming : none</string>
+
     <string name="def">Default</string>
 </resources>

@@ -1,6 +1,7 @@
 package fr.esir.oep;
 
 import android.content.Context;
+import android.util.Log;
 import fr.esir.regulation.DataFromKNX;
 import fr.esir.maintasks.MyActivity;
 import fr.esir.regulation.MachineLearning;
@@ -16,23 +17,26 @@ import java.util.concurrent.TimeUnit;
  */
 public class RepetetiveTask {
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-    private double consigne;
-    private long time;
 
-    public static String ACTION_PREDICT = "schedule_prediction";
-    public static String ACTION_REGULATION = "schedule_heating";
+    public final static String HEATTIME = "look_for_heatTime";
+    public final static String FINALCONS = "final_temp";
 
-    public RepetetiveTask(long firstDelay, String action) {
-        if (action.equals(ACTION_PREDICT))
-            scheduler.scheduleWithFixedDelay(new DoSomethingTask(), firstDelay, 86400000, TimeUnit.MILLISECONDS);
-        else if (action.equals(ACTION_REGULATION))
-            scheduler.schedule(new CalculatedHeatTime(), firstDelay, TimeUnit.MILLISECONDS);
+    MyActivity ctx = (MyActivity) MyActivity.ct;
+
+    public RepetetiveTask(long firstDelay) {
+        scheduler.scheduleWithFixedDelay(new DoSomethingTask(), firstDelay, 86400000, TimeUnit.MILLISECONDS);
     }
 
-    public RepetetiveTask(long delay, double consigne, Date date) {
-        this.consigne = consigne;
-        time = date.getTime();
-        scheduler.schedule(new DoOtherSomethingTask(), delay, TimeUnit.MINUTES);
+    public RepetetiveTask(long firstDelay, double consigne, String action) {
+        if (action.equals(HEATTIME))
+            scheduler.schedule(new CalculatedHeatTime(consigne), firstDelay, TimeUnit.MILLISECONDS);
+        else if (action.equals(FINALCONS))
+            scheduler.schedule(new DoFinalSomethingTask(consigne), firstDelay, TimeUnit.MILLISECONDS);
+    }
+
+    public RepetetiveTask(long delay, double consigne, double nb_pers, Date date) {
+        long time = date.getTime();
+        scheduler.schedule(new DoOtherSomethingTask(consigne, nb_pers, time), delay, TimeUnit.MINUTES);
     }
 
     private class DoSomethingTask implements Runnable {
@@ -42,17 +46,51 @@ public class RepetetiveTask {
         }
     }
 
-    private class DoOtherSomethingTask implements Runnable {
+    private class DoFinalSomethingTask implements Runnable {
+        private double consigne;
+
+        public DoFinalSomethingTask(double consigne) {
+            this.consigne = consigne;
+        }
+
         @Override
         public void run() {
-            doOtherSomething();
+            setFinalRegul(consigne);
+        }
+    }
+
+    private void setFinalRegul(double consigne) {
+        //regulator -> sleep mode temperature
+        scheduler.shutdown();
+    }
+
+    private class DoOtherSomethingTask implements Runnable {
+        private double consigne;
+        private long time;
+        private double nb_pers;
+
+        public DoOtherSomethingTask(double consigne, double nb_pers, long time) {
+            this.consigne = consigne;
+            this.time = time;
+            this.nb_pers = nb_pers;
+        }
+
+        @Override
+        public void run() {
+            doOtherSomething(consigne, nb_pers, time);
         }
     }
 
     private class CalculatedHeatTime implements Runnable {
+        private double consigne;
+
+        public CalculatedHeatTime(double consigne) {
+            this.consigne = consigne;
+        }
+
         @Override
         public void run() {
-            calculatedTrueHeatTime();
+            calculatedTrueHeatTime(consigne);
         }
     }
 
@@ -68,25 +106,48 @@ public class RepetetiveTask {
         }
     }
 
-    private void doOtherSomething() {
+    private void doOtherSomething(double consigne, double nb_pers, long time) {
         //look for sensors values int the context service -> put in a DataFromKNX
         //use the new object in the MachineLearning class
-        DataFromKNX dfk = new DataFromKNX(consigne);
+        DataFromKNX dfk = new DataFromKNX(consigne, nb_pers);
         dfk.setAll();
         MachineLearning ml = new MachineLearning(dfk);
         long heatTime = ml.setDataInArff();
         long diff = time - heatTime;
-        new RepetetiveTask(diff, ACTION_REGULATION);
+        new RepetetiveTask(diff, consigne, HEATTIME);
 
+        String s1 = String.format("%d min, %d sec",
+                TimeUnit.MILLISECONDS.toMinutes(time),
+                TimeUnit.MILLISECONDS.toSeconds(time) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time))
+        );
+
+        String s2 = String.format("%d min, %d sec",
+                TimeUnit.MILLISECONDS.toMinutes(diff),
+                TimeUnit.MILLISECONDS.toSeconds(diff) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(diff))
+        );
+
+        updateTvProg("Next Programming at " + s2 + " to have " + consigne + " at " + time);
         scheduler.shutdown();
     }
 
+    private void updateTvProg(String string) {
+        ctx.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ctx.setTvProg(string);
+            }
+        });
+    }
 
-    private void calculatedTrueHeatTime() {
+    private void calculatedTrueHeatTime(double consigne) {
         //send cons value to regulator when it's the estimated time
         //check i_temp sensor value and wait the temp is "consigne"
         //calculate the difference between the start and end dates -> DataLearning
         //add the values to the arff file
+
+
         scheduler.shutdown();
     }
 }
