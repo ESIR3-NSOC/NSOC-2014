@@ -18,19 +18,24 @@ import java.util.concurrent.TimeUnit;
 public class RepetetiveTask {
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
+    public final static String HEATTIME = "look_for_heatTime";
+    public final static String FINALCONS = "final_temp";
+
     MyActivity ctx = (MyActivity) MyActivity.ct;
 
     public RepetetiveTask(long firstDelay) {
         scheduler.scheduleWithFixedDelay(new DoSomethingTask(), firstDelay, 86400000, TimeUnit.MILLISECONDS);
     }
 
-    public RepetetiveTask(long firstDelay, double consigne) {
-        scheduler.schedule(new CalculatedHeatTime(consigne), firstDelay, TimeUnit.MILLISECONDS);
+    public RepetetiveTask(long firstDelay, double consigne, String action) {
+        if (action.equals(HEATTIME))
+            scheduler.schedule(new CalculatedHeatTime(consigne), firstDelay, TimeUnit.MILLISECONDS);
+        else if (action.equals(FINALCONS))
+            scheduler.schedule(new DoFinalSomethingTask(consigne), firstDelay, TimeUnit.MILLISECONDS);
     }
 
     public RepetetiveTask(long delay, double consigne, double nb_pers, Date date) {
         long time = date.getTime();
-        Log.w("TIME", time + "");
         scheduler.schedule(new DoOtherSomethingTask(consigne, nb_pers, time), delay, TimeUnit.MINUTES);
     }
 
@@ -39,6 +44,24 @@ public class RepetetiveTask {
         public void run() {
             doSomething();
         }
+    }
+
+    private class DoFinalSomethingTask implements Runnable {
+        private double consigne;
+
+        public DoFinalSomethingTask(double consigne) {
+            this.consigne = consigne;
+        }
+
+        @Override
+        public void run() {
+            setFinalRegul(consigne);
+        }
+    }
+
+    private void setFinalRegul(double consigne) {
+        //regulator -> sleep mode temperature
+        scheduler.shutdown();
     }
 
     private class DoOtherSomethingTask implements Runnable {
@@ -91,7 +114,7 @@ public class RepetetiveTask {
         MachineLearning ml = new MachineLearning(dfk);
         long heatTime = ml.setDataInArff();
         long diff = time - heatTime;
-        new RepetetiveTask(diff, consigne);
+        new RepetetiveTask(diff, consigne, HEATTIME);
 
         String s1 = String.format("%d min, %d sec",
                 TimeUnit.MILLISECONDS.toMinutes(time),

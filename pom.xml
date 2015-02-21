@@ -28,7 +28,6 @@
         <module>tsen.webapp</module>
         <module>tsen.provider</module>
         <module>appli_tsen</module>
-        <module>Restful</module>
     </modules>
 
     <dependencies>

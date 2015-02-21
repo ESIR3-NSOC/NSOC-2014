@@ -8,12 +8,19 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import fr.esir.context.dataPackage.EnvironmentData;
+import fr.esir.context.dataPackage.StudentData;
+import fr.esir.context.webSocket.WebSocketHandler;
 import fr.esir.resources.FilterString;
-import org.codehaus.jackson.JsonNode;
 
 
 import context.Context;
-import tsen.TsenUniverse;
+import knx.SensorType;
+import org.kevoree.modeling.api.Callback;
+import org.kevoree.modeling.api.KObject;
+import org.webbitserver.WebServer;
+import org.webbitserver.WebServers;
+import tsen.*;
 
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 
@@ -23,8 +30,14 @@ import java.util.List;
 import java.util.Map;
 
 public class Context_service extends Service {
+
     private final static String TAG = Context_service.class.getSimpleName();
     private final IBinder mBinder = new LocalBinder();
+
+    public static final int TSEN_WS_PORT = 8081;
+
+    private WebServer _wss;
+
     private Context ctx;
 
     @Override
@@ -46,23 +59,16 @@ public class Context_service extends Service {
 
     public boolean initialize() {
 
-        if(ctx!=null){
-            ctx = new Context(new TsenUniverse());
-            ctx.startContext();
-            return true;
-        }else{
 
-        }
+        _wss = WebServers.createWebServer(TSEN_WS_PORT).add("",new WebSocketHandler(_wss,this));
+
         ctx = new Context(new TsenUniverse());
-        ctx.startContext();
         registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
 
-        /*Context ctx = new Context(new TsenUniverse());
-        ctx.startContext();*/
         return true;
     }
 
-    private void broadcastUpdate(String action, Object object) {
+    public void broadcastUpdate(String action, String data) {
         final Intent intent = new Intent(action);
         sendBroadcast(intent);
     }
@@ -74,7 +80,7 @@ public class Context_service extends Service {
             Bundle bundle;
             switch (action) {
                 case FilterString.OEP_DATA_STUDENTS_OF_DAY:
-                    Log.w(TAG, "reception students ok");
+                    Log.i(TAG, "reception students ok");
                     bundle = intent.getBundleExtra("Data");
                     if (bundle != null) {
                         HashMap<Time, List<DatesInterval>> map = (HashMap<Time, List<DatesInterval>>) bundle.getSerializable("HashMap");
@@ -83,21 +89,46 @@ public class Context_service extends Service {
                             for (DatesInterval entryDi : entry.getValue()) {
                                 Log.w(TAG, entryDi.getId() + " will be in classroom " + entryDi.getLesson()
                                         + ". His consigne must be " + entryDi.getConsigne() + " °C");
+                                addStudent(entryDi.getStartDate().getTime(),entryDi.getEndDate().getTime(),entryDi.getId(),entryDi.getConsigne(),entryDi.getLesson());
                             }
                         }
                     }
                     break;
+
             }
-
-            switch(action){
-                case FilterString.CONTEXT_INIT_SENSOR : ctx.initSensors((JsonNode)intent.getExtras().get("plop")); break;
-                case FilterString.CONTEXT_UPDATE_VALUE : break;
-            }
-
-
-
         }
     };
+
+    private void addStudent(long start, long end, String studentId, double consigne, String lesson){
+        TsenView startView = ctx.getDimension().time(start);
+
+        User user = startView.createUser();
+        user.setId(studentId);
+        user.setLesson(lesson);
+        user.setTargetTemp(consigne);
+
+
+        startView.select("/", new Callback<KObject[]>() {
+            @Override
+            public void on(KObject[] kObjects) {
+                if(kObjects!=null && kObjects.length!=0){
+                    Room room = (Room)kObjects[0];
+                    room.addMember(user);
+                }
+            }
+        });
+        TsenView endView = ctx.getDimension().time(end);
+
+        startView.select("/", new Callback<KObject[]>() {
+            @Override
+            public void on(KObject[] kObjects) {
+                if(kObjects!=null && kObjects.length!=0){
+                    Room room = (Room)kObjects[0];
+                    room.removeMember(user);
+                }
+            }
+        });
+    }
 
     private static IntentFilter makeServicesUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
@@ -106,4 +137,58 @@ public class Context_service extends Service {
 
         return intentFilter;
     }
+
+    public Context getContext(){
+        return ctx;
+    }
+
+    // get student data for time (in milliseconde) with 3h step
+    public StudentData getStudentData(String studentId, long time){
+        StudentData sd  = new StudentData(studentId);
+
+        for(long i = System.currentTimeMillis()-time ; i<System.currentTimeMillis(); i+=3*60*60){
+            final long CURRENT_TIMESTAMP =  i;
+            TsenView view = ctx.getDimension().time(i);
+            view.select("/", new Callback<KObject[]>() {
+                @Override
+                public void on(KObject[] kObjects) {
+                    if(kObjects!=null && kObjects.length!=0){
+                        Room room = (Room) kObjects[0];
+
+                        room.eachMember(new Callback<User[]>() {
+                            @Override
+                            public void on(User[] users) {
+                                for(User user : users){
+                                    if(user.getId().compareTo(sd.get_studentId())==0){
+                                        sd.addEnvironmentData(new EnvironmentData(time));
+                                        sd.setCurrentVote(user.getVote());
+                                        sd.setTargetTemp(user.getTargetTemp());
+
+                                        room.eachMeasurement(new Callback<Sensor[]>() {
+                                            @Override
+                                            public void on(Sensor[] sensors) {
+
+                                                for(Sensor s : sensors){
+                                                    switch(s.getSensorType()){
+                                                        case SensorType.OUTDOOR_BRIGHTNESS : sd.getEnvironmentData(CURRENT_TIMESTAMP).setOutdoorLum(Double.parseDouble(s.getValue()));
+                                                        case SensorType.OUTDOOR_HUMIDITY : sd.getEnvironmentData(CURRENT_TIMESTAMP).setOutdoorHum(Double.parseDouble(s.getValue()));
+                                                        case SensorType.OUTDOOR_TEMPERATURE : sd.getEnvironmentData(CURRENT_TIMESTAMP).setOutdoorTemp(Double.parseDouble(s.getValue()));
+                                                        case SensorType.INDOOR_TEMPERATURE :sd.getEnvironmentData(CURRENT_TIMESTAMP).setIndoorTemp(Double.parseDouble(s.getValue()));
+
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        return sd;
+    }
+
 }

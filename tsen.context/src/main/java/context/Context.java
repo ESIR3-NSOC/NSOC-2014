@@ -1,91 +1,36 @@
 package context;
 
-import knx.GroupEvent;
 import knx.SensorType;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.kevoree.modeling.api.Callback;
 import org.kevoree.modeling.api.KObject;
-import org.webbitserver.WebServers;
+import org.webbitserver.WebSocketConnection;
 import tsen.*;
-import webSocketServer.WebSocketHandler;
 
-import java.net.MalformedURLException;
-import java.util.Queue;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
+import java.io.*;
+import java.util.*;
 
 public class Context {
 
     private TsenUniverse _universe;
     private TsenDimension _dim0;
 
-    private org.webbitserver.WebServer _wss;
-    public static final int TSEN_WS_PORT = 8081;
+    private double _indooTempValue;
 
-    private Thread _bufferReader;
-    private boolean _isProcessingBuffer;
-
-    private Queue<GroupEvent> _eventBuffer;
 
     public Context (TsenUniverse universe){
         _universe = universe ;
         _dim0 = _universe.dimension(0L);
-        _eventBuffer = new ConcurrentLinkedQueue<>();
-        //createBufferReader();
-        _wss = WebServers.createWebServer(TSEN_WS_PORT).add("/data",new WebSocketHandler(_wss));
-        _wss.start();
-        System.out.println("Web socket server running at : " + _wss.getUri());
 
+        initSensors(importGroup());
 
-        //startContext();
-    }
-
-    public void startContext(){
-        _isProcessingBuffer = true ;
-        _bufferReader.start();
-    }
-
-    public void stopContext(){
-        _isProcessingBuffer = false;
-
-    }
-
-    public void createBufferReader(){
-
-        _bufferReader = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(_isProcessingBuffer){
-
-
-                    while(!_eventBuffer.isEmpty()){
-                        System.out.println(_eventBuffer);
-                        GroupEvent grpEvt = _eventBuffer.poll();
-                        grpEvt.addToContext(_dim0);
-                    }
-                }
-
-                try {
-                    Thread.sleep(30000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        _indooTempValue = getInstantIndoorTemp();
     }
 
     public TsenDimension getDimension(){
         return _dim0;
     }
-
 
     public void initSensors(JsonNode groups){
 
@@ -181,9 +126,106 @@ public class Context {
 
     }
 
-    public boolean isRunning(){
-        return _isProcessingBuffer;
+    public void setVote(String id, String vote, long ts, WebSocketConnection connection){
+
+        TsenView view = _dim0.time(ts);
+
+        view.select("/", new Callback<KObject[]>() {
+            @Override
+            public void on(KObject[] kObjects) {
+                if(kObjects!=null && kObjects.length!=0){
+                    Room room = (Room) kObjects[0];
+
+                    room.eachMember(new Callback<User[]>() {
+                        @Override
+                        public void on(User[] users) {
+
+                            boolean findUser = false ;
+                            for(User user : users){
+                                if(user.getId().compareTo(id)==0){
+                                    user.setVote(vote);
+                                    findUser = true;
+                                }
+                            }
+
+                            if(findUser){
+                                connection.send("200");
+                            }else{
+                                connection.send("404");
+                            }
+                        }
+                    });
+
+                }
+            }
+        });
     }
+
+    public double getInstantIndoorTemp(){
+        TsenView view = _dim0.time(System.currentTimeMillis());
+
+        view.select("/", new Callback<KObject[]>() {
+            @Override
+            public void on(KObject[] kObjects) {
+                if(kObjects!=null && kObjects.length!=0){
+
+                    Room room = (Room) kObjects[0];
+
+                    room.eachMeasurement(new Callback<Sensor[]>() {
+                        @Override
+                        public void on(Sensor[] sensors) {
+                            for (Sensor sensor : sensors){
+                                if(sensor.getSensorType().compareTo(SensorType.INDOOR_TEMPERATURE)==0) {
+                                   setIndoorTemp(Double.parseDouble(sensor.getValue()));
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        return _indooTempValue;
+    }
+
+    private void setIndoorTemp(double t){
+        _indooTempValue = t ;
+    }
+
+    public static JsonNode importGroup(){
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node;
+        StringBuilder AllConf = new StringBuilder();
+
+        try {
+
+            File groupConfiguration = new File("tsen.provider/src/main/resources/knxGroup.txt");
+            InputStream read = new FileInputStream(groupConfiguration);
+            InputStreamReader lecture = new InputStreamReader(read);
+            BufferedReader br = new BufferedReader(lecture);
+            String line ;
+            while((line=br.readLine())!=null){
+                AllConf.append(line);
+            }
+            br.close();
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try{
+            node = mapper.readTree(AllConf.toString());
+        }catch (Exception e){
+            System.out.println("Could not import KNXGroup");
+            node =  null;
+        }
+        return node;
+    }
+
 
 
 

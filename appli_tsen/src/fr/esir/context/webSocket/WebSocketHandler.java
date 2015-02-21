@@ -1,6 +1,8 @@
-package webSocketServer;
+package fr.esir.context.webSocket;
 
 import context.Context;
+import fr.esir.resources.FilterString;
+import fr.esir.services.Context_service;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.webbitserver.BaseWebSocketHandler;
@@ -13,13 +15,15 @@ import java.io.IOException;
 public class WebSocketHandler extends BaseWebSocketHandler {
 
     private WebServer _wss;
+    private Context_service _ctxService;
     private Context _ctx;
     private static final String TAG = "WEB SOCKET SERVER";
 
-    public WebSocketHandler(WebServer wss, Context ctx) {
+    public WebSocketHandler(WebServer wss, Context_service service) {
         System.out.println("lauching web server");
         _wss = wss;
-        _ctx = ctx;
+        _ctxService = service ;
+
     }
 
     @Override
@@ -34,7 +38,7 @@ public class WebSocketHandler extends BaseWebSocketHandler {
     }
 
     public void onMessage(WebSocketConnection connection, String message) {
-
+        _ctxService.broadcastUpdate(FilterString.WEBSOCKET_VOTE_UPDATE,message);
         JsonNode jsonRpc;
         try {
             jsonRpc = new ObjectMapper().readTree(message);
