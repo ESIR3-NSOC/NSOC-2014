@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
 import fr.esir.fragments.NextProgramming;
 import fr.esir.knx.Service_knx;
+import fr.esir.oep.RepetetiveTask;
 import fr.esir.resources.FilterString;
 import fr.esir.services.Context_service;
 import fr.esir.services.Knx_service;
@@ -30,7 +31,7 @@ public class MyActivity extends Activity {
     public static double lastTemp_out = 0;
     public static double lastLum_out = 0;
     public static Context ct;
-    SharedPreferences pref;
+    public static Context_service mContext_service;
     private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -42,7 +43,6 @@ public class MyActivity extends Activity {
             }
         }
     };
-    public Context_service mContext_service;
     public Service_knx mKnx_service;
     public Regulation_service mRegulation_service;
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -101,6 +101,7 @@ public class MyActivity extends Activity {
             }
         }
     };
+    SharedPreferences pref;
     TextView hum_out;
     TextView hum_in;
     TextView temp_ou;
@@ -112,6 +113,8 @@ public class MyActivity extends Activity {
     EditText etvote;
     Button vote;
     TextView next_prog;
+    private boolean checking = RepetetiveTask.checking;
+    private double consigneTemp = RepetetiveTask.consigne;
 
     private static IntentFilter makeServicesUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
@@ -120,8 +123,10 @@ public class MyActivity extends Activity {
         return intentFilter;
     }
 
-    private void broadcastUpdate(final String action) {
+    private void broadcastUpdate(final String action, double cons, long timeEnd) {
         final Intent intent = new Intent(action);
+        intent.putExtra("CONSIGNE", cons);
+        intent.putExtra("TIME", timeEnd);
         sendBroadcast(intent);
     }
 
@@ -254,6 +259,11 @@ public class MyActivity extends Activity {
             hum_out.setText(data);
         } else if (add.equals("0/0/3")) { //indoor temperature sensor
             lastTemp_in = Double.parseDouble(dataSplit[0]);
+            if (checking) {
+                if (lastTemp_in >= consigneTemp)
+                    broadcastUpdate(FilterString.REGULATION_EXTRA_DATA, consigneTemp, System.currentTimeMillis());
+
+            }
             temp_in.setText(data);
         }
     }

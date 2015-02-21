@@ -3,6 +3,7 @@ package fr.esir.oep;
 import fr.esir.maintasks.MyActivity;
 import fr.esir.regulation.DataFromKNX;
 import fr.esir.regulation.MachineLearning;
+import fr.esir.services.Regulation_service;
 
 import java.io.IOException;
 import java.util.Date;
@@ -16,6 +17,9 @@ import java.util.concurrent.TimeUnit;
 public class RepetetiveTask {
     public final static String HEATTIME = "look_for_heatTime";
     public final static String FINALCONS = "final_temp";
+    public static boolean checking = false;
+    public static long timeStart;
+    public static double consigne = 0;
     MyActivity ctx = (MyActivity) MyActivity.ct;
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
@@ -87,13 +91,15 @@ public class RepetetiveTask {
         });
     }
 
-    private void calculatedTrueHeatTime(double consigne) {
+    private void calculatedTrueHeatTime(double consigneTemp) {
         //send cons value to regulator when it's the estimated time
         //check i_temp sensor value and wait the temp is "consigne"
         //calculate the difference between the start and end dates -> DataLearning
         //add the values to the arff file
-
-
+        Regulation_service.regulator.setConsigne(consigneTemp);
+        checking = true;
+        consigne = consigneTemp;
+        timeStart = System.currentTimeMillis();
         scheduler.shutdown();
     }
 

@@ -36,8 +36,8 @@ public class ArffGenerated {
         {
             add(new Attribute("hum_ext"));
             add(new Attribute("temp_ext"));
-            add(new Attribute("temp_int"));
             add(new Attribute("lum_ext"));
+            add(new Attribute("temp_int"));
         }
     };
 
@@ -61,6 +61,7 @@ public class ArffGenerated {
             add(new Attribute("o_temp"));
             add(new Attribute("i_hum"));
             add(new Attribute("o_hum"));
+            add(new Attribute("i_lum"));
             add(new Attribute("o_lum"));
             add(new Attribute("consigne"));
             add(new Attribute("nb_pers"));
@@ -130,8 +131,8 @@ public class ArffGenerated {
         instance = new Instance(4);
         instance.setValue(data.attribute("hum_ext"), att[0]);
         instance.setValue(data.attribute("temp_ext"), att[1]);
-        instance.setValue(data.attribute("temp_int"), att[2]);
-        instance.setValue(data.attribute("lum_ext"), att[3]);
+        instance.setValue(data.attribute("lum_ext"), att[2]);
+        instance.setValue(data.attribute("temp_int"), att[3]);
 
         data.add(instance);
 
@@ -177,13 +178,14 @@ public class ArffGenerated {
      * @return boolean
      */
     public boolean addDataGeneric() {
-        addData(85, 17, 22.5, 21000);
-        addData(43, 21, 21, 61500);
-        addData(62, 19, 21.5, 34000);
-        addData(24, 24, 20, 82300);
-        addData(50, 20, 20.5, 56800);
-        addData(59, 20, 20.5, 39420);
-        addData(93, 4, 24, 6300);
+        addData(85, 17, 21000, 22.5);
+        addData(43, 21, 61500, 21);
+        addData(62, 19, 34000, 21.5);
+        addData(24, 24, 82300, 20);
+        addData(50, 20, 56800, 20.5);
+        addData(59, 20, 39420, 20.5);
+        addData(93, 4, 6300, 24);
+        addData(95, 10, 12000, 23.5);
 
         return true;
     }
@@ -218,8 +220,9 @@ public class ArffGenerated {
         model = new LinearRegression();
         model.buildClassifier(data); // the last instance with a missing value
         // is not used
-
-        return model.classifyInstance(data.lastInstance());
+        double db = model.classifyInstance(data.lastInstance());
+        System.out.println("model result " + db);
+        return db;
     }
 
     public void addInstance(double hum, double temp, double lum) {

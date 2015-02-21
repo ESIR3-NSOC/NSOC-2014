@@ -9,11 +9,13 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import com.example.esir.nsoc2014.regulator.regulation.Regulator;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import fr.esir.maintasks.MyActivity;
 import fr.esir.oep.RepetetiveTask;
+import fr.esir.regulation.DataFromKNX;
+import fr.esir.regulation.DataLearning;
 import fr.esir.regulation.NbPerson;
+import fr.esir.regulation.Regulator;
 import fr.esir.resources.FilterString;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -27,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 public class Regulation_service extends Service {
     private final static String TAG = Regulation_service.class.getSimpleName();
     public static ArrayList<DatesInterval> list;
+    public static Regulator regulator;
     private final IBinder mBinder = new LocalBinder();
     public RepetetiveTask rt;
     private ArrayList<DatesInterval> listConsigne;
@@ -53,11 +56,14 @@ public class Regulation_service extends Service {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
+                    break;
+                case FilterString.REGULATION_EXTRA_DATA:
+                    double cons = intent.getDoubleExtra("CONSIGNE", 21);
+                    long timeEnd = intent.getLongExtra("TIME", 600000);
+                    putInArff(cons, timeEnd);
             }
         }
     };
-    private Regulator regulator;
     private int nb_users;
     private ArrayList<NbPerson> nbperson;
 
@@ -80,7 +86,7 @@ public class Regulation_service extends Service {
         rt.getScheduler().shutdown();
         rt = null;
         unregisterReceiver(mServicesUpdateReceiver);
-        regulator.stop();
+        regulator.cancel(false);
         regulator = null;
         return super.onUnbind(intent);
     }
@@ -146,7 +152,9 @@ public class Regulation_service extends Service {
         registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
         regulator = new Regulator();
         regulator.setConsigne(18);
+        regulator.execute();
         //regulator.run();
+
         return true;
     }
 
@@ -155,7 +163,7 @@ public class Regulation_service extends Service {
             if (currentDate >= entry.getStartDate() && currentDate <= entry.getEndDate())
                 return entry.getNb_pers();
         }
-        return 1;
+        return 0;
     }
 
     public void executeVote(double value, String vote) {
@@ -176,6 +184,13 @@ public class Regulation_service extends Service {
                 break;
         }
         regulator.setConsigne(val);
+    }
+
+    private void putInArff(double cons, long timeEnd) {
+        DataFromKNX df = new DataFromKNX(cons, checkNbPerson(timeEnd));
+        DataLearning dl = new DataLearning(df);
+        dl.setHeat_time(RepetetiveTask.timeStart, timeEnd);
+        dl.setInArff();
     }
 
     private void broadcastUpdate(final String action) {

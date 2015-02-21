@@ -19,7 +19,10 @@ import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Prevision;
 import com.example.esir.nsoc2014.tsen.lob.objects.ArffGenerated;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
+import fr.esir.context.dataPackage.EnvironmentData;
+import fr.esir.context.dataPackage.StudentData;
 import fr.esir.maintasks.ConfigParams;
+import fr.esir.maintasks.MyActivity;
 
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -95,9 +98,16 @@ public class DatabaseRegression implements Prevision {
                 arff.generateArff(result.getString(1));
 
                 //get information from context -> addDataCustom
-
+                StudentData sd = MyActivity.mContext_service.getStudentData(user, 24 * 24 * 60 * 60 * 1000); //24 days...
+                Map<Long, EnvironmentData> hashi = sd.get_environmentDatas();
                 //if a student has not enough data (vote)
-                arff.addDataGeneric();
+                if (hashi.size() < 11)
+                    arff.addDataGeneric();
+                for (Map.Entry<Long, EnvironmentData> ed : hashi.entrySet()) {
+                    EnvironmentData dataLine = ed.getValue();
+                    arff.addDataCustom(dataLine.getIndoorHum(), dataLine.getOutdoorTemp(),
+                            dataLine.getIndoorTemp(), dataLine.getOutdoorLum());
+                }
 
                 arff.addInstance(weatherMap.get(date2).getHumidity(), weatherMap.get(date2).getTemp(),
                         weatherMap.get(date2).getLum());
