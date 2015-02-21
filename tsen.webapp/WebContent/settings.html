@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <title>TSEN</title>
+
+        <link rel="stylesheet" href="./static/css/style.min.css" media="screen" type="text/css" />
+        <link rel="stylesheet" href="./static/css/style_flat.css" media="screen" type="text/css" />
+        <link rel="stylesheet" href="./static/css/style_settings.css" media="screen" type="text/css" />
+            
+    <script src="//www.polymer-project.org/webcomponents.js"></script>
+    <link href="//www.polymer-project.org/components/core-menu/core-menu.html" rel="import">
+    <link href="//www.polymer-project.org/components/core-menu/core-submenu.html" rel="import">
+    <link href="//www.polymer-project.org/components/core-item/core-item.html" rel="import">
+    <link href="//www.polymer-project.org/components/core-icon-button/core-icon-button.html" rel="import">
+    <link href="//www.polymer-project.org/components/core-icons/core-icons.html" rel="import">
+    <link href="//www.polymer-project.org/components/paper-input/paper-input.html" rel="import">
+    <link href="//www.polymer-project.org/components/paper-button/paper-button.html" rel="import">
+    <link href="//www.polymer-project.org/components/paper-dropdown-menu/paper-dropdown-menu.html" rel="import">
+    <link href="//www.polymer-project.org/components/paper-dropdown/paper-dropdown.html" rel="import">
+    <link href="//www.polymer-project.org/components/paper-item/paper-item.html" rel="import">
+
+    </head>
+
+    <body>
+
+
+    <div class="home-corner">
+        <a href="./">
+            <i class="fa fa-home"></i>
+        </a>
+    </div>
+        
+    <div class="page">
+        <div class="pageHeader">
+            <div class="title">TSEN</div>
+            <div class="userPanel"><i class="fa fa-user"></i><span class="username">User Name </span>
+            </div>
+        </div>
+        
+        <div class="main">
+            <div class="nav">
+                <div class="menu">
+                    <div class="title">Current system</div>
+                    <ul>
+                        <li class="active" id="ade_extraction"> <i class="fa fa-cloud-download"></i>ADE Extraction</li>
+                        <li id="get_plannings"> <i class="fa fa-download"></i>GET Plannings</li>
+                        <li id="database"> <i class="fa fa-database"></i>Database</li>
+                        <li id="users"> <i class="fa fa-users"></i>Users</li>
+                        <li id="logs"> <i class="fa fa-history"></i>Logs</li>
+                        <li id="system"> <i class="fa fa-flash"></i>System</li>
+                        <li id="about"> <i class="fa fa-info"></i>About</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="view active" id="ade_extraction">
+                <div class="viewHeader">
+                    <div class="title">ADE Extraction</div>
+                    <div class="functions">
+<!--                        <div class="button active" onclick="this.submit()">Done</div>-->
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="list">
+                        <ul>
+                            <li class="parameter" id="jsessionid"><i class="fa fa-chevron-right"></i><span>JSession ID</span>
+                                <div class="info">
+                                    <div class="regular"><input type="text" value=""></div>                               
+                                </div>
+                            </li>
+                            <li class="parameter" id="list_projects"><i id="listProjectIcon" class="fa fa-chevron-right"></i><span>List projects</span>
+                                <div class="info">    
+                                    <div class="button large" id="listProjectBtn">List projects</div>                                                     
+                                </div>
+                            </li>
+                            <li class="parameter"><i class="fa fa-chevron-right"></i><span>Select a project</span>
+                                <div class="info">    
+                                    <div class="regular">
+                                        <select id="projectList">
+                                            <option value="null">Empty</option>
+                                        </select>
+                                    </div>        
+                                </div>
+                            </li>
+                            <li class="parameter" id="tree_extraction"><i id="treeExtractionIcon" class="fa fa-chevron-right"></i><span>Tree extraction</span>
+                                <div class="info">    
+                                    <div class="button large" id="treeExtractionBtn">Tree extraction</div>                                                     
+                                </div>
+                            </li>
+                        </ul>     
+                    </div>
+                </div>
+            </div>
+            
+                        <div class="view" id="get_plannings">
+                <div class="viewHeader">
+                    <div class="title">GET Plannings</div>
+                </div>
+                <div class="content">
+                    <div class="list">
+                        <ul>
+                            <li class="parameter" id="scope"><i class="fa fa-chevron-right"></i><span>Scope</span>
+                                <div class="info">
+                                    <div class="regular"><input type="text" value=""></div>                               
+                                </div>
+                            </li>
+                             <li class="parameter" id="first_date"><i class="fa fa-chevron-right"></i><span>First Date (JJ-MM-YYYY)</span>
+                                <div class="info">
+                                    <div class="regular"><input type="text" value=""></div>                               
+                                </div>
+                            </li>
+                             <li class="parameter" id="last_date"><i class="fa fa-chevron-right"></i><span>Last Date (JJ-MM-YYYY)</span>
+                                <div class="info">
+                                    <div class="regular"><input type="text" value=""></div>                               
+                                </div>
+                            </li>
+                            <li class="parameter" id="extract_plannings"><i class="fa fa-chevron-right"></i><span>Extraction Plannings</span>
+                                <div class="info">    
+                                    <div class="button blue large">Extraction Plannings</div>                                                           
+                                </div>
+                            </li>
+                        </ul>
+                        
+                        
+                        
+                    </div>
+                </div>
+            </div> 
+
+
+
+            <div class="view" id="database">
+                <div class="viewHeader">
+                    <div class="title">Database</div>
+                    <div class="functions">
+                    </div>
+                </div>
+                <div class="content">
+                     <div class="list">
+                        <ul>
+                            <li class="parameter" id="data_adresse"><i class="fa fa-chevron-right"></i><span>Address</span>
+                                <div class="info">
+                                    <div class="regular"><input type="text" value=""></div>                               
+                                </div>
+                            </li>
+                             <li class="parameter" id="data_login"><i class="fa fa-chevron-right"></i><span>Login</span>
+                                <div class="info">
+                                    <div class="regular"><input type="text" value=""></div>                               
+                                </div>
+                            </li>
+                             <li class="parameter" id="data_password"><i class="fa fa-chevron-right"></i><span>Password</span>
+                                <div class="info">
+                                    <div class="regular"><input type="text" value=""></div>                               
+                                </div>
+                            </li>
+                            <li class="parameter" id="data_apply"><i class="fa fa-chevron-right"></i><span>Apply</span>
+                                <div class="info">    
+                                    <div class="button blue large">Apply</div>                                                           
+                                </div>
+                            </li>
+                        </ul>
+                        
+                        
+                        
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="view" id="activity">
+                <div class="viewHeader">
+                    <div class="title">Activity</div>
+                    <div class="functions">
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="list">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="view" id="logs">
+                <div class="viewHeader">
+                    <div class="title">Logs</div>
+                    <div class="functions">
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="list">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="view" id="system">
+                <div class="viewHeader">
+                    <div class="title">System</div>
+                    <div class="functions">
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="list">
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            <div class="view" id="users">
+                <div class="viewHeader">
+                    <div class="title">Users</div>
+                    <div class="functions">
+                        <div class="button active" onclick="">Add user</div>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="list">
+                        <div id="user_example">
+                        <div class="title">USERNAME</div>
+                        <ul>
+                            <li class="parameter" id="change_pass"><i class="fa fa-chevron-right"></i><span>Change password</span>
+                                <div class="info">
+                                    <div class="button red large">Change Password</div>                                        
+                                </div>
+                            </li>
+                            <li class="parameter" id="prev_pass"><i class="fa fa-chevron-right"></i><span>Previous password</span>
+                                <div class="info">
+                                    <div class="regular"><input type="password" value=""></div>                                        
+                                </div>
+                            </li>
+                            <li class="parameter" id="new_pass_1"><i class="fa fa-chevron-right"></i><span>New Password</span>
+                                <div class="info">
+                                    <div class="regular"><input type="password" value=""></div>                                        
+                                </div>
+                            </li>
+                            <li class="parameter" id="new_pass_2"><i class="fa fa-chevron-right"></i><span>New Password</span>
+                                <div class="info">
+                                    <div class="regular"><input type="password" value=""></div>                                        
+                                </div>
+                            </li>
+                            <li class="parameter" id="admin"><i class="fa fa-chevron-right"></i><span>Administrator</span>
+                                <div class="info">
+                                    <div class="switch switch-square active">
+                                        <input type="checkbox" id="abababa" class="control"> <!--id a perso-->
+                                        <label for="abababa" data-on="I" data-off="O"></label>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="parameter" id="change_pass"><i class="fa fa-chevron-right"></i><span>Delete user</span>
+                                <div class="info">
+                                    <div class="button red large">Delete user</div>                                        
+                                </div>
+                            </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="view" id="about">
+                <div class="viewHeader">
+                    <div class="title">About</div>
+                    <div class="functions">
+                        <div class="button active" onclick="sendAbout();">Done</div>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="list">
+                        <div class="title">About information editor</div>
+                        <textarea name="aboutInfo" id="aboutInfo"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        
+
+
+    <script src="./static/js/jquery-2.1.1.min.js"></script>
+    <script src="./static/ckeditor/ckeditor.js"></script>
+    <script src="./static/js/settings_script.js"></script>
+        
+    </body>
+</html>

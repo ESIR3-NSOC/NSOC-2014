@@ -1,16 +1,79 @@
-
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <title>TSEN</title>
-    <link rel="stylesheet" href="style.css" type="text/css">
+
+  <meta charset="UTF-8">
+
+  <title>Main Page - Aicov</title>
+
+
+    <link rel="stylesheet" href="static/css/style.min.css" media="screen" type="text/css" />
+    <link rel="stylesheet" href="static/css/style_index.min.css" media="screen" type="text/css" />
+
 </head>
+
 <body>
-    <div class="animate">
-        <span class="text t-1">T</span><span class="text t-2">S</span><span class="text t-3">E</span><span class="text t-4">N</span>
+
+  	<div class="container">
+        <ul class="grid-index-icon">
+            <li>
+                <a href="view.html">
+                    <div>
+                        <i class="fa fa-sliders"></i>
+                        <span class="quote-arrow"></span>
+                    </div>
+                    <span class="grid-index-icon-name">Sound Managment</span>
+                </a>
+            </li>
+            <li>
+                <a href="settings.html">
+                    <div>
+                        <i class="fa fa-cogs"></i>
+                        <span class="quote-arrow"></span>
+                    </div>
+                    <span class="grid-index-icon-name">Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="/manager">
+                    <div>
+                        <i class="fa fa-hdd-o"></i>
+                        <span class="quote-arrow"></span>
+                    </div>
+                    <span class="grid-index-icon-name">Web serveur</span>
+                </a>
+            </li>
+            <li>
+                <a href="#popup">
+                    <div>
+                        <i class="fa fa-info"></i>
+                        <span class="quote-arrow"></span>
+                    </div>
+                    <span class="grid-index-icon-name">About</span>
+                </a>
+            </li>
+            <li>
+                <a href="logout">
+                    <div>
+                        <i class="fa fa-sign-out"></i>
+                        <span class="quote-arrow"></span>
+                    </div>
+                    <span class="grid-index-icon-name">Logout</span>
+                </a>
+            </li>                                                              
+        </ul>
     </div>
-    <div class="info">On Bore server</div>
-    <div class="service">TSEN service : <a href='http://db.uion.fr/phpmyadmin/'>PHPMyAdmin</a></div>
+    <div id="popup">
+        <span id="close" title="press Esc to close">&times;</span>
+        <h3>About</h3>
+        <div id="aboutContent">
+            <p>&nbsp;</p><p><span style="color:#696969"><span style="font-size:18px">Copyright (c) 2014 Alexis Leprince&nbsp;&lt;alexis-leprince@outlook.com&gt;</span></span></p><p><span style="color:#696969"><span style="font-size:18px">http://www.uion.fr/2014/aicov/</span></span></p><p><span style="color:#696969"><span style="font-size:18px">The above copyright notice and this permission notice shall be&nbsp;included in all copies or substantial portions of the Software.</span></span></p>
+        </div>
+    </div>
+
+    <script src="./static/js/jquery-2.1.1.min.js"></script>
+    <script src="./static/js/index_script.min.js"></script>
 </body>
+
 </html>
