@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import com.example.esir.nsoc2014.regulator.regulation.Regulator;
-import fr.esir.regulation.DataFromKNX;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import fr.esir.oep.RepetetiveTask;
 import fr.esir.regulation.NbPerson;
@@ -22,33 +21,8 @@ import java.util.concurrent.TimeUnit;
 public class Regulation_service extends Service {
     private final static String TAG = Regulation_service.class.getSimpleName();
     private final IBinder mBinder = new LocalBinder();
-    private List<DatesInterval> listConsigne;
     public RepetetiveTask rt;
-    private Regulator regulator;
-    private int nb_users;
-    private ArrayList<NbPerson> nbperson;
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        rt.getScheduler().shutdown();
-        rt = null;
-        unregisterReceiver(mServicesUpdateReceiver);
-        regulator.stop();
-        regulator = null;
-        return super.onUnbind(intent);
-    }
-
-    public class LocalBinder extends Binder {
-        public Regulation_service getService() {
-            return Regulation_service.this;
-        }
-    }
-
+    private List<DatesInterval> listConsigne;
     private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -66,6 +40,32 @@ public class Regulation_service extends Service {
             }
         }
     };
+    private Regulator regulator;
+    private int nb_users;
+    private ArrayList<NbPerson> nbperson;
+
+    private static IntentFilter makeServicesUpdateIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        //students of the day, coming from oep
+        intentFilter.addAction((FilterString.OEP_DATA_CONSIGNES_OF_DAY));
+
+        return intentFilter;
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        rt.getScheduler().shutdown();
+        rt = null;
+        unregisterReceiver(mServicesUpdateReceiver);
+        regulator.stop();
+        regulator = null;
+        return super.onUnbind(intent);
+    }
 
     public void setAlarm30B4(DatesInterval entry) {
         long startDate = entry.getStartDate().getTime();
@@ -124,7 +124,7 @@ public class Regulation_service extends Service {
         registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
         regulator = new Regulator();
         regulator.setConsigne(18);
-        regulator.run();
+        //regulator.run();
         return true;
     }
 
@@ -161,11 +161,9 @@ public class Regulation_service extends Service {
         sendBroadcast(intent);
     }
 
-    private static IntentFilter makeServicesUpdateIntentFilter() {
-        final IntentFilter intentFilter = new IntentFilter();
-        //students of the day, coming from oep
-        intentFilter.addAction((FilterString.OEP_DATA_CONSIGNES_OF_DAY));
-
-        return intentFilter;
+    public class LocalBinder extends Binder {
+        public Regulation_service getService() {
+            return Regulation_service.this;
+        }
     }
 }

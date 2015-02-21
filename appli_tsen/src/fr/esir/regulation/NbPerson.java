@@ -14,15 +14,15 @@ public class NbPerson {
         this.nb_pers = nb_pers;
     }
 
-    public long getStartDate(){
+    public long getStartDate() {
         return startDate;
     }
 
-    public long getEndDate(){
+    public long getEndDate() {
         return endDate;
     }
 
-    public int getNb_pers(){
+    public int getNb_pers() {
         return nb_pers;
     }
 }

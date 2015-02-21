@@ -7,10 +7,6 @@ import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
 import fr.esir.maintasks.ConfigParams;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,12 +15,11 @@ public class AsynchDB extends AsyncTask<Void, Void, ResultSet> {
     private Context context = ConfigParams.context;
 
     private OnSearchCompleted listener;
+    private Connection c;
 
     public AsynchDB(OnSearchCompleted listener) {
         this.listener = listener;
     }
-
-    private Connection c;
 
     @Override
     protected ResultSet doInBackground(Void... params) {
@@ -71,10 +66,10 @@ public class AsynchDB extends AsyncTask<Void, Void, ResultSet> {
             String sql = "select DISTINCT ADE_ID,DTSTART,DTEND,SUMMARY from tree_object_22 join (select ADE_ID, EVENT_ID from correspondence_22 join (SELECT UID FROM correspondence_22 join event_22 on event_22.UID = correspondence_22.EVENT_ID WHERE ADE_ID=\""
                     + sh.getString("IDROOM", "1005")
                     + "\" and date(event_22.DTSTART) LIKE '"
-                    + sh.getString("DATE",datenow)
+                    + sh.getString("DATE", datenow)
                     + "') as tmp1 on correspondence_22.EVENT_ID = tmp1.UID) as tmp2 on tree_object_22.id=tmp2.ADE_ID join event_22 on tmp2.EVENT_ID=event_22.UID WHERE NAME NOT LIKE \"%"
-                    + sh.getString("NAMEROOM","104") + "%\"";
-            Log.w("sql",sql);
+                    + sh.getString("NAMEROOM", "104") + "%\"";
+            Log.w("sql", sql);
             return st.executeQuery(sql);
         }
         return null;

@@ -13,6 +13,21 @@ public class Weather {
     private double temp;
     private double lum;
     private WeatherForecast wf;
+    private ArrayList<Integer> list = new ArrayList<Integer>() {
+        private static final long serialVersionUID = 1L;
+
+        {
+            add(1);
+            add(4);
+            add(7);
+            add(10);
+            add(13);
+            add(16);
+            add(19);
+            add(22);
+        }
+    };
+
 
     public Weather(WeatherForecast wf) {
         this.humidity = 0;
@@ -21,6 +36,28 @@ public class Weather {
         this.wf = wf;
     }
 
+    /**
+     * find the forecast time for a given time
+     *
+     * @param of look for this int
+     * @param in in this list
+     * @return the int the closest to of
+     */
+    private static int closest(int of, List<Integer> in) {
+        int min = Integer.MAX_VALUE;
+        int closest = of;
+
+        for (int v : in) {
+            final int diff = Math.abs(v - of);
+
+            if (diff < min) {
+                min = diff;
+                closest = v;
+            }
+        }
+
+        return closest;
+    }
 
     public double getLum() {
         return lum;
@@ -45,22 +82,6 @@ public class Weather {
         return temp;
     }
 
-
-    private ArrayList<Integer> list = new ArrayList<Integer>() {
-        private static final long serialVersionUID = 1L;
-
-        {
-            add(1);
-            add(4);
-            add(7);
-            add(10);
-            add(13);
-            add(16);
-            add(19);
-            add(22);
-        }
-    };
-
     public void executeSearch(int start_hour) throws Exception {
         System.out.println("heure : " + start_hour);
         double cloudcover;
@@ -73,29 +94,6 @@ public class Weather {
 
         calculLum(cloudcover);
 
-    }
-
-    /**
-     * find the forecast time for a given time
-     *
-     * @param of look for this int
-     * @param in in this list
-     * @return the int the closest to of
-     */
-    private static int closest(int of, List<Integer> in) {
-        int min = Integer.MAX_VALUE;
-        int closest = of;
-
-        for (int v : in) {
-            final int diff = Math.abs(v - of);
-
-            if (diff < min) {
-                min = diff;
-                closest = v;
-            }
-        }
-
-        return closest;
     }
 
     private void calculLum(double cloudCover) throws Exception {

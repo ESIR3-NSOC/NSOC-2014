@@ -12,45 +12,40 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
+import fr.esir.knx.Service_knx;
 import fr.esir.resources.FilterString;
 import fr.esir.services.Context_service;
 import fr.esir.services.Knx_service;
 import fr.esir.services.Oep_service;
 import fr.esir.services.Regulation_service;
-import knx.Service_knx;
 
 public class MyActivity extends Activity {
     private final static String TAG = MyActivity.class.getSimpleName();
-    public Context_service mContext_service;
     public static Service_oep mOep_service;
-    public Service_knx mKnx_service;
-    public Regulation_service mRegulation_service;
-
-    TextView context_state;
-    TextView oep_state;
-    TextView regulation_state;
-    TextView knx_state;
-
-    TextView hum_out;
-    TextView hum_in;
-    TextView temp_ou;
-    TextView temp_in;
-    TextView lum_ou;
-    TextView lum_in;
-    TextView co2;
-
-    EditText etuser;
-    EditText etvote;
-    Button vote;
-
-    TextView next_prog;
-
     public static double lastHum_in = 0;
     public static double lastHum_out = 0;
     public static double lastTemp_in = 0;
     public static double lastTemp_out = 0;
     public static double lastLum_out = 0;
+    public static Context ct;
+    private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
 
+            switch (action) {
+                case FilterString.RECEIVE_DATA_KNX:
+                    setDisplayData(intent.getStringExtra("ADDRESS"), intent.getStringExtra("DATA"));
+            }
+        }
+    };
+    public Context_service mContext_service;
+    public Service_knx mKnx_service;
+    public Regulation_service mRegulation_service;
+    TextView context_state;
+    TextView oep_state;
+    TextView regulation_state;
+    TextView knx_state;
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -115,18 +110,24 @@ public class MyActivity extends Activity {
             }
         }
     };
+    TextView hum_out;
+    TextView hum_in;
+    TextView temp_ou;
+    TextView temp_in;
+    TextView lum_ou;
+    TextView lum_in;
+    TextView co2;
+    EditText etuser;
+    EditText etvote;
+    Button vote;
+    TextView next_prog;
 
-    private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
+    private static IntentFilter makeServicesUpdateIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(FilterString.RECEIVE_DATA_KNX);
 
-            switch (action) {
-                case FilterString.RECEIVE_DATA_KNX:
-                    setDisplayData(intent.getStringExtra("ADDRESS"), intent.getStringExtra("DATA"));
-            }
-        }
-    };
+        return intentFilter;
+    }
 
     private void broadcastUpdate(final String action) {
         final Intent intent = new Intent(action);
@@ -138,8 +139,6 @@ public class MyActivity extends Activity {
         intent.putExtra(key, data);
         sendBroadcast(intent);
     }
-
-    public static Context ct;
 
     /**
      * Called when the activity is first created.
@@ -224,7 +223,6 @@ public class MyActivity extends Activity {
         bindService(knxServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -249,12 +247,24 @@ public class MyActivity extends Activity {
     private void setDisplayData(String add, String data) {
         Log.i(TAG, "adresse " + add + " data " + data);
         //variables lastX contain the last data of sensors
-    }
-
-    private static IntentFilter makeServicesUpdateIntentFilter() {
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(FilterString.RECEIVE_DATA_KNX);
-
-        return intentFilter;
+        String[] dataSplit = data.split(" ");
+        if (add.equals("0/0/4")) { //co2 sensor
+            co2.setText(data);
+        } else if (add.equals("0/1/0")) { //outdoor temperature sensor
+            lastTemp_out = Double.parseDouble(dataSplit[0]);
+            temp_ou.setText(data);
+        } else if (add.equals("0/0/5")) {//indoor humidity sensor
+            lastHum_in = Double.parseDouble(dataSplit[0]);
+            hum_in.setText(data);
+        } else if (add.equals("0/1/1")) {//outdoor luminosity sensor
+            lastLum_out = Double.parseDouble(dataSplit[0]);
+            lum_ou.setText(data);
+        } else if (add.equals("0/1/2")) { //outdoor humidity sensor
+            lastHum_out = Double.parseDouble(dataSplit[0]);
+            hum_out.setText(data);
+        } else if (add.equals("0/0/3")) { //indoor temperature sensor
+            lastTemp_in = Double.parseDouble(dataSplit[0]);
+            temp_in.setText(data);
+        }
     }
 }
