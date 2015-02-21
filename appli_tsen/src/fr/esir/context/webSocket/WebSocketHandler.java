@@ -39,6 +39,7 @@ public class WebSocketHandler extends BaseWebSocketHandler {
 
     public void onMessage(WebSocketConnection connection, String message) {
         _ctxService.broadcastUpdate(FilterString.WEBSOCKET_VOTE_UPDATE,message);
+        _ctxService.getEnvironmentData(System.currentTimeMillis());
         JsonNode jsonRpc;
         try {
             jsonRpc = new ObjectMapper().readTree(message);

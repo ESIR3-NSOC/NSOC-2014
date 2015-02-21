@@ -164,21 +164,7 @@ public class Context_service extends Service {
                                         sd.setCurrentVote(user.getVote());
                                         sd.setTargetTemp(user.getTargetTemp());
 
-                                        room.eachMeasurement(new Callback<Sensor[]>() {
-                                            @Override
-                                            public void on(Sensor[] sensors) {
 
-                                                for(Sensor s : sensors){
-                                                    switch(s.getSensorType()){
-                                                        case SensorType.OUTDOOR_BRIGHTNESS : sd.getEnvironmentData(CURRENT_TIMESTAMP).setOutdoorLum(Double.parseDouble(s.getValue()));
-                                                        case SensorType.OUTDOOR_HUMIDITY : sd.getEnvironmentData(CURRENT_TIMESTAMP).setOutdoorHum(Double.parseDouble(s.getValue()));
-                                                        case SensorType.OUTDOOR_TEMPERATURE : sd.getEnvironmentData(CURRENT_TIMESTAMP).setOutdoorTemp(Double.parseDouble(s.getValue()));
-                                                        case SensorType.INDOOR_TEMPERATURE :sd.getEnvironmentData(CURRENT_TIMESTAMP).setIndoorTemp(Double.parseDouble(s.getValue()));
-
-                                                    }
-                                                }
-                                            }
-                                        });
                                     }
                                 }
                             }
@@ -189,6 +175,41 @@ public class Context_service extends Service {
         }
 
         return sd;
+    }
+
+    public EnvironmentData getCurrentEnvironmentData(long ts){
+        EnvironmentData data = new EnvironmentData(ts);
+
+
+        TsenView view = ctx.getDimension().time(ts);
+
+        view.select("/", new Callback<KObject[]>() {
+            @Override
+            public void on(KObject[] kObjects) {
+                if(kObjects!=null && kObjects.length!=0){
+                    Room room = (Room) kObjects[0];
+                    room.eachMeasurement(new Callback<Sensor[]>() {
+                        @Override
+                        public void on(Sensor[] sensors) {
+
+                            for(Sensor s : sensors){
+                                switch(s.getSensorType()){
+                                    case SensorType.OUTDOOR_BRIGHTNESS : data.setOutdoorLum(Double.parseDouble(s.getValue()));
+                                    case SensorType.OUTDOOR_HUMIDITY : data.setOutdoorHum(Double.parseDouble(s.getValue()));
+                                    case SensorType.OUTDOOR_TEMPERATURE : data.setOutdoorTemp(Double.parseDouble(s.getValue()));
+                                    case SensorType.INDOOR_TEMPERATURE :data.setIndoorTemp(Double.parseDouble(s.getValue()));
+                                    case SensorType.CO2_SENSOR : data.setAirQuality(Double.parseDouble(s.getValue()));
+                                    case SensorType.INDOOR_HUMIDITY : data.setIndoorHum(Double.parseDouble(s.getValue()));
+                                        case SensorType.I
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        return data;
     }
 
 }
