@@ -95,6 +95,36 @@ public class Context_service extends Service {
                     }
                     break;
 
+
+                case FilterString.RECEIVE_DATA_KNX :
+                    Log.i(TAG,"Updating value in context");
+                    String value = intent.getStringExtra("DATA");
+                    String address = intent.getStringExtra("ADDRESS");
+
+                    TsenView view = ctx.getDimension().time(System.currentTimeMillis());
+
+                    view.select("/", new Callback<KObject[]>() {
+                        @Override
+                        public void on(KObject[] kObjects) {
+                            if(kObjects!=null && kObjects.length!=0){
+                                Room room = (Room) kObjects[0];
+
+                                room.eachMeasurement(new Callback<Sensor[]>() {
+                                    @Override
+                                    public void on(Sensor[] sensors) {
+                                        for(Sensor sensor : sensors){
+                                            if(sensor.getGroupAddress().compareTo(address)==0){
+                                                sensor.setValue(value);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                    break;
+
             }
         }
     };

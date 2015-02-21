@@ -16,8 +16,6 @@ public class Context {
     private TsenUniverse _universe;
     private TsenDimension _dim0;
 
-    private double _indooTempValue;
-
 
     public Context (TsenUniverse universe){
         _universe = universe ;
@@ -25,7 +23,6 @@ public class Context {
 
         initSensors(importGroup());
 
-        _indooTempValue = getInstantIndoorTemp();
     }
 
     public TsenDimension getDimension(){
@@ -159,37 +156,6 @@ public class Context {
                 }
             }
         });
-    }
-
-    public double getInstantIndoorTemp(){
-        TsenView view = _dim0.time(System.currentTimeMillis());
-
-        view.select("/", new Callback<KObject[]>() {
-            @Override
-            public void on(KObject[] kObjects) {
-                if(kObjects!=null && kObjects.length!=0){
-
-                    Room room = (Room) kObjects[0];
-
-                    room.eachMeasurement(new Callback<Sensor[]>() {
-                        @Override
-                        public void on(Sensor[] sensors) {
-                            for (Sensor sensor : sensors){
-                                if(sensor.getSensorType().compareTo(SensorType.INDOOR_TEMPERATURE)==0) {
-                                   setIndoorTemp(Double.parseDouble(sensor.getValue()));
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-        });
-
-        return _indooTempValue;
-    }
-
-    private void setIndoorTemp(double t){
-        _indooTempValue = t ;
     }
 
     public static JsonNode importGroup(){

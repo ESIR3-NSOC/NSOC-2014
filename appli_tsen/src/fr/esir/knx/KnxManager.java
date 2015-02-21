@@ -87,7 +87,7 @@ public class KnxManager {
 
             public void indication(FrameEvent arg0) {
                 System.out.println("frame captured !");
-                addFrameToBuffer(arg0);
+                //addFrameToBuffer(arg0);
                 KNXAddress addDest = ((tuwien.auto.calimero.cemi.CEMILData) arg0.getFrame()).getDestination();
                 System.out.println("srcadress " + arg0.getSource());
                 System.out.println("targetadress " + addDest);
@@ -174,13 +174,7 @@ public class KnxManager {
         JsonNode groupsArray;
         // Looking for in config which sensors match received event
 
-        groupsArray = _knxConf.get("groups");
-        for (JsonNode n : groupsArray) {
-            if (group.compareTo(n.get("address").asText()) == 0) {
-                GroupEvent evt = new GroupEvent(frameEvent, n);
-                _eventBuffer.add(evt);
-            }
-        }
+
     }
 
     public boolean isConnected() {
