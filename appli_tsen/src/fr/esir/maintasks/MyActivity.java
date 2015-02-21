@@ -192,6 +192,10 @@ public class MyActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //manual vote
+                //add in context
+
+                String vote = etvote.getText().toString();
+                mRegulation_service.executeVote(lastTemp_in, vote);
             }
         });
     }
