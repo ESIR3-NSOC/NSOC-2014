@@ -4,6 +4,7 @@ import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 
 import java.sql.ResultSet;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +14,8 @@ public interface Prevision {
 
     void predictNext(ResultSet result) throws Exception;
 
-    HashMap<Date, List<DatesInterval>> getHashmap();
+    HashMap<Date, ArrayList<DatesInterval>> getHashmap();
 
-    List<DatesInterval> getList();
+    ArrayList<DatesInterval> getList();
     //public List<DatesInterval> predict() throws Exception;
 }

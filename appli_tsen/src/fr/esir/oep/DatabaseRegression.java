@@ -29,8 +29,8 @@ import java.util.Map.Entry;
 
 public class DatabaseRegression implements Prevision {
 
-    private HashMap<Date, List<DatesInterval>> datesinte;
-    private List<DatesInterval> list;
+    private HashMap<Date, ArrayList<DatesInterval>> datesinte;
+    private ArrayList<DatesInterval> list;
     private WeatherForecast wf;
     private OnSearchCompleted listener;
 
@@ -41,11 +41,11 @@ public class DatabaseRegression implements Prevision {
         this.listener = listener;
     }
 
-    public List<DatesInterval> getList() {
+    public ArrayList<DatesInterval> getList() {
         return list;
     }
 
-    public HashMap<Date, List<DatesInterval>> getHashmap() {
+    public HashMap<Date, ArrayList<DatesInterval>> getHashmap() {
         return datesinte;
     }
 
@@ -132,10 +132,10 @@ public class DatabaseRegression implements Prevision {
             Log.w("List null", "The list is empty");
     }
 
-    private List<DatesInterval> calcultab(
-            HashMap<Date, List<DatesInterval>> datesinter) {
-        List<DatesInterval> datesTemp = new ArrayList<>();
-        for (Entry<Date, List<DatesInterval>> entry : datesinter.entrySet()) {
+    private ArrayList<DatesInterval> calcultab(
+            HashMap<Date, ArrayList<DatesInterval>> datesinter) {
+        ArrayList<DatesInterval> datesTemp = new ArrayList<>();
+        for (Entry<Date, ArrayList<DatesInterval>> entry : datesinter.entrySet()) {
             int nb = entry.getValue().size();
             Log.i("ENTRYDATE", entry.getKey() + "");
             datesTemp.add(new DatesInterval(entry.getKey(), entry.getValue()

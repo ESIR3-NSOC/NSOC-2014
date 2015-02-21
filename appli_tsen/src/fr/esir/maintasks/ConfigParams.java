@@ -17,7 +17,7 @@ public class ConfigParams extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.config_main);
         context = this;
-        FragmentManager fm = fm = getFragmentManager();
+        FragmentManager fm = getFragmentManager();
         MainParams mp = new MainParams();
         fm.beginTransaction().add(R.id.container, mp).commit();
     }

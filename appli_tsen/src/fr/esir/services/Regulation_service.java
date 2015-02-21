@@ -15,14 +15,18 @@ import fr.esir.oep.RepetetiveTask;
 import fr.esir.regulation.NbPerson;
 import fr.esir.resources.FilterString;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class Regulation_service extends Service {
     private final static String TAG = Regulation_service.class.getSimpleName();
+    public static ArrayList<DatesInterval> list;
     private final IBinder mBinder = new LocalBinder();
     public RepetetiveTask rt;
-    private List<DatesInterval> listConsigne;
+    private ArrayList<DatesInterval> listConsigne;
     private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -34,7 +38,7 @@ public class Regulation_service extends Service {
                     Log.w(TAG, "reception consignes ok");
                     bundle = intent.getBundleExtra("Data");
                     if (bundle != null) {
-                        listConsigne = (List<DatesInterval>) bundle.getSerializable("List");
+                        listConsigne = (ArrayList<DatesInterval>) bundle.getSerializable("List");
                         sortList(listConsigne);
                     }
             }
@@ -70,16 +74,19 @@ public class Regulation_service extends Service {
     public void setAlarm30B4(DatesInterval entry) {
         long startDate = entry.getStartDate().getTime();
         //30 minutes before the lesson
-        long min30B4StartDate = startDate - (30 * 60 * 1000);
+        long min30B4StartDate = (30 * 60 * 1000);
         Log.w("StartDate", min30B4StartDate + "");
+        Log.w("Startdate", entry.getStartDate() + "");
         double cons = entry.getConsigne();
         double nb_pers = entry.getNbPerson();
         long currentDate = System.currentTimeMillis();
+        Log.w("currentDate", new Date(currentDate) + "");
 
+        Log.i("SOUSTRACTION", (startDate - currentDate) - min30B4StartDate + "");
         String s = String.format("%d min, %d sec",
-                TimeUnit.MILLISECONDS.toMinutes((startDate - currentDate) - min30B4StartDate),
-                TimeUnit.MILLISECONDS.toSeconds((startDate - currentDate) - min30B4StartDate) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((startDate - currentDate) - min30B4StartDate))
+                TimeUnit.MILLISECONDS.toMinutes(startDate - currentDate - min30B4StartDate),
+                TimeUnit.MILLISECONDS.toSeconds(startDate - currentDate - min30B4StartDate) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(startDate - currentDate - min30B4StartDate))
         );
 
         Log.i("TIME MIN", s);
@@ -87,7 +94,7 @@ public class Regulation_service extends Service {
         rt = new RepetetiveTask((startDate - currentDate) - min30B4StartDate, cons, nb_pers, entry.getEndDate());
     }
 
-    private void sortList(List<DatesInterval> l) {
+    private void sortList(ArrayList<DatesInterval> l) {
         Collections.sort(l, new Comparator<DatesInterval>() {
             @Override
             public int compare(DatesInterval lhs, DatesInterval rhs) {
@@ -96,6 +103,7 @@ public class Regulation_service extends Service {
                         1 : 0;
             }
         });
+        list = l;
         nbperson = new ArrayList<>();
         long previousEndDate = 0;
         for (DatesInterval entry : l) {

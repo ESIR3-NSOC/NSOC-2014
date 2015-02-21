@@ -1,6 +1,7 @@
 package fr.esir.maintasks;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.*;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
+import fr.esir.fragments.NextProgramming;
 import fr.esir.knx.Service_knx;
 import fr.esir.resources.FilterString;
 import fr.esir.services.Context_service;
@@ -28,6 +30,7 @@ public class MyActivity extends Activity {
     public static double lastTemp_out = 0;
     public static double lastLum_out = 0;
     public static Context ct;
+    SharedPreferences pref;
     private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -42,10 +45,6 @@ public class MyActivity extends Activity {
     public Context_service mContext_service;
     public Service_knx mKnx_service;
     public Regulation_service mRegulation_service;
-    TextView context_state;
-    TextView oep_state;
-    TextView regulation_state;
-    TextView knx_state;
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -57,7 +56,6 @@ public class MyActivity extends Activity {
                         Log.e(TAG, "Unable to initialize the context");
                         finish();
                     }
-                    context_state.setText(R.string.connected);
                     break;
                 case "fr.esir.services.Oep_service":
                     mOep_service = ((Oep_service.LocalBinder) service).getService();
@@ -65,7 +63,6 @@ public class MyActivity extends Activity {
                         Log.e(TAG, "Unable to initialize the oep");
                         finish();
                     }
-                    oep_state.setText(R.string.connected);
                     Log.w(TAG, "Oep initialized");
                     break;
                 case "fr.esir.services.Regulation_service":
@@ -74,7 +71,6 @@ public class MyActivity extends Activity {
                         Log.e(TAG, "Unable to initialize the regulation");
                         finish();
                     }
-                    regulation_state.setText(R.string.connected);
                     break;
                 case "fr.esir.services.Knx_service":
                     mKnx_service = ((Knx_service.LocalBinder) service).getService();
@@ -82,7 +78,6 @@ public class MyActivity extends Activity {
                         Log.e(TAG, "Unable to initialize KNX");
                         finish();
                     }
-                    knx_state.setText(R.string.connected);
                     break;
             }
 
@@ -93,19 +88,15 @@ public class MyActivity extends Activity {
             switch (name.getClassName()) {
                 case "fr.esir.services.Context_service":
                     mContext_service = null;
-                    context_state.setText(R.string.disconnected);
                     break;
                 case "fr.esir.services.Oep_service":
                     mOep_service = null;
-                    oep_state.setText(R.string.disconnected);
                     break;
                 case "fr.esir.services.Regulation_service":
                     mRegulation_service = null;
-                    regulation_state.setText(R.string.disconnected);
                     break;
                 case "fr.esir.services.Knx_service":
                     mKnx_service = null;
-                    knx_state.setText(R.string.disconnected);
                     break;
             }
         }
@@ -148,11 +139,10 @@ public class MyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         ct = this;
-        context_state = (TextView) findViewById(R.id.context_state);
-        oep_state = (TextView) findViewById(R.id.oep_state);
-        regulation_state = (TextView) findViewById(R.id.regulation_state);
-        knx_state = (TextView) findViewById(R.id.knx_state);
-
+        pref = getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
+        FragmentManager fm = getFragmentManager();
+        NextProgramming mp = new NextProgramming();
+        fm.beginTransaction().add(R.id.containerMain, mp).commit();
 
         temp_in = (TextView) findViewById(R.id.IndoorTempValue);
         temp_ou = (TextView) findViewById(R.id.OutdoorTempValue);

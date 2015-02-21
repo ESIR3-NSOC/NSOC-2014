@@ -111,66 +111,6 @@
                     android:textSize="18sp"/>
         </TableRow>
         <TableRow android:layout_marginTop="20dp">
-            <TextView
-                    android:id="@+id/contexttv"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/contextetv"
-                    android:textSize="18sp"/>
-            <TextView
-                    android:id="@+id/context_state"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/disconnected"
-                    android:layout_marginLeft="20dp"
-                    android:textSize="18sp"/>
-        </TableRow>
-        <TableRow>
-            <TextView
-                    android:id="@+id/oeptv"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/oeptv"
-                    android:textSize="18sp"/>
-            <TextView
-                    android:id="@+id/oep_state"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/disconnected"
-                    android:layout_marginLeft="20dp"
-                    android:textSize="18sp"/>
-        </TableRow>
-        <TableRow>
-            <TextView
-                    android:id="@+id/regulationtv"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/regulationtetv"
-                    android:textSize="18sp"/>
-            <TextView
-                    android:id="@+id/regulation_state"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/disconnected"
-                    android:layout_marginLeft="20dp"
-                    android:textSize="18sp"/>
-        </TableRow>
-        <TableRow>
-            <TextView
-                    android:id="@+id/knxtv"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/knxtv"
-                    android:textSize="18sp"/>
-            <TextView
-                    android:layout_marginLeft="20dp"
-                    android:id="@+id/knx_state"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/disconnected"
-                    android:textSize="18sp"/>
-        </TableRow>
-        <TableRow android:layout_marginTop="20dp">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:text="@string/user"
                       android:textSize="18sp" android:layout_marginRight="5dp"/>
@@ -192,6 +132,9 @@
     <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/bvote"
             android:background="@drawable/button_style1" android:text="@string/send"
             android:layout_gravity="center_horizontal"/>
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/prog_none"
-              android:textSize="18sp" android:layout_marginTop="30dp" android:id="@+id/tvProg"/>
+    <FrameLayout
+            android:id="@+id/containerMain"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"/>
 </LinearLayout>
