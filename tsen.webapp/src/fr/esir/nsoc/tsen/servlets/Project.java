@@ -72,7 +72,7 @@ public class Project extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String id = request.getParameter("id");
-		fr.esir.nsoc.tsen.ade.object.Project project = universe.getScope().getDataBase().getProject(Integer.parseInt(id));
+		fr.esir.nsoc.tsen.ade.object.Project project = universe.getDataBase().getProject(Integer.parseInt(id));
 		universe.getScope().setProject(project);
 		PrintWriter pw = response.getWriter();
 		Gson gson = new Gson();

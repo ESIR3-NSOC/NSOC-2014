@@ -65,7 +65,7 @@ public class TreeObject extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String id = request.getParameter("id");
 		String s = "";
-		DataBase db = universe.getScope().getDataBase();
+		DataBase db = universe.getDataBase();
 		PrintWriter pw = response.getWriter();
 		Gson gson = new Gson();
 		if (id!=null) s = gson.toJson(db.getTreeObject(id, universe.getScope().getProject())); // TODO null

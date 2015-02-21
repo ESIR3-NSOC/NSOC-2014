@@ -75,7 +75,7 @@ public class ADE_Scope {
 	public DataBase getDataBase() {
 		return dataBase;
 	}
-
+	
 	public Project getProject() {
 		return project;
 	}

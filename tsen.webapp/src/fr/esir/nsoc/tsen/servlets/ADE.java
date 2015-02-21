@@ -66,10 +66,10 @@ public class ADE extends HttpServlet {
 		{
 			
 			if(function.equals("browse") && cookie!=null){
-				ADE_Tree at = new ADE_Tree(universe.getScope().getDataBase());
+				ADE_Tree at = new ADE_Tree(universe.getDataBase());
 				code = at.browseTree(cookie, universe.getScope().getProject());
 			} else if(function.equals("list_project") && cookie!=null){
-				ADE_Tree at = new ADE_Tree(universe.getScope().getDataBase());
+				ADE_Tree at = new ADE_Tree(universe.getDataBase());
 				code = at.listProject(cookie);
 			}
 			switch (code)
