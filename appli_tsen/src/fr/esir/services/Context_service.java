@@ -164,6 +164,8 @@ public class Context_service extends Service {
                                         sd.setCurrentVote(user.getVote());
                                         sd.setTargetTemp(user.getTargetTemp());
 
+                                        sd.addEnvironmentData(getEnvironmentData(CURRENT_TIMESTAMP));
+
 
                                     }
                                 }
@@ -177,7 +179,7 @@ public class Context_service extends Service {
         return sd;
     }
 
-    public EnvironmentData getCurrentEnvironmentData(long ts){
+    public EnvironmentData getEnvironmentData(long ts){
         EnvironmentData data = new EnvironmentData(ts);
 
 
@@ -194,13 +196,14 @@ public class Context_service extends Service {
 
                             for(Sensor s : sensors){
                                 switch(s.getSensorType()){
-                                    case SensorType.OUTDOOR_BRIGHTNESS : data.setOutdoorLum(Double.parseDouble(s.getValue()));
-                                    case SensorType.OUTDOOR_HUMIDITY : data.setOutdoorHum(Double.parseDouble(s.getValue()));
-                                    case SensorType.OUTDOOR_TEMPERATURE : data.setOutdoorTemp(Double.parseDouble(s.getValue()));
-                                    case SensorType.INDOOR_TEMPERATURE :data.setIndoorTemp(Double.parseDouble(s.getValue()));
-                                    case SensorType.CO2_SENSOR : data.setAirQuality(Double.parseDouble(s.getValue()));
-                                    case SensorType.INDOOR_HUMIDITY : data.setIndoorHum(Double.parseDouble(s.getValue()));
-                                        case SensorType.I
+                                    case SensorType.OUTDOOR_BRIGHTNESS : data.setOutdoorLum(Double.parseDouble(s.getValue().split(" ")[0])); break;
+                                    case SensorType.OUTDOOR_HUMIDITY : data.setOutdoorHum(Double.parseDouble(s.getValue().split(" ")[0])); break;
+                                    case SensorType.OUTDOOR_TEMPERATURE : data.setOutdoorTemp(Double.parseDouble(s.getValue().split(" ")[0])); break;
+                                    case SensorType.INDOOR_TEMPERATURE :data.setIndoorTemp(Double.parseDouble(s.getValue().split(" ")[0])); break;
+                                    case SensorType.CO2_SENSOR : data.setAirQuality(Double.parseDouble(s.getValue().split(" ")[0])); break;
+                                    case SensorType.INDOOR_HUMIDITY : data.setIndoorHum(Double.parseDouble(s.getValue().split(" ")[0])); break;
+                                    case SensorType.VALVE : data.setValve(Double.parseDouble(s.getValue().split(" ")[0])); break;
+                                    case SensorType.INDOOR_BRIGHTNESS : data.setIndoorLum(Double.parseDouble(s.getValue().split(" ")[0])); break;
                                 }
                             }
                         }
