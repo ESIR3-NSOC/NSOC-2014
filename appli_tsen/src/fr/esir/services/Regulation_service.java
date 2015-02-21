@@ -11,10 +11,13 @@ import android.os.IBinder;
 import android.util.Log;
 import com.example.esir.nsoc2014.regulator.regulation.Regulator;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
+import fr.esir.maintasks.MyActivity;
 import fr.esir.oep.RepetetiveTask;
 import fr.esir.regulation.NbPerson;
 import fr.esir.resources.FilterString;
+import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,6 +44,16 @@ public class Regulation_service extends Service {
                         listConsigne = (ArrayList<DatesInterval>) bundle.getSerializable("List");
                         sortList(listConsigne);
                     }
+                    break;
+                case FilterString.WEBSOCKET_VOTE_UPDATE:
+                    String extra = intent.getStringExtra("VOTE");
+                    try {
+                        String vote = new ObjectMapper().readTree(extra).get("vote").asText();
+                        executeVote(MyActivity.lastTemp_in, vote);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
             }
         }
     };
@@ -51,7 +64,8 @@ public class Regulation_service extends Service {
     private static IntentFilter makeServicesUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
         //students of the day, coming from oep
-        intentFilter.addAction((FilterString.OEP_DATA_CONSIGNES_OF_DAY));
+        intentFilter.addAction(FilterString.OEP_DATA_CONSIGNES_OF_DAY);
+        intentFilter.addAction(FilterString.WEBSOCKET_VOTE_UPDATE);
 
         return intentFilter;
     }

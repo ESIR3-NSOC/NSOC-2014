@@ -166,7 +166,7 @@ public class Context {
 
         try {
 
-            File groupConfiguration = new File("tsen.provider/src/main/resources/knxGroup.txt");
+            File groupConfiguration = new File("src/main/resources/knxGroup.txt");
             InputStream read = new FileInputStream(groupConfiguration);
             InputStreamReader lecture = new InputStreamReader(read);
             BufferedReader br = new BufferedReader(lecture);

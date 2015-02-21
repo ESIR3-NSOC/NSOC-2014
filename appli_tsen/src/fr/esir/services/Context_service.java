@@ -124,6 +124,7 @@ public class Context_service extends Service {
 
     public void broadcastUpdate(String action, String data) {
         final Intent intent = new Intent(action);
+        intent.putExtra("VOTE", data);
         sendBroadcast(intent);
     }
 
