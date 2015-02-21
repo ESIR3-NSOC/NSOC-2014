@@ -62,7 +62,7 @@ public class Projects extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter pw = response.getWriter();
 		Gson gson = new Gson();
-		String s = gson.toJson(universe.getScope().getDataBase().getProjects());
+		String s = gson.toJson(universe.getDataBase().getProjects());
 		
 		pw.write(s);
 		pw.close();

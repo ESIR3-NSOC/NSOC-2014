@@ -1,9 +1,7 @@
 package fr.esir.oep;
 
-import android.content.Context;
-import android.util.Log;
-import fr.esir.regulation.DataFromKNX;
 import fr.esir.maintasks.MyActivity;
+import fr.esir.regulation.DataFromKNX;
 import fr.esir.regulation.MachineLearning;
 
 import java.io.IOException;
@@ -16,12 +14,10 @@ import java.util.concurrent.TimeUnit;
  * Created by Nicolas on 06/02/2015.
  */
 public class RepetetiveTask {
-    private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-
     public final static String HEATTIME = "look_for_heatTime";
     public final static String FINALCONS = "final_temp";
-
     MyActivity ctx = (MyActivity) MyActivity.ct;
+    private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     public RepetetiveTask(long firstDelay) {
         scheduler.scheduleWithFixedDelay(new DoSomethingTask(), firstDelay, 86400000, TimeUnit.MILLISECONDS);
@@ -39,59 +35,9 @@ public class RepetetiveTask {
         scheduler.schedule(new DoOtherSomethingTask(consigne, nb_pers, time), delay, TimeUnit.MINUTES);
     }
 
-    private class DoSomethingTask implements Runnable {
-        @Override
-        public void run() {
-            doSomething();
-        }
-    }
-
-    private class DoFinalSomethingTask implements Runnable {
-        private double consigne;
-
-        public DoFinalSomethingTask(double consigne) {
-            this.consigne = consigne;
-        }
-
-        @Override
-        public void run() {
-            setFinalRegul(consigne);
-        }
-    }
-
     private void setFinalRegul(double consigne) {
         //regulator -> sleep mode temperature
         scheduler.shutdown();
-    }
-
-    private class DoOtherSomethingTask implements Runnable {
-        private double consigne;
-        private long time;
-        private double nb_pers;
-
-        public DoOtherSomethingTask(double consigne, double nb_pers, long time) {
-            this.consigne = consigne;
-            this.time = time;
-            this.nb_pers = nb_pers;
-        }
-
-        @Override
-        public void run() {
-            doOtherSomething(consigne, nb_pers, time);
-        }
-    }
-
-    private class CalculatedHeatTime implements Runnable {
-        private double consigne;
-
-        public CalculatedHeatTime(double consigne) {
-            this.consigne = consigne;
-        }
-
-        @Override
-        public void run() {
-            calculatedTrueHeatTime(consigne);
-        }
     }
 
     public ScheduledExecutorService getScheduler() {
@@ -149,5 +95,55 @@ public class RepetetiveTask {
 
 
         scheduler.shutdown();
+    }
+
+    private class DoSomethingTask implements Runnable {
+        @Override
+        public void run() {
+            doSomething();
+        }
+    }
+
+    private class DoFinalSomethingTask implements Runnable {
+        private double consigne;
+
+        public DoFinalSomethingTask(double consigne) {
+            this.consigne = consigne;
+        }
+
+        @Override
+        public void run() {
+            setFinalRegul(consigne);
+        }
+    }
+
+    private class DoOtherSomethingTask implements Runnable {
+        private double consigne;
+        private long time;
+        private double nb_pers;
+
+        public DoOtherSomethingTask(double consigne, double nb_pers, long time) {
+            this.consigne = consigne;
+            this.time = time;
+            this.nb_pers = nb_pers;
+        }
+
+        @Override
+        public void run() {
+            doOtherSomething(consigne, nb_pers, time);
+        }
+    }
+
+    private class CalculatedHeatTime implements Runnable {
+        private double consigne;
+
+        public CalculatedHeatTime(double consigne) {
+            this.consigne = consigne;
+        }
+
+        @Override
+        public void run() {
+            calculatedTrueHeatTime(consigne);
+        }
     }
 }

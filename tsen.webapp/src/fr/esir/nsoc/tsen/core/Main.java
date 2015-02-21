@@ -11,10 +11,8 @@ import fr.esir.nsoc.tsen.ade.database.DataBase;
 import fr.esir.nsoc.tsen.ade.database.MySQLDB;
 
 
-
 @WebListener
 public class Main implements ServletContextListener {
-	private final static String DB_Name = "db.uion.fr:3306/tsen_ade";
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
@@ -26,13 +24,15 @@ public class Main implements ServletContextListener {
 		ServletContext context = ServletContext.getServletContext();
 		Logger logger = Logger.getLogger(this.getClass().getName());
 		
+		Universe universe = new Universe();
+		universe.loadConfig();
 		
 		// connect to DB
-		DataBase db = new MySQLDB(DB_Name);
-		logger.info("Database \"" + DB_Name + "\" " + (db.isConnected() ? "connected" : "not connected"));
+		DataBase db = new MySQLDB(universe.getConfig().getDb_name(), universe.getConfig().getDb_login(), universe.getConfig().getDb_password());
+		logger.info("Database \"" + universe.getConfig().getDb_name() + "\" " + (db.isConnected() ? "connected" : "not connected"));
+
+		universe.setScope(new ADE_Scope(db));
 		
-		
-		Universe universe = new Universe(new ADE_Scope(db));		
 		context.setAttribute("universe", universe);
 	}
 

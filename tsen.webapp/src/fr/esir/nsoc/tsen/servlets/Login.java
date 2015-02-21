@@ -13,6 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import fr.esir.nsoc.tsen.core.Universe;
 
+// CHECK
+// c'est un etudiant
+// il est dans le scope
+
 
 /**
  * Servlet implementation class login

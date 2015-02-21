@@ -11,6 +11,7 @@ import fr.esir.fragments.MainParams;
  */
 public class ConfigParams extends Activity {
     public static Context context;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,6 +19,6 @@ public class ConfigParams extends Activity {
         context = this;
         FragmentManager fm = fm = getFragmentManager();
         MainParams mp = new MainParams();
-        fm.beginTransaction().add(R.id.container,mp).commit();
+        fm.beginTransaction().add(R.id.container, mp).commit();
     }
 }

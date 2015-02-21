@@ -1,4 +1,4 @@
-package knx;
+package fr.esir.knx;
 
 /**
  * Created by Nicolas on 18/02/2015.

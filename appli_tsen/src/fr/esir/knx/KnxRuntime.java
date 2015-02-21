@@ -5,7 +5,7 @@ package fr.esir.knx;
  */
 public class KnxRuntime {
 
-    public static void main (String[] args){
+    public static void main(String[] args) {
         //JsonNode node = Utility.importGroup();
         //KnxManager manager = new KnxManager();
     }

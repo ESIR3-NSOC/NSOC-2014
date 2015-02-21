@@ -1,4 +1,4 @@
-package fr.esir.nsoc.tsen.servlets;
+package fr.esir.nsoc.tsen.servlets.scope;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,13 +14,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
+import fr.esir.nsoc.tsen.ade.object.TreeObject;
+import fr.esir.nsoc.tsen.core.ADE_Scope;
 import fr.esir.nsoc.tsen.core.Universe;
 
 /**
- * Servlet implementation class ProjectID
+ * Servlet implementation class Scope
  */
-@WebServlet(name = "Project", urlPatterns = { "/Project", "/project" })
-public class Project extends HttpServlet {
+@WebServlet(name = "Scope-ADE_Object", urlPatterns = { "/Scope/ADEObject", "/scope/adeobject" })
+public class ADE_Object extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ServletConfig config;
 	private ServletContext context;
@@ -30,7 +32,7 @@ public class Project extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Project() {
+    public ADE_Object() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -61,8 +63,7 @@ public class Project extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter pw = response.getWriter();
 		Gson gson = new Gson();
-		String s = gson.toJson(universe.getScope().getProject());
-		
+		String s = gson.toJson(universe.getScope().getScope());
 		pw.write(s);
 		pw.close();
 	}
@@ -71,14 +72,12 @@ public class Project extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String id = request.getParameter("id");
-		fr.esir.nsoc.tsen.ade.object.Project project = universe.getDataBase().getProject(Integer.parseInt(id));
-		universe.getScope().setProject(project);
-		PrintWriter pw = response.getWriter();
-		Gson gson = new Gson();
-		String s = gson.toJson(universe.getScope().getProject());
-		pw.write(s);
-		pw.close();
+		String [] obj = request.getParameterValues("obj");
+		ADE_Scope scope= universe.getScope();
+		for (int i = 0 ; i < obj.length ; i++)
+		{
+			scope.addChildrenToScope(new TreeObject(scope.getProject(), -1, "", obj[i], "", "branch"));
+		}
 	}
 
 }
