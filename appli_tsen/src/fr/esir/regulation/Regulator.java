@@ -1,6 +1,7 @@
 package fr.esir.regulation;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import fr.esir.maintasks.MyActivity;
 
 public class Regulator extends AsyncTask<Void, Void, Void> {
@@ -70,6 +71,7 @@ public class Regulator extends AsyncTask<Void, Void, Void> {
 
     public void setConsigne(double consigne) {
         this.temp_cons = consigne;
+        Log.i("New Consigne Regul", consigne + "");
     }
 
     public void setTempInterieur(double tempInt) {

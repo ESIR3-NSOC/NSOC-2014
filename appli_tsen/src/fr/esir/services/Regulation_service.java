@@ -175,6 +175,8 @@ public class Regulation_service extends Service {
     public void executeVote(double value, String vote) {
         double val = value;
         int nb = checkNbPerson(System.currentTimeMillis());
+        if(nb == 0)
+            nb = 1;
         switch (vote) {
             case "++":
                 val = val - (1 / nb);
