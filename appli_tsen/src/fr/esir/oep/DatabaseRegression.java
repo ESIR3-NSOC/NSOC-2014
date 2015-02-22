@@ -33,7 +33,7 @@ import java.util.Map.Entry;
 
 public class DatabaseRegression implements Prevision {
 
-    public static DayProgram dp;
+    private DayProgram dp = MyActivity.dp;
     private HashMap<Date, ArrayList<DatesInterval>> datesinte;
     private ArrayList<DatesInterval> list;
     private WeatherForecast wf;
@@ -137,13 +137,10 @@ public class DatabaseRegression implements Prevision {
             listener.onSearchCompleted();
         }
 
-
         if (list != null) {
             Log.w("List not null", "List not null");
         } else
             Log.w("List null", "The list is empty");
-
-        dp = new DayProgram();
     }
 
     private ArrayList<DatesInterval> calcultab(

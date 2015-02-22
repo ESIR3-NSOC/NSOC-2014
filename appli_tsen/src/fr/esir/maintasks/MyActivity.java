@@ -1,6 +1,7 @@
 package fr.esir.maintasks;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.*;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
+import fr.esir.fragments.DayProgram;
 import fr.esir.fragments.MainFragment;
 import fr.esir.knx.Service_knx;
 import fr.esir.oep.RepetetiveTask;
@@ -23,14 +25,14 @@ public class MyActivity extends Activity {
     public static double lastHum_in = 0;
     public static double lastHum_out = 0;
     public static double lastTemp_in = 0;
-    ;
     public static double lastTemp_out = 0;
     public static double lastLum_out = 0;
     public static double lastCO2 = 0;
     public static Context ct;
+    public static Activity act;
     public static Context_service mContext_service;
     public static Regulation_service mRegulation_service;
-    public static MainFragment mp;
+    public static DayProgram dp;
     private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -132,9 +134,10 @@ public class MyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         ct = this;
+        act = this;
         pref = getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
         FragmentManager fm = getFragmentManager();
-        mp = new MainFragment();
+        MainFragment mp = new MainFragment();
         fm.beginTransaction().add(R.id.containerMain, mp).commit();
 
         next_prog = (TextView) findViewById(R.id.tvProg);
@@ -143,7 +146,10 @@ public class MyActivity extends Activity {
 
     public void setTvProg(String string) {
         pref.edit().putString("TVPROG", string).apply();
-
+        Fragment currentFragment = getFragmentManager().findFragmentById(R.id.containerMain);
+        if (currentFragment instanceof DayProgram) {
+            ((DayProgram) currentFragment).setProg();
+        }
     }
 
     private void bindServices() {
@@ -209,6 +215,9 @@ public class MyActivity extends Activity {
 
             }
         }
-        mp.setDisplayData(add, data);
+        Fragment currentFragment = getFragmentManager().findFragmentById(R.id.containerMain);
+        if (currentFragment instanceof MainFragment) {
+            ((MainFragment) currentFragment).setDisplayData(add, data);
+        }
     }
 }

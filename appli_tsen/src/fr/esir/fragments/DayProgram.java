@@ -31,20 +31,28 @@ public class DayProgram extends Fragment {
     Context ctx = MyActivity.ct;
     FragmentManager fm;
 
+    public void updateList(ArrayList<DatesInterval> l) {
+        listD = l;
+        if (listD != null) {
+            MySimpleArrayAdapter msaa = new MySimpleArrayAdapter(this.getActivity(), listD);
+            lv.setAdapter(msaa);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.day_program, container, false);
+
         lv = (ListView) v.findViewById(R.id.list);
         listD = Regulation_service.list;
-        pref = ctx.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
         tvprog = (TextView) v.findViewById(R.id.tvProg);
-        tvprog.setText(pref.getString("TVPROG", "None"));
+        setProg();
 
         v.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    MainFragment np = MyActivity.mp;
+                    MainFragment np = new MainFragment();
                     fm.beginTransaction().replace(R.id.containerMain, np).commit();
                 }
 
@@ -53,6 +61,11 @@ public class DayProgram extends Fragment {
         });
 
         return v;
+    }
+
+    public void setProg() {
+        pref = ctx.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
+        tvprog.setText(pref.getString("TVPROG", "None"));
     }
 
     @Override

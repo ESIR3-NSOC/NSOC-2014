@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import fr.esir.maintasks.MyActivity;
 import fr.esir.maintasks.R;
-import fr.esir.oep.DatabaseRegression;
 
 /**
  * Created by Nicolas on 22/02/2015.
@@ -85,7 +84,7 @@ public class MainFragment extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    DayProgram np = DatabaseRegression.dp;
+                    DayProgram np = new DayProgram();
                     fm.beginTransaction().replace(R.id.containerMain, np).commit();
                 }
                 return true;

@@ -1,5 +1,6 @@
 package fr.esir.services;
 
+import android.app.Fragment;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,7 +12,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
+import fr.esir.fragments.DayProgram;
 import fr.esir.maintasks.MyActivity;
+import fr.esir.maintasks.R;
 import fr.esir.oep.RepetetiveTask;
 import fr.esir.regulation.DataFromKNX;
 import fr.esir.regulation.DataLearning;
@@ -126,6 +129,10 @@ public class Regulation_service extends Service {
             }
         });
         list = l;
+        Fragment currentFragment = MyActivity.act.getFragmentManager().findFragmentById(R.id.containerMain);
+        if (currentFragment instanceof DayProgram) {
+            ((DayProgram) currentFragment).updateList(l);
+        }
         nbperson = new ArrayList<>();
         long previousEndDate = 0;
         for (DatesInterval entry : l) {
