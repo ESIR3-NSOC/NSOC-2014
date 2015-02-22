@@ -51,6 +51,54 @@ $("#treeExtractionBtn").click(function() {
         });
 });
 
+$("#extractionPlanningsBtn").click(function() {
+    $("#extractionPlanningsBtn").addClass("red");
+    $("#extractionPlanningsIcon").addClass("blinking");
+    $.post("./ade", {
+            function: "sync_planning",
+            startDate: $('#start_date input').val(),
+            stopDate: $('#stopt_date input').val()
+
+        })
+        .done(function(data) {
+            $("#extractionPlanningsIcon").removeClass("blinking");
+            if ($.parseJSON(data).info == "All good") {
+                $("#extractionPlanningsBtn").removeClass("red").addClass("green");
+            } else {
+                alert($.parseJSON(data).info);
+            }
+        });
+});
+
+$("#applyconfigBtn").click(function() {
+    $("#applyconfigBtn").addClass("red");
+    $("#applyconfigIcon").addClass("blinking");
+    $.post("./dbconf", {
+            path: $('#data_path input').val(),
+            login: $('#data_login input').val(),
+            password: $('#data_password input').val()
+        })
+        .done(function(data) {
+            $("#applyconfigIcon").removeClass("blinking");
+            if ($.parseJSON(data).info == "All good") {
+                $("#applyconfigBtn").removeClass("red").addClass("green");
+            } else {
+                alert($.parseJSON(data).info);
+            }
+        });
+});
+
+$("#database").click(function() {
+    $.get("./dbconf", { })
+    .done(function(data) {
+        var conf = $.parseJSON(data);
+        $('#data_path input').val(conf.db_name),
+        $('#data_login input').val(conf.db_login),
+        $('#data_password input').val(conf.db_password)
+        });
+});
+
+
 $('.menu li').click(function() {
     $('.menu li').removeClass('active');
     $(this).addClass('active');

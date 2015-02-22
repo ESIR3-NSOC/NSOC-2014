@@ -103,24 +103,19 @@
                 <div class="content">
                     <div class="list">
                         <ul>
-                            <li class="parameter" id="scope"><i class="fa fa-chevron-right"></i><span>Scope</span>
+                             <li class="parameter" id="start_date"><i class="fa fa-chevron-right"></i><span>First Date (DD-MM-YYYY)</span>
                                 <div class="info">
                                     <div class="regular"><input type="text" value=""></div>                               
                                 </div>
                             </li>
-                             <li class="parameter" id="first_date"><i class="fa fa-chevron-right"></i><span>First Date (DD-MM-YYYY)</span>
+                             <li class="parameter" id="stop_date"><i class="fa fa-chevron-right"></i><span>Last Date (DD-MM-YYYY)</span>
                                 <div class="info">
                                     <div class="regular"><input type="text" value=""></div>                               
                                 </div>
                             </li>
-                             <li class="parameter" id="last_date"><i class="fa fa-chevron-right"></i><span>Last Date (DD-MM-YYYY)</span>
-                                <div class="info">
-                                    <div class="regular"><input type="text" value=""></div>                               
-                                </div>
-                            </li>
-                            <li class="parameter" id="extract_plannings"><i class="fa fa-chevron-right"></i><span>Extraction Plannings</span>
+                            <li class="parameter" id="extract_plannings"><i class="fa fa-chevron-right" id="extractionPlanningsIcon"></i>       <span>Extraction Plannings</span>
                                 <div class="info">    
-                                    <div class="button blue large">Extraction Plannings</div>                                                           
+                                    <div class="button large" id="extractionPlanningsBtn">Extraction Plannings</div>                               
                                 </div>
                             </li>
                         </ul>
@@ -131,8 +126,6 @@
                 </div>
             </div> 
 
-
-
             <div class="view" id="database">
                 <div class="viewHeader">
                     <div class="title">Database</div>
@@ -142,24 +135,24 @@
                 <div class="content">
                      <div class="list">
                         <ul>
-                            <li class="parameter" id="data_adresse"><i class="fa fa-chevron-right"></i><span>Address</span>
+                            <li class="parameter" id="data_path"><i class="fa fa-chevron-right"></i><span>Address</span>
                                 <div class="info">
-                                    <div class="regular"><input type="text" value=""></div>                               
+                                    <div class="regular"><input type="text" value="db.uion.fr:3306/tsen_ade"></div>                               
                                 </div>
                             </li>
                              <li class="parameter" id="data_login"><i class="fa fa-chevron-right"></i><span>Login</span>
                                 <div class="info">
-                                    <div class="regular"><input type="text" value=""></div>                               
+                                    <div class="regular"><input type="text" value="tsen"></div>                               
                                 </div>
                             </li>
                              <li class="parameter" id="data_password"><i class="fa fa-chevron-right"></i><span>Password</span>
                                 <div class="info">
-                                    <div class="regular"><input type="text" value=""></div>                               
+                                    <div class="regular"><input type="text" type="password" value="nsoc-tsen"></div>                               
                                 </div>
                             </li>
-                            <li class="parameter" id="data_apply"><i class="fa fa-chevron-right"></i><span>Apply</span>
+                            <li class="parameter" id="data_apply"><i class="fa fa-chevron-right" id="applyconfigIcon"></i><span>Apply</span>
                                 <div class="info">    
-                                    <div class="button blue large">Apply</div>                                                           
+                                    <div class="button large" id="applyconfigBtn">Apply</div>                                                           
                                 </div>
                             </li>
                         </ul>
