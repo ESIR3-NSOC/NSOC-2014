@@ -84,7 +84,7 @@ public class Regulation_service extends Service {
 
     @Override
     public boolean onUnbind(Intent intent) {
-        if(rt != null)
+        if (rt != null)
             rt.getScheduler().shutdown();
         rt = null;
         unregisterReceiver(mServicesUpdateReceiver);
@@ -162,9 +162,12 @@ public class Regulation_service extends Service {
     }
 
     private int checkNbPerson(long currentDate) {
-        for (NbPerson entry : nbperson) {
-            if (currentDate >= entry.getStartDate() && currentDate <= entry.getEndDate())
-                return entry.getNb_pers();
+        if (nbperson != null) {
+            for (NbPerson entry : nbperson) {
+                if (currentDate >= entry.getStartDate() && currentDate <= entry.getEndDate())
+                    return entry.getNb_pers();
+            }
+            return 0;
         }
         return 0;
     }
