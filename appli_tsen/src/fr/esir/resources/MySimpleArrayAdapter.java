@@ -1,6 +1,7 @@
 package fr.esir.resources;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +10,9 @@ import android.widget.TextView;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import fr.esir.maintasks.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+import java.util.Date;
 
 /**
  * Created by Nicolas on 21/02/2015.
@@ -34,9 +36,10 @@ public class MySimpleArrayAdapter extends ArrayAdapter<DatesInterval> {
 
         TextView textView = (TextView) rowView.findViewById(R.id.lessontv);
         TextView tv = (TextView) rowView.findViewById(R.id.consignetv);
-
-        String startD = changeMilliInhhSSmm(list.get(position).getStartDate().getTime());
-        String endD = changeMilliInhhSSmm(list.get(position).getEndDate().getTime());
+        Log.e("START", list.get(position).getStartDate() + "");
+        Log.e("END", list.get(position).getEndDate() + "");
+        String startD = changeDateInhhSSmm(list.get(position).getStartDate());
+        String endD = changeDateInhhSSmm(list.get(position).getEndDate());
         String form = changeStringForm(startD, endD, list.get(position).getLesson());
 
         textView.setText(form);
@@ -45,10 +48,9 @@ public class MySimpleArrayAdapter extends ArrayAdapter<DatesInterval> {
         return rowView;
     }
 
-    public String changeMilliInhhSSmm(long millis) {
-        return String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
-                TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
-                TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
+    public String changeDateInhhSSmm(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+        return sdf.format(date);
     }
 
     public String changeStringForm(String s1, String s2, String s3) {

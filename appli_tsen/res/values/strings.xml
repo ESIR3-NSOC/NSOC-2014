@@ -5,13 +5,13 @@
     <string name="disconnected">Disconnected</string>
 
     <string name="NoValue">N/A</string>
-    <string name="IndoorTempLabel">Indoor Temperature : </string>
-    <string name="OutdoorTempLabel">Outdoor Temperature : </string>
-    <string name="IndoorHumLabel">Indoor Humidity : </string>
-    <string name="OutdoorHumLabel">Outdoor Humidity : </string>
-    <string name="IndoorLumLabel">Indoor Luminosity : </string>
-    <string name="OutdoorLumLabel">Outdoor Luminosity : </string>
-    <string name="CO2Label">CO2 rate : </string>
+    <string name="IndoorTempLabel">Indoor Temperature :</string>
+    <string name="OutdoorTempLabel">Outdoor Temperature :</string>
+    <string name="IndoorHumLabel">Indoor Humidity :</string>
+    <string name="OutdoorHumLabel">Outdoor Humidity :</string>
+    <string name="IndoorLumLabel">Indoor Luminosity :</string>
+    <string name="OutdoorLumLabel">Outdoor Luminosity :</string>
+    <string name="CO2Label">CO2 rate :</string>
 
     <string name="contextetv">Context service</string>
     <string name="oeptv">Oep service</string>
@@ -42,8 +42,9 @@
     <string name="user">User</string>
     <string name="vote">Vote</string>
     <string name="send">Send</string>
-
-    <string name="prog_none">Next programming : none</string>
+    <string name="next_prog">Next temperature set</string>
+    <string name="prog_day">Programming of the day</string>
+    <string name="none">None</string>
 
     <string name="def">Default</string>
 </resources>

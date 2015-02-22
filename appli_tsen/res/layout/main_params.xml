@@ -54,9 +54,11 @@
                   android:layout_centerHorizontal="true" android:layout_alignParentBottom="true"
                   android:orientation="horizontal">
         <Button android:layout_width="75dp" android:layout_height="wrap_content"
-                android:text="@string/def" android:id="@+id/but_def" android:background="@drawable/button_style1" android:layout_marginRight="15dp"/>
+                android:text="@string/def" android:id="@+id/but_def" android:background="@drawable/button_style1"
+                android:layout_marginRight="15dp"/>
         <Button android:layout_width="120dp" android:layout_height="wrap_content"
-                android:text="@string/testparams" android:id="@+id/button_test" android:background="@drawable/button_style1" android:layout_marginRight="15dp"/>
+                android:text="@string/testparams" android:id="@+id/button_test"
+                android:background="@drawable/button_style1" android:layout_marginRight="15dp"/>
         <Button android:layout_width="100dp" android:layout_height="wrap_content" android:text="@string/start"
                 android:id="@+id/button_start" android:background="@drawable/button_style1"/>
     </LinearLayout>
