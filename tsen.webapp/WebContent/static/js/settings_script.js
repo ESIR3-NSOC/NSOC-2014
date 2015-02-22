@@ -50,3 +50,10 @@ $("#treeExtractionBtn").click(function() {
             }
         });
 });
+
+$('.menu li').click(function() {
+    $('.menu li').removeClass('active');
+    $(this).addClass('active');
+    $('.view').removeClass('active');
+    $('.view#' + $(this).attr('id')).addClass('active');
+});

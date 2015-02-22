@@ -28,8 +28,11 @@ public class Main implements ServletContextListener {
 		universe.loadConfig();
 		
 		// connect to DB
-		DataBase db = new MySQLDB(universe.getConfig().getDb_name(), universe.getConfig().getDb_login(), universe.getConfig().getDb_password());
-		logger.info("Database \"" + universe.getConfig().getDb_name() + "\" " + (db.isConnected() ? "connected" : "not connected"));
+		//DataBase db = new MySQLDB(universe.getConfig().getDb_name(), universe.getConfig().getDb_login(), universe.getConfig().getDb_password());
+		//logger.info("Database \"" + universe.getConfig().getDb_name() + "\" " + (db.isConnected() ? "connected" : "not connected"));
+
+		DataBase db = new MySQLDB(universe.getConfig().getDatabase().getDb_name(), universe.getConfig().getDatabase().getDb_login(), universe.getConfig().getDatabase().getDb_password());
+		logger.info("Database \"" + universe.getConfig().getDatabase().getDb_name() + "\" " + (db.isConnected() ? "connected" : "not connected"));
 
 		universe.setScope(new ADE_Scope(db));
 		universe.setDataBase(db);

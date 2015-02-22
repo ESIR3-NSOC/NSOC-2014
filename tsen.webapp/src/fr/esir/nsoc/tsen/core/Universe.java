@@ -11,6 +11,7 @@ import javax.xml.bind.Unmarshaller;
 
 import fr.esir.nsoc.tsen.ade.database.DataBase;
 import fr.esir.nsoc.tsen.config.Config;
+import fr.esir.nsoc.tsen.config.Database;
 import fr.esir.nsoc.tsen.config.ScopeObject;
 
 public class Universe {
@@ -106,29 +107,41 @@ public class Universe {
 	private void createDefaultConfig() {
 		config = new Config();
 		
-		config.setDb_name("db.uion.fr:3306/tsen_ade");
-		config.setDb_login("xxxx");
-		config.setDb_password("xxxx");
+		config.setDatabase(new Database());
+		
+		config.getDatabase().setDb_name("db.uion.fr:3306/tsen_ade");
+		config.getDatabase().setDb_login("xxxx");
+		config.getDatabase().setDb_password("xxxx");
 		
 		config.setProjectId(22);
-		//config.setId(1);
 		config.setIcsThreadPoolSize(30);
 		
 		config.setScopeObjects(new ArrayList<ScopeObject>());
 		config.getScopeObjects().add(new ScopeObject("5864", "esir1"));
 		config.getScopeObjects().add(new ScopeObject("5598", "esir2"));
 		config.getScopeObjects().add(new ScopeObject("5856", "esir3"));
+		
 		config.getScopeObjects().add(new ScopeObject("5436", "esir prof A-K"));
 		config.getScopeObjects().add(new ScopeObject("5446", "esir prof L-W"));
 		config.getScopeObjects().add(new ScopeObject("6940", "esir Personnel IATOSS"));
 		config.getScopeObjects().add(new ScopeObject("988", "esir Vacataires et extérieurs"));
 		config.getScopeObjects().add(new ScopeObject("1149", "scelva prof"));
-		config.getScopeObjects().add(new ScopeObject("4217", "istic prof"));		
+		config.getScopeObjects().add(new ScopeObject("4217", "istic prof"));
+
+		config.getScopeObjects().add(new ScopeObject("346", "Esir"));	
+		config.getScopeObjects().add(new ScopeObject("3635", "Bat.5"));	
+		config.getScopeObjects().add(new ScopeObject("3636", "Bat.6"));	
+		config.getScopeObjects().add(new ScopeObject("3865", "Istic Anglais"));	
+		config.getScopeObjects().add(new ScopeObject("3972", "Istic CM/TD"));	
+		config.getScopeObjects().add(new ScopeObject("3806", "Istic Projet"));	
+		config.getScopeObjects().add(new ScopeObject("3820", "Istic Projets avec code"));	
+		config.getScopeObjects().add(new ScopeObject("3809", "Istic TEEO"));	
+		config.getScopeObjects().add(new ScopeObject("3935", "Istic TP"));	
+		config.getScopeObjects().add(new ScopeObject("3839", "Istic TP priorité aux L1-L2 (LINUX)"));	
+		config.getScopeObjects().add(new ScopeObject("3805", "Istic TP spéciaux"));	
+		config.getScopeObjects().add(new ScopeObject("1695", "Bat.28 Amphis"));
 		
-		config.setName("Pankaj");
-		config.setGender("Male");
-		config.setRole("Developer");
-		config.setPassword("sensitive");
+
 	}
 	
 	

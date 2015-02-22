@@ -63,67 +63,7 @@ public class ADE extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String function = request.getParameter("function");
-		String cookie = request.getParameter("cookie");
-		String startDate = request.getParameter("startDate");
-		String stopDate = request.getParameter("stopDate");
-		int code = -1;
-		String info = "";
-		if (function!=null) 
-		{
-			
-			if(function.equals("browse") && cookie!=null){
-				ADE_Tree at = new ADE_Tree(universe.getDataBase());
-				code = at.browseTree(cookie, universe.getScope().getProject());
-			} else if(function.equals("list_project") && cookie!=null){
-				ADE_Tree at = new ADE_Tree(universe.getDataBase());
-				code = at.listProject(cookie);
-			} else if(function.equals("sync_planning") && startDate!=null && stopDate!=null) {
-				universe.getScope().setStartPoint(parseDate(startDate));
-				universe.getScope().setEndPoint(parseDate(stopDate));
-				ADE_Planning planning = new ADE_Planning(universe.getDataBase(), universe.getScope());
-				planning.retrieve(universe.getConfig().getIcsThreadPoolSize());
-				code = 0;
-			}
-			
-			switch (code)
-			{
-				case -1 : 
-					info = "Unknown function";
-					break;
-				case 0 :
-					info = "All good";
-					break;
-				case 1 :
-					info = "Unknown error";
-					break;
-				case 2 :
-					info = "Bad cookie format";
-					break;
-				case 3 :
-					info = "Invalid ade cookie";
-					break;
-				case 4 :
-					info = "Unknown project id";
-					break;
-				case 5 :
-					info = "Browsing tree error";
-					break;
-				default :
-					info = "Unknown error";
-					break;
-					
-			}
 		
-		}
-		else
-		{
-			info = "function parameter not recieved";
-		}
-		PrintWriter pw = response.getWriter();
-		String s = "{\"info\" : \"" + info + "\"}";
-		pw.write(s);
-		pw.close();
 	}
 
 	/**
@@ -205,16 +145,5 @@ public class ADE extends HttpServlet {
 		return date;
 	}
 
-	private static String formatDate(LocalDate input) {
-		String string = null;
-		try {
-			DateTimeFormatter format = DateTimeFormatter
-					.ofPattern("yyyy-MM-dd");
-			string = input.format(format);
-		} catch (DateTimeException exc) {
-			exc.printStackTrace();
-		}
-		return string;
-	}
-
+	
 }
