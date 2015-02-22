@@ -18,7 +18,7 @@ import java.util.ArrayList;
 /**
  * Created by Nicolas on 21/02/2015.
  */
-public class DayProgram extends Fragment implements View.OnTouchListener {
+public class DayProgram extends Fragment {
     FragmentManager fm;
     View v;
     ListView lv;
@@ -26,9 +26,20 @@ public class DayProgram extends Fragment implements View.OnTouchListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.next_prog, container, false);
+        v = inflater.inflate(R.layout.day_program, container, false);
         lv = (ListView) v.findViewById(R.id.list);
         listD = Regulation_service.list;
+        v.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    NextProgramming np = new NextProgramming();
+                    fm.beginTransaction().replace(R.id.containerMain, np).commit();
+                }
+
+                return true;
+            }
+        });
 
         return v;
     }
@@ -37,17 +48,9 @@ public class DayProgram extends Fragment implements View.OnTouchListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         fm = getFragmentManager();
-        MySimpleArrayAdapter msaa = new MySimpleArrayAdapter(this.getActivity(), listD);
-        lv.setAdapter(msaa);
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            NextProgramming np = new NextProgramming();
-            fm.beginTransaction().replace(R.id.containerMain, np).commit();
+        if (listD != null) {
+            MySimpleArrayAdapter msaa = new MySimpleArrayAdapter(this.getActivity(), listD);
+            lv.setAdapter(msaa);
         }
-
-        return false;
     }
 }

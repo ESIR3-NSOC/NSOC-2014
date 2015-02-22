@@ -16,7 +16,7 @@ import fr.esir.maintasks.R;
 /**
  * Created by Nicolas on 21/02/2015.
  */
-public class NextProgramming extends Fragment implements View.OnTouchListener {
+public class NextProgramming extends Fragment {
     TextView tvprog;
     SharedPreferences pref;
     Context ctx = MyActivity.ct;
@@ -29,7 +29,16 @@ public class NextProgramming extends Fragment implements View.OnTouchListener {
         pref = ctx.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
         tvprog = (TextView) v.findViewById(R.id.tvProg);
         tvprog.setText(pref.getString("TVPROG", "None"));
-
+        v.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    DayProgram dp = new DayProgram();
+                    fm.beginTransaction().replace(R.id.containerMain, dp).commit();
+                }
+                return true;
+            }
+        });
 
         return v;
     }
@@ -38,16 +47,5 @@ public class NextProgramming extends Fragment implements View.OnTouchListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         fm = getFragmentManager();
-    }
-
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            DayProgram dp = new DayProgram();
-            fm.beginTransaction().replace(R.id.containerMain, dp).commit();
-        }
-
-        return false;
     }
 }

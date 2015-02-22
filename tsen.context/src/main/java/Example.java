@@ -1,3 +1,4 @@
+import com.sun.glass.ui.android.Activity;
 import org.kevoree.modeling.api.Callback;
 import org.kevoree.modeling.api.KObject;
 import org.kevoree.modeling.databases.leveldb.LevelDbDataBase;
@@ -12,7 +13,7 @@ import java.util.Date;
  */
 public class Example {
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
 
         try {
             TsenUniverse universe = new TsenUniverse();
@@ -84,6 +85,6 @@ public class Example {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }
