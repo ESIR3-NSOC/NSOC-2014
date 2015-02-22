@@ -10,9 +10,11 @@ import fr.esir.knx.Service_knx;
 import fr.esir.resources.FilterString;
 import tuwien.auto.calimero.exception.KNXException;
 
+import java.io.IOException;
+
 public class Knx_service extends Service implements Service_knx {
     private final IBinder mBinder = new LocalBinder();
-    private KnxManager km = new KnxManager();
+    private KnxManager km;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -26,6 +28,11 @@ public class Knx_service extends Service implements Service_knx {
     }
 
     public boolean initialize() {
+        try {
+            km = new KnxManager(getAssets().open("knxGroup.txt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         AsyncKNX aknx = new AsyncKNX();
         aknx.execute(km);
         return true;

@@ -83,7 +83,8 @@ public class Regulation_service extends Service {
 
     @Override
     public boolean onUnbind(Intent intent) {
-        rt.getScheduler().shutdown();
+        if(rt != null)
+            rt.getScheduler().shutdown();
         rt = null;
         unregisterReceiver(mServicesUpdateReceiver);
         regulator.cancel(false);
@@ -152,7 +153,7 @@ public class Regulation_service extends Service {
         registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
         regulator = new Regulator();
         regulator.setConsigne(18);
-        regulator.execute();
+        //regulator.execute();
         //regulator.run();
 
         return true;

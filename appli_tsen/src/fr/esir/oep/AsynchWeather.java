@@ -1,6 +1,7 @@
 package fr.esir.oep;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -24,6 +25,7 @@ public class AsynchWeather extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... params) {
+        Log.w("oep", "onsearchcomleted do");
         CookieSpecFactory csf = new CookieSpecFactory() {
             public CookieSpec newInstance(HttpParams params) {
                 return new BrowserCompatSpec() {
@@ -57,12 +59,14 @@ public class AsynchWeather extends AsyncTask<Void, Void, String> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }else
+            Log.w("oep", "Failed");
         return "failed";
     }
 
     @Override
     protected void onPostExecute(String result) {
+        Log.w("oep", "onsearchcomleted post execute");
         //Do something with result
         listener.onSearchCompleted(result);
     }

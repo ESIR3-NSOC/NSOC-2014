@@ -1,5 +1,6 @@
 package fr.esir.knx;
 
+import fr.esir.services.Context_service;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import tuwien.auto.calimero.exception.KNXException;
@@ -31,14 +32,12 @@ public class Utility {
         return netLinkIp;
     }
 
-    public static JsonNode importGroup() {
+    public static JsonNode importGroup(InputStream file) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node;
         StringBuilder AllConf = new StringBuilder();
         try {
-            File groupConfiguration = new File("tsen.provider/src/main/resources/knxGroup.txt");
-            InputStream read = new FileInputStream(groupConfiguration);
-            InputStreamReader lecture = new InputStreamReader(read);
+            InputStreamReader lecture = new InputStreamReader(file);
             BufferedReader br = new BufferedReader(lecture);
             String line;
             while ((line = br.readLine()) != null) {

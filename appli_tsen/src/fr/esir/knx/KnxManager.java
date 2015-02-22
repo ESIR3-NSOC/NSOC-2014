@@ -17,6 +17,7 @@ import tuwien.auto.calimero.link.event.NetworkLinkListener;
 import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessCommunicatorImpl;
 
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Queue;
@@ -37,9 +38,9 @@ public class KnxManager {
     private Service_knx sk;
     private Thread _bufferReader;
 
-    public KnxManager() {
+    public KnxManager(InputStream file) {
 
-        _knxConf = Utility.importGroup();
+        _knxConf = Utility.importGroup(file);
 
         //initConnection();
         _eventBuffer = new ConcurrentLinkedQueue<>();
@@ -73,7 +74,8 @@ public class KnxManager {
     }
 
     public void CloseConnection() {
-        _netLinkIp.close();
+        if(_netLinkIp != null)
+            _netLinkIp.close();
         System.out.println("KNX connection has been closed");
     }
 

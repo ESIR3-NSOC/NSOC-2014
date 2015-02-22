@@ -93,6 +93,7 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
     public void onSearchCompleted(boolean o) {
         if (o) {
             try {
+                Log.w("oep", "onsearchcomleted boolean");
                 predict();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -116,6 +117,7 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
 
     @Override
     public void onSearchCompleted(String weath) {
+        Log.w("oep", "onsearchcomleted String");
         wf.searchDone(weath);
     }
 

@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -22,6 +23,8 @@ import org.webbitserver.WebServer;
 import org.webbitserver.WebServers;
 import tsen.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Time;
 import java.util.HashMap;
 import java.util.List;
@@ -115,8 +118,13 @@ public class Context_service extends Service {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         _wss = WebServers.createWebServer(TSEN_WS_PORT).add("", new WebSocketHandler(_wss, this));
-
-        ctx = new Context(new TsenUniverse());
+        InputStream file = null;
+        try {
+            file = getAssets().open("knxGroup.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ctx = new Context(new TsenUniverse(), file);
         registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
 
         return true;
