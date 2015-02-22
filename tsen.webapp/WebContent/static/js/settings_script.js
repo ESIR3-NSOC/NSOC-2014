@@ -57,7 +57,7 @@ $("#extractionPlanningsBtn").click(function() {
     $.post("./ade", {
             function: "sync_planning",
             startDate: $('#start_date input').val(),
-            stopDate: $('#stopt_date input').val()
+            stopDate: $('#stop_date input').val()
 
         })
         .done(function(data) {
@@ -74,17 +74,13 @@ $("#applyconfigBtn").click(function() {
     $("#applyconfigBtn").addClass("red");
     $("#applyconfigIcon").addClass("blinking");
     $.post("./dbconf", {
-            path: $('#data_path input').val(),
-            login: $('#data_login input').val(),
-            password: $('#data_password input').val()
+            db_name: $('#data_path input').val(),
+            db_login: $('#data_login input').val(),
+            db_password: $('#data_password input').val()
         })
         .done(function(data) {
             $("#applyconfigIcon").removeClass("blinking");
-            if ($.parseJSON(data).info == "All good") {
-                $("#applyconfigBtn").removeClass("red").addClass("green");
-            } else {
-                alert($.parseJSON(data).info);
-            }
+            $("#applyconfigBtn").removeClass("red").addClass("green");
         });
 });
 
