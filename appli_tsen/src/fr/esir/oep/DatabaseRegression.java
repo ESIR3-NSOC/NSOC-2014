@@ -21,6 +21,7 @@ import com.example.esir.nsoc2014.tsen.lob.objects.ArffGenerated;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import fr.esir.context.dataPackage.EnvironmentData;
 import fr.esir.context.dataPackage.StudentData;
+import fr.esir.fragments.DayProgram;
 import fr.esir.maintasks.ConfigParams;
 import fr.esir.maintasks.MyActivity;
 
@@ -32,6 +33,7 @@ import java.util.Map.Entry;
 
 public class DatabaseRegression implements Prevision {
 
+    public static DayProgram dp;
     private HashMap<Date, ArrayList<DatesInterval>> datesinte;
     private ArrayList<DatesInterval> list;
     private WeatherForecast wf;
@@ -140,6 +142,8 @@ public class DatabaseRegression implements Prevision {
             Log.w("List not null", "List not null");
         } else
             Log.w("List null", "The list is empty");
+
+        dp = new DayProgram();
     }
 
     private ArrayList<DatesInterval> calcultab(
