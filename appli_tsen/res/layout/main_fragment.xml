@@ -132,5 +132,9 @@
     <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/bvote"
             android:background="@drawable/button_style1" android:text="@string/send"
             android:layout_gravity="center_horizontal"/>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/heatstate"
+              android:textSize="18sp" android:layout_gravity="center_horizontal" android:layout_marginTop="30dp"/>
+    <ImageView android:layout_width="70dp" android:layout_height="70dp" android:id="@+id/regul_state"
+               android:src="@drawable/off" android:layout_gravity="center_horizontal" android:layout_marginTop="15dp"/>
 
 </LinearLayout>

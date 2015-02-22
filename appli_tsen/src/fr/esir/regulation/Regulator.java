@@ -1,8 +1,11 @@
 package fr.esir.regulation;
 
+import android.app.Fragment;
 import android.os.AsyncTask;
 import android.util.Log;
+import fr.esir.fragments.MainFragment;
 import fr.esir.maintasks.MyActivity;
+import fr.esir.maintasks.R;
 
 public class Regulator extends AsyncTask<Void, Void, Void> {
 
@@ -49,7 +52,7 @@ public class Regulator extends AsyncTask<Void, Void, Void> {
         // itération)
         double variation_erreur = 0; // différence entre erreur actuelle et
         // erreur précédente
-
+        boolean on = false;
         while (!this.isCancelled()) {
             somme_erreurs = somme_erreurs + diff_temp; // calcule la nouvelle somme des erreurs
             variation_erreur = temp_cons - temp_int - diff_temp; // calcule la différence entre la nouvelle erreur et la précédente
@@ -64,6 +67,13 @@ public class Regulator extends AsyncTask<Void, Void, Void> {
                 e.printStackTrace();
             }
             // envoyer valeur de sortie vers KNX
+            Fragment currentFragment = MyActivity.act.getFragmentManager().findFragmentById(R.id.containerMain);
+            if (currentFragment instanceof MainFragment) {
+                if (valeur_sortie > 0 && !on) {
+                    MainFragment.iaf.setImage(true);
+                } else if (valeur_sortie < 0 && on)
+                    MainFragment.iaf.setImage(false);
+            }
         }
 
         return null;

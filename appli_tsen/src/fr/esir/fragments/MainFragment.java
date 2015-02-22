@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import fr.esir.maintasks.ImageActivity;
 import fr.esir.maintasks.MyActivity;
 import fr.esir.maintasks.R;
 
@@ -31,11 +32,10 @@ public class MainFragment extends Fragment {
     Button vote;
     View v;
     FragmentManager fm;
-
+    public static ImageActivity iaf;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.main_fragment, container, false);
-
         temp_in = (TextView) v.findViewById(R.id.IndoorTempValue);
         temp_ou = (TextView) v.findViewById(R.id.OutdoorTempValue);
         hum_in = (TextView) v.findViewById(R.id.IndoorHumValue);
@@ -116,5 +116,6 @@ public class MainFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         fm = getFragmentManager();
+        iaf = new ImageActivity(this.getActivity());
     }
 }

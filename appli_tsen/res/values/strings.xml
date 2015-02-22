@@ -45,6 +45,7 @@
     <string name="next_prog">Next temperature set</string>
     <string name="prog_day">Programming of the day</string>
     <string name="none">None</string>
+    <string name="heatstate">State of the regulator</string>
 
     <string name="def">Default</string>
 </resources>
