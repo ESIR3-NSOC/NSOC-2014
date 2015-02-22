@@ -39,6 +39,10 @@ public interface DataBase {
 	public boolean fillCorrespondence(HashSet<Event> events, TreeObject treeObject);
 	public HashSet<TreeObject> getTreeObjectSession(String UID, Project projet);
 
+	public void createCorrespondenceTable(int projectid);
+
+	public void createVoteTable(int projectid);
+
 	
 
 

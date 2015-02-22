@@ -19,6 +19,7 @@ import fr.esir.nsoc.tsen.ade.object.TreeObject;
 /**
  * Servlet Filter implementation class AdminAccessControl
  */
+
 @WebFilter(
 		urlPatterns = { "/settings.html" }, 
 		servletNames = { 

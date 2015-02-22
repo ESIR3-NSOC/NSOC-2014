@@ -155,6 +155,7 @@ public class MySQLDB implements DataBase {
 					+ " NAME        TEXT   NOT NULL,"
 					+ " LEVEL       INT    NOT NULL,"
 					+ " PARENT_ID   TEXT   NOT NULL,"
+					+ " ROOT_ID   TEXT   NOT NULL,"
 					+ " TYPE        TEXT   NOT NULL)";
 			stmt.executeUpdate(sql);
 			stmt.close();
@@ -168,14 +169,15 @@ public class MySQLDB implements DataBase {
 	public boolean addTreeObject(TreeObject treeObject) {
 		PreparedStatement stmt;
 		try {
-			String sql = "INSERT INTO tree_object_" + treeObject.getProject().getId() + " (ID,NAME,LEVEL,PARENT_ID,TYPE) "
-					+ "VALUES (?, ?, ?, ?, ?);";
+			String sql = "INSERT INTO tree_object_" + treeObject.getProject().getId() + " (ID,NAME,LEVEL,PARENT_ID,ROOT_ID,TYPE) "
+					+ "VALUES (?, ?, ?, ?, ?, ?);";
 			stmt = _connection.prepareStatement(sql);
 			stmt.setString(1, treeObject.getId());
 			stmt.setString(2, treeObject.getName());
 			stmt.setLong(3, treeObject.getLevel());
 			stmt.setString(4, treeObject.getParentId());
-			stmt.setString(5, treeObject.getType());
+			stmt.setString(5, treeObject.getRootId());
+			stmt.setString(6, treeObject.getType());
 			stmt.executeUpdate();
 			stmt.close();
 		} catch (SQLException e) {
@@ -187,6 +189,7 @@ public class MySQLDB implements DataBase {
 		return true;
 	}
 
+	@Override
 	public void createEventTable(int projectid) {
 		if (existTable("event_" + Integer.toString(projectid)))
 			dropTable("event_" + Integer.toString(projectid));
@@ -208,6 +211,7 @@ public class MySQLDB implements DataBase {
 		}
 	}
 
+	@Override
 	public boolean fillEvent(Set<Event> set, int projectid) {
 		if (!existTable("event_" + Integer.toString(projectid))) {
 			createEventTable(projectid);
@@ -256,6 +260,7 @@ public class MySQLDB implements DataBase {
 		return true;
 	}
 
+	@Override
 	public void createCorrespondenceTable(int projectid) {
 		if (existTable("correspondence_" + Integer.toString(projectid)))
 			dropTable("correspondence_" + Integer.toString(projectid));
@@ -291,22 +296,24 @@ public class MySQLDB implements DataBase {
 			String name;
 			String id;
 			String parentId;
+			String rootId;
 			String type;
 			
 			try {
 				stmt = _connection.createStatement();
 				ResultSet rs = stmt
-						.executeQuery("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`TYPE` FROM tree_object_" + Integer.toString(treeObject.getProject().getId()) + " WHERE PARENT_ID=" + treeObject.getId()+";");
-				System.out.println("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`TYPE` FROM tree_object_" + Integer.toString(treeObject.getProject().getId()) + " WHERE PARENT_ID=" + treeObject.getId()+";");
+						.executeQuery("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`ROOT_ID`,`TYPE` FROM tree_object_" + Integer.toString(treeObject.getProject().getId()) + " WHERE PARENT_ID=" + treeObject.getId()+";");
+				System.out.println("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`ROOT_ID`,`TYPE` FROM tree_object_" + Integer.toString(treeObject.getProject().getId()) + " WHERE PARENT_ID=" + treeObject.getId()+";");
 				while(rs.next()){
 					id=rs.getString(1);
 					name=rs.getString(2);
 					level=rs.getInt(3);
 					parentId=rs.getString(4);
-					type=rs.getString(5);
+					rootId=rs.getString(5);
+					type=rs.getString(6);
 					Project project=treeObject.getProject();
 	
-					TreeObjectChildren.add(new TreeObject(project, level, name, id, parentId, type));
+					TreeObjectChildren.add(new TreeObject(project, level, name, id, parentId, rootId, type));
 				}
 				stmt.close();
 			} catch (SQLException e) {
@@ -328,6 +335,7 @@ public class MySQLDB implements DataBase {
 		String name;
 		String id;
 		String parentId;
+		String rootId;
 		String type;
 
 		if (existTable("correspondence_"+Integer.toString(project.getId()))){
@@ -349,9 +357,10 @@ public class MySQLDB implements DataBase {
 						name=rs2.getString(2);
 						level=rs2.getInt(3);
 						parentId=rs2.getString(4);
-						type=rs2.getString(5);
+						rootId=rs2.getString(5);
+						type=rs2.getString(6);
 
-						TreeObjectSession.add(new TreeObject(project, level, name, id, parentId, type));
+						TreeObjectSession.add(new TreeObject(project, level, name, id, parentId, rootId, type));
 					}
 					stmt2.close();
 				}
@@ -491,7 +500,7 @@ public class MySQLDB implements DataBase {
 		return true;
 	}
 
-
+	@Override
 	public synchronized boolean addCorrespondence(Event event, TreeObject treeObject) {
 		
 		if (!existTable("correspondence_" + treeObject.getProject().getId())) {
@@ -549,20 +558,22 @@ public class MySQLDB implements DataBase {
 			int level;
 			String name;
 			String parentId;
+			String rootId;
 			String type;
 			
 			
 			try {
 				stmt = _connection.createStatement();
 				ResultSet rs = stmt
-						.executeQuery("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`TYPE` FROM tree_object_" + Integer.toString(project.getId()) + " WHERE ID=" + id + ";");
+						.executeQuery("SELECT `ID`,`NAME`,`LEVEL`,`PARENT_ID`,`ROOT_ID`,`TYPE` FROM tree_object_" + Integer.toString(project.getId()) + " WHERE ID=" + id + ";");
 				while(rs.next()){
 					name=rs.getString(2);
 					level=rs.getInt(3);
 					parentId=rs.getString(4);
-					type=rs.getString(5);
+					rootId=rs.getString(5);
+					type=rs.getString(6);
 	
-					to = new TreeObject(project, level, name, id, parentId, type);
+					to = new TreeObject(project, level, name, id, parentId, rootId, type);
 				}
 				stmt.close();
 			} catch (SQLException e) {
@@ -701,5 +712,36 @@ public class MySQLDB implements DataBase {
 		}
 		return event;
 	}
+	
+	
+	@Override
+	public void createVoteTable(int projectid) {
+		if (existTable("vote_" + Integer.toString(projectid)))
+			dropTable("vote_" + Integer.toString(projectid));
+		Statement stmt = null;
+
+		try {
+			stmt = _connection.createStatement();
+			String sql = "CREATE TABLE vote_" + Integer.toString(projectid)
+					+ " (UID VARCHAR(64) UNIQUE PRIMARY KEY     NOT NULL,"
+					+ " DTSTART           DATETIME    NOT NULL,"
+					+ " DTEND           DATETIME    NOT NULL,"
+					+ " SUMMARY           TEXT    NOT NULL,"
+					+ " LOCATION           TEXT    NOT NULL,"
+					+ " DESCRIPTION          TEXT    NOT NULL)";
+			stmt.executeUpdate(sql);
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

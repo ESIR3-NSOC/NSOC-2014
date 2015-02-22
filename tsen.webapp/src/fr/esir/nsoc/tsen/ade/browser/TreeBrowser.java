@@ -50,6 +50,7 @@ public class TreeBrowser {
 			Iterator<TreeObject> i = treeObjects.iterator();
 			while (i.hasNext()) {
 				TreeObject to = i.next();
+				to.setRootId(to.getId());
 				if (to.getLevel() == (treeObject.getLevel() + 1))
 				{
 					// display if debug
@@ -76,6 +77,7 @@ public class TreeBrowser {
 			Iterator<TreeObject> i = treeObjects.iterator();
 			while (i.hasNext()) {
 				TreeObject to = i.next();
+				to.setRootId(treeObject.getRootId());
 				if (to.getLevel() == (treeObject.getLevel() + 1))
 				{
 					// set parent id
@@ -105,6 +107,7 @@ public class TreeBrowser {
 			Iterator<TreeObject> i = treeObjects.iterator();
 			while (i.hasNext()) {
 				TreeObject to = i.next();
+				to.setRootId(treeObject.getRootId());
 				if (to.getLevel() == (treeObject.getLevel() + 1))
 				{
 					// set parent id

@@ -76,7 +76,7 @@ public class ADE_Object extends HttpServlet {
 		ADE_Scope scope= universe.getScope();
 		for (int i = 0 ; i < obj.length ; i++)
 		{
-			scope.addChildrenToScope(new TreeObject(scope.getProject(), -1, "", obj[i], "", "branch"));
+			scope.addChildrenToScope(new TreeObject(scope.getProject(), -1, "", obj[i], "", "", "branch"));
 		}
 	}
 

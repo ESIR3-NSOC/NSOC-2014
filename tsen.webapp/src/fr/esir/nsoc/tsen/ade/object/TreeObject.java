@@ -9,16 +9,18 @@ public class TreeObject {
 	private String name;
 	private String id;
 	private String parentId;
+	private String rootId;
 	private String type; // leaf | branch | category
 
 	public TreeObject(Project project, int level, String name, String id,
-			String parentId, String type) {
+			String parentId, String rootId, String type) {
 		super();
 		this.project = project;
 		this.level = level;
 		this.name = name;
 		this.id = id;
 		this.parentId = parentId;
+		this.rootId = rootId;
 		this.type = type;
 	}
 
@@ -59,6 +61,14 @@ public class TreeObject {
 
 	public void setParentId(String parentId) {
 		this.parentId = parentId;
+	}
+
+	public String getRootId() {
+		return rootId;
+	}
+
+	public void setRootId(String rootId) {
+		this.rootId = rootId;
 	}
 
 	public String getType() {

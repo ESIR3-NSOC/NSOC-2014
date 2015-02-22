@@ -68,6 +68,8 @@ public class LoginForm {
     	if (to == null)
     	{
     		throw new Exception( "This username does not exist" );
+    	} else if (!to.getRootId().equals("trainee") && !to.getRootId().equals("instructor")) {
+    		throw new Exception( "This username is not a person" );
     	}
     	return to;
     }
