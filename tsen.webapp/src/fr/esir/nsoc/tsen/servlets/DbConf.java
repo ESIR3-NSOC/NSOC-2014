@@ -21,7 +21,7 @@ import fr.esir.nsoc.tsen.core.Universe;
 /**
  * Servlet implementation class DbConf
  */
-@WebServlet({ "/DBConf", "/dbconf" })
+@WebServlet(name = "DbConfig", urlPatterns = { "/DBConf", "/dbconf" })
 public class DbConf extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ServletConfig config;

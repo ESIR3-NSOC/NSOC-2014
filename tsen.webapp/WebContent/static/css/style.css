@@ -3,6 +3,7 @@
 @import url("../public/css/font.css");
 @import url("../public/css/entypo.css");
 
+/*
 html {
     background: #92c7d6;
     background-image: -webkit-radial-gradient(top, circle cover, #97d0e1, #427388 80%);
@@ -12,8 +13,46 @@ html {
     background-image: radial-gradient(top, circle cover, #97d0e1, #427388 80%);
     background-attachment:fixed;
     height: 100%;
+}*/
+
+body{
+	margin: 0;
+	padding: 0;
+	background: #fff;
+	color: #fff;
 }
 
+.body{
+	position: absolute;
+	top: -20px;
+	left: -20px;
+	right: -40px;
+	bottom: -40px;
+	width: auto;
+	height: auto;
+	background-image: url(../public/image/snow_school.jpg);
+	background-size: cover;
+	-webkit-filter: blur(5px);
+	filter: blur(5px);
+	z-index: 0;
+}
+
+.grad{
+	position: absolute;
+	top: -20px;
+	left: -20px;
+	right: -40px;
+	bottom: -40px;
+	width: auto;
+	height: auto;
+	background: -gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65)));
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65)));
+	background: -o-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65)));
+	background: -ms-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65)));
+	background: -moz-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65)));
+	z-index: 0;
+	opacity: 0.7;
+}
 .home-corner {
     position: fixed;
     top: 15px;

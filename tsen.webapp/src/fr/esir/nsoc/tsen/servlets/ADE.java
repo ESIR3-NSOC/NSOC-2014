@@ -16,7 +16,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fr.esir.nsoc.tsen.ade.object.TreeObject;
+import fr.esir.nsoc.tsen.config.ScopeObject;
 import fr.esir.nsoc.tsen.core.ADE_Planning;
+import fr.esir.nsoc.tsen.core.ADE_Scope;
 import fr.esir.nsoc.tsen.core.ADE_Tree;
 import fr.esir.nsoc.tsen.core.Universe;
 
@@ -88,6 +91,14 @@ public class ADE extends HttpServlet {
 			} else if(function.equals("sync_planning") && startDate!=null && stopDate!=null) {
 				universe.getScope().setStartPoint(parseDate(startDate));
 				universe.getScope().setEndPoint(parseDate(stopDate));
+				
+				universe.getScope().dropScope();
+				ADE_Scope scope= universe.getScope();
+				for(ScopeObject obj : universe.getConfig().getScopeObjects())
+				{
+					scope.addChildrenToScope(new TreeObject(scope.getProject(), -1, "", obj.getId(), "", "branch"));
+				}
+				
 				ADE_Planning planning = new ADE_Planning(universe.getDataBase(), universe.getScope());
 				planning.retrieve(universe.getConfig().getIcsThreadPoolSize());
 				code = 0;

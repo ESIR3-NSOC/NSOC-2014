@@ -14,21 +14,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet Filter implementation class AccessControl
+ * Servlet Filter implementation class CacheControl
  */
 @WebFilter("/*")
-public class AccessControl implements Filter {
+public class CacheControl implements Filter {
 
-	public static final String LOGIN_ACCESS  			= "/login";
-	public static final String ATT_PAGE_PATH_REQUESTED	= "pathRequested";
-    public static final String ATT_SESSION_USER 		= "user";
-	
-	
-	
     /**
      * Default constructor. 
      */
-    public AccessControl() {
+    public CacheControl() {
         // TODO Auto-generated constructor stub
     }
 
@@ -43,30 +37,21 @@ public class AccessControl implements Filter {
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+		
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
         HttpSession session = request.getSession();
-
-        
-        
         String path = request.getRequestURI().substring( request.getContextPath().length() );
-        
-        if ( path.startsWith( "/static/public" ) ) {
+        if ( path.startsWith( "/static" ) ) {
             chain.doFilter( req, res );
             return;
         }
-        
-        /**
-         * Si l'objet utilisateur n'existe pas dans la session en cours, alors
-         * l'utilisateur n'est pas connect�.
-         */
-        if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
-        	request.setAttribute( ATT_PAGE_PATH_REQUESTED, request.getRequestURI() );
-        	request.getRequestDispatcher( LOGIN_ACCESS ).forward( request, response );
-        } else {
-            chain.doFilter( req, res );
-        }
+		
+		response.addHeader("Cache-Control", "private, max-age=0, no-cache, no-store, must-revalidate");
+		response.addHeader("Pragma", "no-cache");
+		response.addHeader("Expires", "-1");
+		chain.doFilter(request, response);
 	}
 
 	/**

@@ -19,7 +19,7 @@ import fr.esir.nsoc.tsen.core.Universe;
 /**
  * Servlet implementation class Config
  */
-@WebServlet({ "/Config", "/config" })
+@WebServlet(name = "Config", urlPatterns = { "/Config", "/config" })
 public class Config extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ServletConfig config;

@@ -5,18 +5,18 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import fr.esir.nsoc.tsen.objects.User;
+import fr.esir.nsoc.tsen.ade.object.TreeObject;
+import fr.esir.nsoc.tsen.core.Universe;
 
 
 
-public class login {
-	private static final String USERNAME_FIELD  = "username";
+public class LoginForm {
+    private static final String USERNAME_FIELD  = "username";
     private static final String PASSWORD_FIELD  = "password";
 	
 	private String              info;
     private Map<String, String> errors      = new HashMap<String, String>();
-    
-    
+
     public String getInfo() {
         return info;
     }
@@ -24,24 +24,24 @@ public class login {
     public Map<String, String> getErrors() {
         return errors;
     }
-    /*
-    public User connect( Universe universe, HttpServletRequest request ) {
+    
+    public TreeObject connect( Universe universe, HttpServletRequest request ) {
     	String username = getParam(request, USERNAME_FIELD);
     	String password = getParam(request, PASSWORD_FIELD);
 
-    	User user = null;
+    	TreeObject to = null;
 
         try {
-        	user = usernameValidation( universe, username );
+        	to = usernameValidation( universe, username );
         } catch ( Exception e ) {
             setError( USERNAME_FIELD, e.getMessage() );
         }
 
         try {
-        	passwordValidation( user, password );
+        	passwordValidation( to, password );
         } catch ( Exception e ) {
         	setError( PASSWORD_FIELD, e.getMessage() );
-        	user = null;
+        	to = null;
         }
 
         if ( errors.isEmpty() ) {
@@ -50,10 +50,10 @@ public class login {
             info = "Login failed";
         }
 
-        return user;
+        return to;
     }
     
-    private User usernameValidation(Universe universe, String username) throws Exception {
+    private TreeObject usernameValidation(Universe universe, String username) throws Exception {
     	if ( username != null ) 
     	{
             if ( username.length() > 20 ) 
@@ -63,16 +63,17 @@ public class login {
         } else {
             throw new Exception( "No username recieved" );
         }
-    	User user = universe.getUsers().get(username);
-    	if (user == null)
+    	
+    	TreeObject to = universe.getDataBase().getTreeObject(username, universe.getScope().getProject());
+    	if (to == null)
     	{
     		throw new Exception( "This username does not exist" );
     	}
-    	return user;
+    	return to;
     }
     
-    private void passwordValidation(User user, String Password) throws Exception {
-    	if (user == null)
+    private void passwordValidation(TreeObject to, String Password) throws Exception {
+    	if (to == null)
     	{    		
     		return;
     	}
@@ -80,17 +81,17 @@ public class login {
     	{
             throw new Exception( "No password recieved" );
         }
-    	if (!user.getPassword().equals(Password))
+    	if (!to.getId().equals(Password))
     	{
     		throw new Exception( "Wrong password" );
     	}
     }
     
     
-    */
     private void setError( String field, String message ) {
         errors.put( field, message );
     }
+    
     private static String getParam( HttpServletRequest request, String name ) {
         String value = request.getParameter( name );
         if ( value == null || value.trim().length() == 0 ) {
@@ -99,5 +100,4 @@ public class login {
             return value;
         }
     }
-
 }

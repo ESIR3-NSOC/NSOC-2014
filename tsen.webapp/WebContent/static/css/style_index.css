@@ -25,7 +25,7 @@ ul {
 
 .grid-index-icon-name {
     font-family: "Roboto", helvetica, arial, sans-serif;
-    color: #656262;
+    color: #54b9cd;
     display: block;
     font-size: 1.125em;
     font-weight: 700;
@@ -41,13 +41,13 @@ ul {
     text-decoration: none;
 }
 .grid-index-icon li div {
-    background: #fff;
+    background: transparent;
     border: 10px solid #ebebeb;
     padding: 2.125em 7.638888888888889%;
     position: relative;
 }
 .grid-index-icon .quote-arrow {
-    background: #fff;
+    background: #54b9cd;
     border-right: 10px solid #ebebeb;
     border-bottom: 10px solid #ebebeb;
     content: '';

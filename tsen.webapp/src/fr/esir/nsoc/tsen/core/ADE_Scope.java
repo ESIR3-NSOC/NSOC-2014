@@ -68,6 +68,10 @@ public class ADE_Scope {
 		this.endPoint = endPoint;
 	}
 
+	public void dropScope() {
+		this.scope.clear();
+	}
+	
 	public HashSet<TreeObject> getScope() {
 		return scope;
 	}

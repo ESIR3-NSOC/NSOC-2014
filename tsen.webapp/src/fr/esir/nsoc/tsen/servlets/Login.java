@@ -10,22 +10,19 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import fr.esir.nsoc.tsen.core.Universe;
+import fr.esir.nsoc.tsen.forms.LoginForm;
 
-// CHECK
-// c'est un etudiant
-// il est dans le scope
 
 
 /**
- * Servlet implementation class login
+ * Servlet implementation class Login
  */
-@WebServlet(name = "Login", urlPatterns = { "/login", "/Login" })
+@WebServlet(name = "Login", urlPatterns = {"/Login", "/login"})
 public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-	
     public static final String VUE              		= "/WEB-INF/login.jsp";
     public static final String ATT_USER         		= "user";
     public static final String ATT_FORM         		= "form";
@@ -36,16 +33,7 @@ public class Login extends HttpServlet {
 	private ServletContext context;
 	private Logger logger;
 	private Universe universe;
-	
-	
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public Login() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
+    
 	/**
 	 * @see Servlet#init(ServletConfig)
 	 */
@@ -56,6 +44,7 @@ public class Login extends HttpServlet {
 		context = sc.getServletContext();
 
 		logger = Logger.getLogger(this.getClass().getName());
+		
 		Object obj = context.getAttribute("universe");
 		if (obj==null || (!(obj instanceof fr.esir.nsoc.tsen.core.Universe))) 
 		{
@@ -64,8 +53,8 @@ public class Login extends HttpServlet {
 		}
 		universe = (fr.esir.nsoc.tsen.core.Universe)obj;
 	}
-
-
+	
+	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -77,7 +66,33 @@ public class Login extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
+        LoginForm form = new LoginForm();
+        fr.esir.nsoc.tsen.ade.object.TreeObject to = form.connect( universe, request );
+        //User user = form.connect( universe, request );
 
+        HttpSession session = request.getSession();
+
+
+        request.setAttribute( ATT_FORM, form );
+        request.setAttribute( ATT_USER, to );
+        
+        if ( form.getErrors().isEmpty() ) {
+            session.setAttribute( ATT_SESSION_USER, to );
+            String path = (String)request.getAttribute(ATT_PAGE_PATH_REQUESTED);
+            if ( path.contains("/login"))
+            {
+                response.sendRedirect( (String) request.getContextPath() );
+            }
+            else
+            	response.sendRedirect( path );
+        } else {
+            session.setAttribute( ATT_SESSION_USER, null );
+            this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+        }
+
+        
+        
+        
+        
+	}
 }

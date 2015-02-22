@@ -17,19 +17,21 @@
         <div>TSEN <span>ESIR</span></div>
     </div>
     <br>
-    <div class="login">
-        <input type="text" placeholder="Username" name="user"><br>
+    <form method="post" class="login">
+        <input type="text" placeholder="Username" name="username"><br>
         <input type="password" placeholder="Password" name="password"><br>
-        <input type="button" value="Login">
+        <input type="submit" value="Login" name="login">
         <c:if test="${!empty sessionScope.user}">
-                <div class="message info">Vous êtes connecté(e) avec le login : ${sessionScope.user.username}</div>
+                <div class="message info">Vous êtes connecté(e) avec le login : ${sessionScope.user.name}</div>
         </c:if>
 <!--        <div class="message error">wrong password</div>
 -->
-		<c:if test="${!empty sessionScope.user}">
-                <div class="message info">Vous êtes connecté(e) avec le login : ${sessionScope.user.username}</div>
+        <c:if test="${!empty form.errors}">
+                <div class="message error">${form.errors['username']}${form.errors['password']}</div>
         </c:if>
-    </div>
+		
+        
+    </form>
     
     
 </body>

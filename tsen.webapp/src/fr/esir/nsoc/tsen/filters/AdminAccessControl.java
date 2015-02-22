@@ -13,32 +13,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import fr.esir.nsoc.tsen.ade.object.TreeObject;
+
+
 /**
- * Servlet Filter implementation class AccessControl
+ * Servlet Filter implementation class AdminAccessControl
  */
-@WebFilter("/*")
-public class AccessControl implements Filter {
+@WebFilter(
+		urlPatterns = { "/settings.html" }, 
+		servletNames = { 
+				"Config", 
+				"DbConfig"
+		})
+public class AdminAccessControl implements Filter {
 
-	public static final String LOGIN_ACCESS  			= "/login";
-	public static final String ATT_PAGE_PATH_REQUESTED	= "pathRequested";
-    public static final String ATT_SESSION_USER 		= "user";
-	
-	
-	
-    /**
-     * Default constructor. 
-     */
-    public AccessControl() {
-        // TODO Auto-generated constructor stub
-    }
-
-	/**
-	 * @see Filter#destroy()
-	 */
-	public void destroy() {
-		// TODO Auto-generated method stub
-	}
-
+	public static final String LOGIN_ACCESS  		= "/login";
+	public static final String INSUFFICIENT_RIGHT  	= "/error/403.html";
+    public static final String ATT_SESSION_USER 	= "user";
+    
+    
+    
+    
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
@@ -48,10 +43,7 @@ public class AccessControl implements Filter {
 
         HttpSession session = request.getSession();
 
-        
-        
         String path = request.getRequestURI().substring( request.getContextPath().length() );
-        
         if ( path.startsWith( "/static/public" ) ) {
             chain.doFilter( req, res );
             return;
@@ -62,10 +54,17 @@ public class AccessControl implements Filter {
          * l'utilisateur n'est pas connect�.
          */
         if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
-        	request.setAttribute( ATT_PAGE_PATH_REQUESTED, request.getRequestURI() );
         	request.getRequestDispatcher( LOGIN_ACCESS ).forward( request, response );
         } else {
-            chain.doFilter( req, res );
+        	TreeObject to = (TreeObject)session.getAttribute( ATT_SESSION_USER );
+        	if (to.getId().equals("6579"))
+        	{
+                chain.doFilter( req, res );
+        	}
+        	else
+        	{
+            	request.getRequestDispatcher( INSUFFICIENT_RIGHT ).forward( request, response );
+        	}
         }
 	}
 
@@ -73,7 +72,12 @@ public class AccessControl implements Filter {
 	 * @see Filter#init(FilterConfig)
 	 */
 	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @see Filter#destroy()
+	 */
+	public void destroy() {
 	}
 
 }
