@@ -16,7 +16,7 @@ import fr.esir.nsoc.tsen.config.ScopeObject;
 
 public class Universe {
 
-	private static final String CONFIG_PATH = "tsen";
+	private static final String CONFIG_PATH = "/bore/data/catalina/tsen";
 	private static final String CONFIG_FILE = "config.xml";
 	
 	private Logger logger;

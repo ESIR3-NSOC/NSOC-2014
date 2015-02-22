@@ -11,8 +11,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
+import fr.esir.nsoc.tsen.ade.object.Correspondence;
 import fr.esir.nsoc.tsen.ade.object.Event;
 import fr.esir.nsoc.tsen.ade.object.Project;
 import fr.esir.nsoc.tsen.ade.object.TreeObject;
@@ -328,8 +330,6 @@ public class MySQLDB implements DataBase {
 		String parentId;
 		String type;
 
-
-		
 		if (existTable("correspondence_"+Integer.toString(project.getId()))){
 				
 			Statement stmt = null;
@@ -337,22 +337,23 @@ public class MySQLDB implements DataBase {
 			try {
 				stmt = _connection.createStatement();
 				ResultSet rs = stmt
-						.executeQuery("SELECT * FROM correspondence_"+Integer.toString(project.getId())+" WHERE UID=" + uid +";");
+						.executeQuery("SELECT * FROM correspondence_"+Integer.toString(project.getId())+" WHERE EVENT_ID='" + uid +"';");
 				
 				while(rs.next()){
-					
-					ResultSet rs2 = stmt
-							.executeQuery("SELECT * FROM tree_object_" + Integer.toString(project.getId()) + " WHERE ID=" + rs.getString(1)+";");
+					Statement stmt2 = _connection.createStatement();
+					ResultSet rs2 = stmt2
+							.executeQuery("SELECT * FROM tree_object_" + Integer.toString(project.getId()) + " WHERE ID=" + rs.getString(2)+";");
 					
 					while(rs2.next()){
-						id=rs.getString(1);
-						name=rs.getString(2);
-						level=rs.getInt(3);
-						parentId=rs.getString(4);
-						type=rs.getString(5);
+						id=rs2.getString(1);
+						name=rs2.getString(2);
+						level=rs2.getInt(3);
+						parentId=rs2.getString(4);
+						type=rs2.getString(5);
 
-						TreeObjectSession.add(new TreeObject(new Project(rs.getInt(6),""), level, name, parentId, type));
+						TreeObjectSession.add(new TreeObject(project, level, name, id, parentId, type));
 					}
+					stmt2.close();
 				}
 				stmt.close();
 			} catch (SQLException e) {
@@ -570,6 +571,95 @@ public class MySQLDB implements DataBase {
 		}
 		return to;
 		
+	}
+
+	@Override
+	public Event getEventByUID(String UID, Project project) {
+		Event event = null;
+		if (existTable("event_" + project.getId())){
+			
+			Statement stmt = null;
+			
+			String uid;
+			String dtstart;
+			String dtend;
+			String summary;
+			String location;
+			String description;
+			
+			try {
+				stmt = _connection.createStatement();
+				ResultSet rs = stmt
+						.executeQuery("SELECT `UID`,`DTSTART`,`DTEND`,`SUMMARY`,`LOCATION`,`DESCRIPTION` FROM event_" + Integer.toString(project.getId()) + " WHERE UID='" + UID + "';");
+				while(rs.next()){
+					uid=rs.getString(1);
+					dtstart=rs.getString(2);
+					dtend=rs.getString(3);
+					summary=rs.getString(4);
+					location=rs.getString(5);
+					description=rs.getString(6);
+					
+					event = new Event(uid, dtstart, dtend, summary, location, description);
+				}
+				stmt.close();
+			} catch (SQLException e) {
+				if (DEBUG) e.printStackTrace();
+			}
+		}
+		return event;
+	}
+
+	@Override
+	public HashSet<Event> getEventByDate(String date, Project project) {
+		
+		if (existTable("event_" + project.getId())){
+			HashSet<Event> events = new HashSet<Event>();
+			Statement stmt = null;
+			
+			String uid;
+			String dtstart;
+			String dtend;
+			String summary;
+			String location;
+			String description;
+			
+			try {
+				stmt = _connection.createStatement();
+				ResultSet rs = stmt
+						.executeQuery("SELECT * FROM event_" + Integer.toString(project.getId()) + " WHERE DTSTART<'" + date + "' AND DTEND >'" + date +"';");
+				while(rs.next()){
+					uid=rs.getString(1);
+					dtstart=rs.getString(2);
+					dtend=rs.getString(3);
+					summary=rs.getString(4);
+					location=rs.getString(5);
+					description=rs.getString(6);
+					
+					events.add(new Event(uid, dtstart, dtend, summary, location, description));
+				}
+				stmt.close();
+			} catch (SQLException e) {
+				if (DEBUG) e.printStackTrace();
+			}
+			return events;
+		}
+		return null;
+	}
+
+	@Override
+	public HashSet<Correspondence> getCorrespondence(String date,
+			Project project) {
+		HashSet<Event> events = getEventByDate(date, project);
+		HashSet<Correspondence> correspondences = new HashSet<Correspondence>();
+		
+		for (Event e : events) 
+		{
+			Correspondence c = new Correspondence();
+			c.setEvent(e);
+			c.setTreeObjects(getTreeObjectSession(e.getId(), project));
+			correspondences.add(c);
+		}
+		return correspondences;
 	}
 
 }
