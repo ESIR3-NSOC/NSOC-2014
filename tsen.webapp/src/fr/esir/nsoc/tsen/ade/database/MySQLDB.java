@@ -647,8 +647,7 @@ public class MySQLDB implements DataBase {
 	}
 
 	@Override
-	public HashSet<Correspondence> getCorrespondence(String date,
-			Project project) {
+	public HashSet<Correspondence> getCorrespondence(String date, Project project) {
 		HashSet<Event> events = getEventByDate(date, project);
 		HashSet<Correspondence> correspondences = new HashSet<Correspondence>();
 		
@@ -660,6 +659,47 @@ public class MySQLDB implements DataBase {
 			correspondences.add(c);
 		}
 		return correspondences;
+	}
+	
+	@Override
+	public Event getEventByUserIdByDate(String date, int userId, Project project) {
+		
+		Event event = null;
+		
+		if (existTable("event_" + project.getId()) && existTable("correspondence_" + project.getId())){
+			Statement stmt = null;
+			
+			
+			String uid;
+			String dtstart;
+			String dtend;
+			String summary;
+			String location;
+			String description;
+			
+			try {
+				stmt = _connection.createStatement();
+				ResultSet rs = stmt
+						.executeQuery("SELECT * FROM `event_" + Integer.toString(project.getId()) + "` "
+								+ "JOIN (SELECT `EVENT_ID` FROM `correspondence_" + Integer.toString(project.getId()) + "` "
+										+ "WHERE `ADE_ID` = " + userId + ") AS tmp ON `UID` = `EVENT_ID` "
+												+ "WHERE `DTSTART` < '" + date + "' AND `DTEND` > '" + date + "';");
+				if(rs.next()){
+					uid=rs.getString(1);
+					dtstart=rs.getString(2);
+					dtend=rs.getString(3);
+					summary=rs.getString(4);
+					location=rs.getString(5);
+					description=rs.getString(6);
+					event = new Event(uid, dtstart, dtend, summary, location, description);
+				}
+				
+				stmt.close();
+			} catch (SQLException e) {
+				if (DEBUG) e.printStackTrace();
+			}
+		}
+		return event;
 	}
 
 }

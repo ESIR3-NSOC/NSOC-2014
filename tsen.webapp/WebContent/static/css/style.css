@@ -35,7 +35,7 @@ body{
     background-attachment:fixed;
 	-webkit-filter: blur(5px);
 	filter: blur(5px);
-	z-index: 0;
+	z-index: -1;
 }
 
 .grad{
@@ -52,7 +52,7 @@ body{
 	background: -ms-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65)));
 	background: -moz-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65)));
     background-attachment:fixed;
-	z-index: 0;
+	z-index: -1;
 	opacity: 0.7;
 }
 .home-corner {
