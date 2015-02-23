@@ -192,7 +192,7 @@ public class KnxManager {
     public void setVanne(int percent, String address) throws KNXException {
 
         ProcessCommunicator processCommunicator = new ProcessCommunicatorImpl(_netLinkIp);
-        processCommunicator.write(new GroupAddress(address), percent);
+        processCommunicator.write(new GroupAddress(address), percent,"5.001");
     }
 
 
