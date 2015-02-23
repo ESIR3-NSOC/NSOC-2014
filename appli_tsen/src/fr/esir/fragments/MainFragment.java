@@ -94,6 +94,15 @@ public class MainFragment extends Fragment {
         return v;
     }
 
+    private void setDisplayInit(){
+        co2.setText(String.valueOf(MyActivity.lastCO2));
+        temp_ou.setText(String.valueOf(MyActivity.lastTemp_out));
+        temp_in.setText(String.valueOf(MyActivity.lastTemp_in));
+        hum_in.setText(String.valueOf(MyActivity.lastHum_in));
+        hum_out.setText(String.valueOf(MyActivity.lastHum_out));
+        lum_ou.setText(String.valueOf(MyActivity.lastLum_out));
+    }
+
     public void setDisplayData(String add, String data) {
         //variables lastX contain the last data of sensors
         String[] dataSplit = data.split(" ");
