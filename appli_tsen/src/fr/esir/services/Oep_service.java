@@ -56,13 +56,9 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
         long howMany = c.getTimeInMillis() - System.currentTimeMillis();
         Log.w("DELAY", sh.getLong("DELAY", howMany) + "");
         rt = new RepetetiveTask(sh.getLong("DELAY", howMany));
-        //long firstDelay =
-         /*am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        //create a pending intent to be called at midnight
-        Intent sixI = new Intent(this, PredictBroadcastReceiver.class);
-        PendingIntent sixAMPI = PendingIntent.getBroadcast(this, 0, sixI, PendingIntent.FLAG_UPDATE_CURRENT);
-        //schedule time for pending intent, and set the interval to day so that this event will repeat at the selected time every day
-        am.setRepeating(AlarmManager.RTC_WAKEUP, sixAMCalendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, sixAMPI);*/
+        
+        predict();
+
         return true;
     }
 

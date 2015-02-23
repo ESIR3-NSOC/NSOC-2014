@@ -116,7 +116,8 @@ public class Regulation_service extends Service {
 
         Log.i("TIME MIN", s);
         //start a task 30 minutes before the lesson = predict the heat time
-        rt = new RepetetiveTask((startDate - currentDate) - min30B4StartDate, cons, nb_pers, entry.getEndDate());
+        if ((startDate - currentDate) - min30B4StartDate > 0)
+            rt = new RepetetiveTask((startDate - currentDate) - min30B4StartDate, cons, nb_pers, entry.getEndDate());
     }
 
     private void sortList(ArrayList<DatesInterval> l) {
@@ -182,7 +183,7 @@ public class Regulation_service extends Service {
     public void executeVote(double value, String vote) {
         double val = value;
         int nb = checkNbPerson(System.currentTimeMillis());
-        if(nb == 0)
+        if (nb == 0)
             nb = 1;
         switch (vote) {
             case "++":
