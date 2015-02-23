@@ -1,5 +1,6 @@
 package fr.esir.knx;
 
+import android.util.Log;
 import org.codehaus.jackson.JsonNode;
 import tuwien.auto.calimero.CloseEvent;
 import tuwien.auto.calimero.FrameEvent;
@@ -61,8 +62,9 @@ public class KnxManager {
 
         if (netLinkIp != null) {
             try {
+                Log.i("ICI", "JE SUIS PASSE PAR ICI");
                 pc = new ProcessCommunicatorImpl(netLinkIp);
-                createKNXListener();
+                //createKNXListener();
                 return true;
             } catch (KNXLinkClosedException e) {
                 e.printStackTrace();
