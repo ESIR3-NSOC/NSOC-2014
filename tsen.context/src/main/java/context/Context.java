@@ -1,5 +1,6 @@
 package context;
 
+import android.util.Log;
 import knx.SensorType;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -12,6 +13,8 @@ import java.io.*;
 import java.util.UUID;
 
 public class Context {
+
+    private final String TAG = "ContextObject";
 
     private TsenUniverse _universe;
     private TsenDimension _dim0;
@@ -82,6 +85,7 @@ public class Context {
                         Room room = (Room) kObjects[0];
                         switch (node.get("sensorsType").asText()) {
                             case SensorType.CO2_SENSOR:
+                                Log.i(TAG,"Adding C02 sensor");
                                 Sensor CO2sensor = view.createSensor();
                                 CO2sensor.setSensorType(SensorType.CO2_SENSOR);
                                 CO2sensor.setGroupAddress(node.get("address").asText());
@@ -91,6 +95,7 @@ public class Context {
                                 room.addMeasurement(CO2sensor);
                                 break;
                             case SensorType.INDOOR_HUMIDITY:
+                                Log.i(TAG,"Adding indoor humidity sensor");
                                 Sensor humidity = view.createSensor();
                                 humidity.setSensorType(SensorType.INDOOR_HUMIDITY);
                                 humidity.setGroupAddress(node.get("address").asText());
@@ -100,6 +105,7 @@ public class Context {
                                 room.addMeasurement(humidity);
                                 break;
                             case SensorType.OUTDOOR_HUMIDITY:
+                                Log.i(TAG,"Adding outdoor humidity sensor");
                                 Sensor outdoorHumidity = view.createSensor();
                                 outdoorHumidity.setSensorType(SensorType.INDOOR_HUMIDITY);
                                 outdoorHumidity.setGroupAddress(node.get("address").asText());
@@ -109,6 +115,7 @@ public class Context {
                                 room.addMeasurement(outdoorHumidity);
                                 break;
                             case SensorType.INDOOR_TEMPERATURE:
+                                Log.i(TAG,"Adding indoor temperature sensor");
                                 Sensor indoorTemperature = view.createSensor();
                                 indoorTemperature.setSensorType(SensorType.INDOOR_TEMPERATURE);
                                 indoorTemperature.setGroupAddress(node.get("address").asText());
@@ -118,6 +125,7 @@ public class Context {
                                 room.addMeasurement(indoorTemperature);
                                 break;
                             case SensorType.OUTDOOR_TEMPERATURE:
+                                Log.i(TAG,"Adding outdoor temperature sensor");
                                 Sensor outDoorTemperature = view.createSensor();
                                 outDoorTemperature.setSensorType(SensorType.OUTDOOR_TEMPERATURE);
                                 outDoorTemperature.setGroupAddress(node.get("address").asText());
@@ -127,6 +135,7 @@ public class Context {
                                 room.addMeasurement(outDoorTemperature);
                                 break;
                             case SensorType.VALVE:
+                                Log.i(TAG,"Adding valve sensor");
                                 Sensor heater = view.createSensor();
                                 heater.setScale(SensorType.VALVE_SCALE);
                                 heater.setGroupAddress(node.get("address").asText());
@@ -136,6 +145,7 @@ public class Context {
                                 room.addMeasurement(heater);
                                 break;
                             case SensorType.OUTDOOR_BRIGHTNESS:
+                                Log.i(TAG,"Adding outdoor brightness sensor");
                                 Sensor outdoorBrightness = view.createSensor();
                                 outdoorBrightness.setSensorType(SensorType.OUTDOOR_BRIGHTNESS);
                                 outdoorBrightness.setGroupAddress(node.get("address").asText());
@@ -145,7 +155,7 @@ public class Context {
                                 room.addMeasurement(outdoorBrightness);
                                 break;
                             default:
-                                System.out.println("Configuration could not be loaded : " + node.get("sensorsType").asText() + " does not exist");
+                               Log.e(TAG,"Configuration could not be loaded : " + node.get("sensorsType").asText() + " does not exist");
                                 break;
                         }
 
