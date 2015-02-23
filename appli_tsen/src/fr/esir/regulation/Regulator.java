@@ -61,19 +61,28 @@ public class Regulator extends AsyncTask<Void, Void, Void> {
             valeur_sortie = diff_temp * this.Kp + somme_erreurs * this.Ki
                     + variation_erreur * Kd;
             try {
-                Thread.sleep(1000);
+                Thread.sleep(30000);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             // envoyer valeur de sortie vers KNX
+
+            double newValue = valeur_sortie;
+            if (newValue > 100)
+                newValue = 100;
+            else if (newValue < 0)
+                newValue = 0;
+
             Fragment currentFragment = MyActivity.act.getFragmentManager().findFragmentById(R.id.containerMain);
             if (currentFragment instanceof MainFragment) {
-                if (valeur_sortie > 0 && !on) {
+                if (newValue > 0 && !on) {
                     MainFragment.iaf.setImage(true);
-                    log.i("Valeur regulation", valeur_sortie);
-                } else if (valeur_sortie < 0 && on)
+                    on = true;
+                } else if (newValue <= 0 && on) {
                     MainFragment.iaf.setImage(false);
+                    on = false;
+                }
             }
         }
 
