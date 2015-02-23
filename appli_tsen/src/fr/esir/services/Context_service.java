@@ -79,6 +79,7 @@ public class Context_service extends Service {
                                         for (Sensor sensor : sensors) {
                                             if (sensor.getGroupAddress().compareTo(address) == 0) {
                                                 sensor.setValue(value);
+                                                Log.i(TAG,"updating" + sensor.toJSON());
                                             }
                                         }
                                     }

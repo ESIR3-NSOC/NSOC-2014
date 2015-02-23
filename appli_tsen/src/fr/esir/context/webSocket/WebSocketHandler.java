@@ -1,5 +1,6 @@
 package fr.esir.context.webSocket;
 
+import android.util.Log;
 import context.Context;
 import fr.esir.resources.FilterString;
 import fr.esir.services.Context_service;
@@ -10,6 +11,7 @@ import org.webbitserver.WebSocketConnection;
 import org.webbitserver.WebServer;
 
 import java.io.IOException;
+import java.util.Date;
 
 
 public class WebSocketHandler extends BaseWebSocketHandler {
@@ -43,7 +45,8 @@ public class WebSocketHandler extends BaseWebSocketHandler {
         JsonNode jsonRpc;
         try {
             jsonRpc = new ObjectMapper().readTree(message);
-            _ctx.setVote(jsonRpc.get("id").asText(),jsonRpc.get("vote").asText(), jsonRpc.get("ts").asLong(),connection);
+            Log.i(TAG,"TIME ON MESSAGE : " + new Date(jsonRpc.get("ts").asLong()));
+            _ctx.setVote(jsonRpc.get("id").asText(), jsonRpc.get("vote").asText(), new Date(jsonRpc.get("ts").asText()).getTime(), connection);
 
         } catch (IOException e) {
             System.out.println("message :" + message + " is not a json");
