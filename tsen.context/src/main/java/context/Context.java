@@ -201,7 +201,7 @@ public class Context {
                                 if (user.getId().compareTo(id) == 0) {
                                     user.setVote(vote);
                                     findUser = true;
-                                    System.out.println(user.toJSON());
+                                    System.out.println("USER AFTER VOTE " + user.toJSON());
                                 }
                             }
                         }
