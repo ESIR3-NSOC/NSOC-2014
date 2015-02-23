@@ -23,12 +23,12 @@ public class KnxManager {
     /**
      * A listener class used to capture KNX events
      */
-    private KnxListener listener = null;
+    //private KnxListener listener = null;
 
     /**
      * The object used to read and write from the KNX network
      */
-    private ProcessCommunicator pc = null;
+    /*private ProcessCommunicator pc = null;
 
     private KNXNetworkLinkIP _netLinkIp ;
     private Queue<GroupEvent> _eventBuffer;
@@ -137,7 +137,7 @@ public class KnxManager {
 
             ProcessCommunicator processCommunicator = new ProcessCommunicatorImpl(_netLinkIp);
             processCommunicator.write(new GroupAddress(address),percent);
-    }
+    }*/
 
 
 

@@ -6,7 +6,7 @@ import java.util.Scanner;
  */
 public class testRegulator {
 
-    public static void main(String[] argz){
+    /*public static void main(String[] argz){
         System.out.println("test");
         Regulator reg = new Regulator();
         reg.run();
@@ -18,6 +18,6 @@ public class testRegulator {
             System.out.println(temp);
 
         }
-    }
+    }*/
 
 }
