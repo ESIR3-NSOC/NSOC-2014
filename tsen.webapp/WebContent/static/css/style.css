@@ -14,7 +14,7 @@ html {
     background-attachment:fixed;
     height: 100%;
 }*/
-
+/*
 body{
 	margin: 0;
 	padding: 0;
@@ -55,6 +55,17 @@ body{
 	z-index: -1;
 	opacity: 0.7;
 }
+*/
+
+body{
+	background-image: url(../public/image/snow_school.jpg);
+	background-size: cover;
+    background-attachment:fixed;
+
+}
+
+
+
 .home-corner {
     position: fixed;
     top: 15px;

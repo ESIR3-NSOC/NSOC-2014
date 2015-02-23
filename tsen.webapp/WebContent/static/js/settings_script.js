@@ -101,3 +101,12 @@ $('.menu li').click(function() {
     $('.view').removeClass('active');
     $('.view#' + $(this).attr('id')).addClass('active');
 });
+
+function getName(){
+    $.get( "./user", { } )
+        .done(function(data1) {
+            $("span.username").empty().text($.parseJSON(data1).name);
+        });  
+};
+
+getName();
