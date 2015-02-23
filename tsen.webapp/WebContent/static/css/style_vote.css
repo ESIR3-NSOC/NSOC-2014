@@ -45,6 +45,7 @@ ul {
     border: 10px solid #ebebeb;
     padding: 2.125em 7.638888888888889%;
     position: relative;
+    cursor:pointer;
 }
 .grid-index-icon .quote-arrow {
     background: #953f00;

@@ -7,6 +7,7 @@ import fr.esir.nsoc.tsen.ade.object.Correspondence;
 import fr.esir.nsoc.tsen.ade.object.Event;
 import fr.esir.nsoc.tsen.ade.object.Project;
 import fr.esir.nsoc.tsen.ade.object.TreeObject;
+import fr.esir.nsoc.tsen.objects.Vote;
 
 public interface DataBase {
 	
@@ -39,9 +40,18 @@ public interface DataBase {
 	public boolean fillCorrespondence(HashSet<Event> events, TreeObject treeObject);
 	public HashSet<TreeObject> getTreeObjectSession(String UID, Project projet);
 
-	public void createCorrespondenceTable(int projectid);
+	public void addVote(Project project, TreeObject userTo, TreeObject roomTo,
+			Event event, String rate, String date);
 
-	public void createVoteTable(int projectid);
+	public HashSet<TreeObject> getTreeObjectByEvent(Event event, Project project);
+
+	public HashSet<TreeObject> getTreeObjectByEventByRoot(Event event, String root,
+			Project project);
+
+	public HashSet<Vote> getVoteByRoomByDelay(Project project, String roomId,
+			int delaySec);
+
+
 
 	
 

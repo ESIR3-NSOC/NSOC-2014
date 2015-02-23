@@ -1,7 +1,11 @@
-package fr.esir.nsoc.tsen.servlets.scope;
+package fr.esir.nsoc.tsen.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
@@ -11,18 +15,23 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
 import fr.esir.nsoc.tsen.ade.object.TreeObject;
-import fr.esir.nsoc.tsen.core.ADE_Scope;
 import fr.esir.nsoc.tsen.core.Universe;
 
 /**
- * Servlet implementation class Scope
+ * Servlet implementation class Vote
  */
-@WebServlet(name = "Scope-ADE_Object", urlPatterns = { "/Scope/ADEObject", "/scope/adeobject" })
-public class ADE_Object extends HttpServlet {
+@WebServlet({ "/Vote", "/vote" })
+public class Vote extends HttpServlet {
+	
+	public static final String ATT_USER         		= "user";
+	
+	
+	
 	private static final long serialVersionUID = 1L;
 	private ServletConfig config;
 	private ServletContext context;
@@ -32,7 +41,7 @@ public class ADE_Object extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ADE_Object() {
+    public Vote() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -47,7 +56,6 @@ public class ADE_Object extends HttpServlet {
 		context = sc.getServletContext();
 
 		logger = Logger.getLogger(this.getClass().getName());
-		
 		Object obj = context.getAttribute("universe");
 		if (obj==null || (!(obj instanceof fr.esir.nsoc.tsen.core.Universe))) 
 		{
@@ -61,9 +69,16 @@ public class ADE_Object extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String roomId = request.getParameter("roomId");
+		String delay = request.getParameter("delay");
+		HashSet<fr.esir.nsoc.tsen.objects.Vote> votes = null;
+		if (roomId!= null && delay!= null)
+		{
+			votes = universe.getDataBase().getVoteByRoomByDelay(universe.getScope().getProject(), roomId, Integer.parseInt(delay));
+		}
 		PrintWriter pw = response.getWriter();
 		Gson gson = new Gson();
-		String s = gson.toJson(universe.getScope().getScope());
+		String s = gson.toJson(votes);
 		pw.write(s);
 		pw.close();
 	}
@@ -72,11 +87,27 @@ public class ADE_Object extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String [] obj = request.getParameterValues("obj");
-		ADE_Scope scope= universe.getScope();
-		for (int i = 0 ; i < obj.length ; i++)
+		String rate = request.getParameter("rate");
+		if (rate!= null)
 		{
-			scope.addChildrenToScope(new TreeObject(scope.getProject(), -1, "", obj[i], "", "", "branch"));
+			HttpSession session = request.getSession();
+			Object obj = session.getAttribute(ATT_USER);
+			if (obj==null || (!(obj instanceof fr.esir.nsoc.tsen.ade.object.TreeObject))) 
+			{
+			   obj = null;
+			}
+			TreeObject userTo = (fr.esir.nsoc.tsen.ade.object.TreeObject)obj;
+			
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date date = new Date();
+			fr.esir.nsoc.tsen.ade.object.Event event = universe.getDataBase().getEventByUserIdByDate(dateFormat.format(new Date()), Integer.parseInt(userTo.getId()), universe.getScope().getProject());
+			
+			HashSet<TreeObject> rooms = universe.getDataBase().getTreeObjectByEventByRoot(event, "room", universe.getScope().getProject());
+			
+			for (TreeObject room : rooms)
+			{
+				universe.getDataBase().addVote(universe.getScope().getProject(), userTo, room, event, rate, dateFormat.format(new Date()));
+			}
 		}
 	}
 

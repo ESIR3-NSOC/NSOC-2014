@@ -1,8 +1,5 @@
 package fr.esir.nsoc.tsen.ade.database;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,13 +8,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import fr.esir.nsoc.tsen.ade.object.Correspondence;
 import fr.esir.nsoc.tsen.ade.object.Event;
 import fr.esir.nsoc.tsen.ade.object.Project;
 import fr.esir.nsoc.tsen.ade.object.TreeObject;
+import fr.esir.nsoc.tsen.objects.Vote;
 
 public class MySQLDB implements DataBase {
 
@@ -260,8 +257,7 @@ public class MySQLDB implements DataBase {
 		return true;
 	}
 
-	@Override
-	public void createCorrespondenceTable(int projectid) {
+	private void createCorrespondenceTable(int projectid) {
 		if (existTable("correspondence_" + Integer.toString(projectid)))
 			dropTable("correspondence_" + Integer.toString(projectid));
 		Statement stmt = null;
@@ -714,8 +710,7 @@ public class MySQLDB implements DataBase {
 	}
 	
 	
-	@Override
-	public void createVoteTable(int projectid) {
+	private void createVoteTable(int projectid) {
 		if (existTable("vote_" + Integer.toString(projectid)))
 			dropTable("vote_" + Integer.toString(projectid));
 		Statement stmt = null;
@@ -723,12 +718,11 @@ public class MySQLDB implements DataBase {
 		try {
 			stmt = _connection.createStatement();
 			String sql = "CREATE TABLE vote_" + Integer.toString(projectid)
-					+ " (UID VARCHAR(64) UNIQUE PRIMARY KEY     NOT NULL,"
-					+ " DTSTART           DATETIME    NOT NULL,"
-					+ " DTEND           DATETIME    NOT NULL,"
-					+ " SUMMARY           TEXT    NOT NULL,"
-					+ " LOCATION           TEXT    NOT NULL,"
-					+ " DESCRIPTION          TEXT    NOT NULL)";
+					+ " (USER_ID	VARCHAR(8)	NOT NULL,"
+					+ " EVENT_ID	VARCHAR(64)	NOT NULL,"
+					+ " ROOM_ID		VARCHAR(8)	NOT NULL,"
+					+ " DATE		DATETIME	NOT NULL,"
+					+ " RATE		VARCHAR(2)	NOT NULL)";
 			stmt.executeUpdate(sql);
 			stmt.close();
 		} catch (SQLException e) {
@@ -736,12 +730,160 @@ public class MySQLDB implements DataBase {
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
-	
+	@Override
+	public void addVote(Project project, TreeObject userTo, TreeObject roomTo, Event event, String rate, String date) {
+		if (!existTable("vote_" + project.getId())) {
+			createVoteTable(project.getId());
+		}
+		PreparedStatement stmt;
+		try {
+			Statement stmtQuery = _connection.createStatement();
+			ResultSet rs = stmtQuery.executeQuery("SELECT * FROM vote_"
+					+ project.getId() + " WHERE USER_ID = '"
+					+ userTo.getId() + "' AND EVENT_ID = '"
+					+ event.getId() + "' AND ROOM_ID = '"
+					+ roomTo.getId() + "';");
 
+			if (!rs.next()) {
+				String sql = "INSERT INTO vote_" + Integer.toString(project.getId())
+						+ " "
+						+ "(USER_ID, EVENT_ID, ROOM_ID, DATE, RATE) "
+						+ "VALUES (?, ?, ?, ?, ?);";
+				stmt = _connection.prepareStatement(sql);
+	
+				stmt.setString(1, userTo.getId());
+				stmt.setString(2, event.getId());
+				stmt.setString(3, roomTo.getId());
+				stmt.setString(4, date);
+				stmt.setString(5, rate);
+	
+				stmt.executeUpdate();
+				stmt.close();
+			} else {
+				// change vote and time
+				String sql = "UPDATE vote_" + Integer.toString(project.getId())
+						+ " SET DATE = ?, RATE = ? WHERE USER_ID = '"
+						+ userTo.getId() + "' AND EVENT_ID = '" + event.getId()
+						+ "' AND ROOM_ID = '" + roomTo.getId() + "';";
+				stmt = _connection.prepareStatement(sql);
+	
+				stmt.setString(1, date);
+				stmt.setString(2, rate);
+	
+				stmt.executeUpdate();
+				stmt.close();
+			}
+			stmtQuery.close();
+		} catch (SQLException e) {
+			if (DEBUG)
+				e.printStackTrace();
+		}
+	}
+	
+	
+	
+	@Override
+	public HashSet<TreeObject> getTreeObjectByEvent(Event event, Project project) {
+		HashSet<TreeObject> TreeObjects = new HashSet<TreeObject>();
+		if (existTable("tree_object_" + project.getId()) && existTable("correspondence_" + project.getId())){
+
+			Statement stmt = null;
+			
+			int level;
+			String name;
+			String id;
+			String parentId;
+			String rootId;
+			String type;
+			
+			try {
+				stmt = _connection.createStatement();
+				ResultSet rs = stmt
+						.executeQuery("SELECT * FROM `tree_object_" + Integer.toString(project.getId())
+						+ "` Join (SELECT `ADE_ID` FROM `correspondence_22` WHERE `EVENT_ID`='" + event.getId() + "') as tmp on `ID`= `ADE_ID` WHERE 1;");
+				while(rs.next()){
+					id=rs.getString(1);
+					name=rs.getString(2);
+					level=rs.getInt(3);
+					parentId=rs.getString(4);
+					rootId=rs.getString(5);
+					type=rs.getString(6);
+					TreeObjects.add(new TreeObject(project, level, name, id, parentId, rootId, type));
+				}
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return TreeObjects;
+	}
+	
+	@Override
+	public HashSet<TreeObject> getTreeObjectByEventByRoot(Event event, String root, Project project) {
+		HashSet<TreeObject> treeObjects = new HashSet<TreeObject>();
+		if (existTable("tree_object_" + project.getId()) && existTable("correspondence_" + project.getId())){
+
+			Statement stmt = null;
+			
+			int level;
+			String name;
+			String id;
+			String parentId;
+			String rootId;
+			String type;
+			
+			try {
+				stmt = _connection.createStatement();
+				ResultSet rs = stmt
+						.executeQuery("SELECT * FROM `tree_object_" + Integer.toString(project.getId())
+						+ "` Join (SELECT `ADE_ID` FROM `correspondence_22` WHERE `EVENT_ID`='" + event.getId() + "') as tmp on `ID`= `ADE_ID` WHERE `ROOT_ID` = '" + root + "';");
+				while(rs.next()){
+					id=rs.getString(1);
+					name=rs.getString(2);
+					level=rs.getInt(3);
+					parentId=rs.getString(4);
+					rootId=rs.getString(5);
+					type=rs.getString(6);
+					treeObjects.add(new TreeObject(project, level, name, id, parentId, rootId, type));
+				}
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return treeObjects;
+	}
+	
+	
+	@Override
+	public  HashSet<Vote> getVoteByRoomByDelay(Project project, String roomId, int delaySec) {
+		HashSet<Vote> votes = new HashSet<Vote>();
+		if (existTable("vote_" + project.getId())){
+
+			Statement stmt = null;
+			
+			String userId;
+			String eventId;
+			String date;
+			String rate;
+			
+			try {
+				stmt = _connection.createStatement();
+				ResultSet rs = stmt
+						.executeQuery("SELECT * FROM  `vote_" + Integer.toString(project.getId()) + "` WHERE `DATE` > (NOW() - INTERVAL " + delaySec + " SECOND) AND `ROOM_ID`='" + roomId + "';");
+				while(rs.next()){
+					userId=rs.getString(1);
+					eventId=rs.getString(2);
+					date=rs.getString(4);
+					rate=rs.getString(5);
+					
+					votes.add(new Vote(userId, eventId, roomId, date, rate));
+				}
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return votes;
+	}
 }

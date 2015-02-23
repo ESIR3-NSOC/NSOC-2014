@@ -57,6 +57,11 @@ public class AccessControl implements Filter {
             return;
         }
         
+        if ( path.startsWith( "/vote" ) ) {
+            chain.doFilter( req, res );
+            return;
+        }
+        
         /**
          * Si l'objet utilisateur n'existe pas dans la session en cours, alors
          * l'utilisateur n'est pas connect�.
