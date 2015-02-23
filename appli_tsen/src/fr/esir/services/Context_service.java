@@ -14,7 +14,6 @@ import context.Context;
 import fr.esir.context.dataPackage.EnvironmentData;
 import fr.esir.context.dataPackage.StudentData;
 import fr.esir.resources.FilterString;
-import knx.SensorType;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.java_websocket.client.WebSocketClient;
@@ -22,6 +21,8 @@ import org.java_websocket.handshake.ServerHandshake;
 import org.kevoree.modeling.api.Callback;
 import org.kevoree.modeling.api.KObject;
 import tsen.*;
+
+import fr.esir.knx.SensorType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +40,6 @@ public class Context_service extends Service {
 
     private final static String TAG = Context_service.class.getSimpleName();
     private final IBinder mBinder = new LocalBinder();
-    private WebSocketClient mWebSocketClient;
     private Context _ctx;
     private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
         @Override
@@ -132,7 +132,7 @@ public class Context_service extends Service {
         }
         _ctx = new Context(new TsenUniverse(), file);
         registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
-        connectWebSocket();
+
         return true;
     }
 
@@ -150,6 +150,8 @@ public class Context_service extends Service {
         user.setLesson(lesson);
         user.setTargetTemp(consigne);
 
+        Log.i(TAG, "adding user" + user.toString()  + " between " + new Date(start) + " and " + new Date(end));
+
 
         startView.select("/", new Callback<KObject[]>() {
             @Override
@@ -160,9 +162,9 @@ public class Context_service extends Service {
                 }
             }
         });
-        TsenView endView = _ctx.getDimension().time(end);
+       TsenView endView = _ctx.getDimension().time(end);
 
-        startView.select("/", new Callback<KObject[]>() {
+        endView.select("/", new Callback<KObject[]>() {
             @Override
             public void on(KObject[] kObjects) {
                 if (kObjects != null && kObjects.length != 0) {
@@ -181,7 +183,7 @@ public class Context_service extends Service {
             }
         });
 
-        long lessonTime = start + (start - end) / 2;
+        long lessonTime = end-5;
 
         TsenView lessonView = _ctx.getDimension().time(lessonTime);
 
@@ -195,7 +197,7 @@ public class Context_service extends Service {
                         @Override
                         public void on(User[] users) {
                             for (User user : users) {
-                                Log.d(TAG, "user " + user.getId() + "has been registered in this classroom between" + new Date(start) + " and" + new Date(end));
+                                Log.d(TAG, "user " + user.getId() + " has been registered in this classroom between" + new Date(start) + " and" + new Date(end) + " => lesson = " + user.getLesson());
                             }
                         }
                     });
@@ -343,59 +345,6 @@ public class Context_service extends Service {
 
     }
 
-    private void connectWebSocket() {
-        URI uri;
-        try {
-            uri = new URI("ws://192.168.1.164:8080/tsen/chat/cequejeveux");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        mWebSocketClient = new WebSocketClient(uri) {
-            @Override
-            public void onOpen(ServerHandshake serverHandshake) {
-                Log.i("Websocket", "Opened");
-
-                _ctx.getDimension().time(System.currentTimeMillis()).select("/", new Callback<KObject[]>() {
-                    @Override
-                    public void on(KObject[] kObjects) {
-                        if (kObjects != null && kObjects.length != 0) {
-                            mWebSocketClient.send(((Room) kObjects[0]).getName());
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onMessage(String s) {
-                JsonNode jsonRpc;
-                try {
-                    jsonRpc = new ObjectMapper().readTree(s);
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
-                    Date dt = simpleDateFormat.parse(jsonRpc.get("ts").asText());
-                    Log.i(TAG, "TIME ON MESSAGE : " + new Date(jsonRpc.get("ts").asLong()));
-                    _ctx.setVote(jsonRpc.get("id").asText(), jsonRpc.get("vote").asText(), dt.getTime());
-                    System.out.println("web socket server has received a message : " + s);
-                } catch (IOException e) {
-                    System.out.println("message :" + s + " is not a json");
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onClose(int i, String s, boolean b) {
-                Log.i("Websocket", "Closed " + s);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.i("Websocket", "Error " + e.getMessage());
-            }
-        };
-        mWebSocketClient.connect();
-    }
 
     public class LocalBinder extends Binder {
         public Context_service getService() {

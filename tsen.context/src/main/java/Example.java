@@ -1,4 +1,4 @@
-import com.sun.glass.ui.android.Activity;
+
 import org.kevoree.modeling.api.Callback;
 import org.kevoree.modeling.api.KObject;
 import org.kevoree.modeling.databases.leveldb.LevelDbDataBase;

@@ -12,6 +12,7 @@ public class SensorType {
     public static final String CO2_SENSOR = "Co2_sensor";
     public static final String VALVE = "Valve";
     public static final String OUTDOOR_BRIGHTNESS = "OutdoorBrightness";
+    public static final String INDOOR_BRIGHTNESS = "IndoorBrightness";
 
     public static final String TEMPERATURE_SCALE = "degree";
     public static final String AIR_QUALITY_SENSOR_SCALE = "ppm";
