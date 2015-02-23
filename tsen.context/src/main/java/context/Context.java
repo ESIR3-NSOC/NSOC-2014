@@ -178,7 +178,7 @@ public class Context {
 
     }
 
-    public void setVote(String id, String vote, long ts, WebSocketConnection connection) {
+    public void setVote(String id, String vote, long ts) {
 
         TsenView view = _dim0.time(ts);
 
@@ -198,12 +198,6 @@ public class Context {
                                     user.setVote(vote);
                                     findUser = true;
                                 }
-                            }
-
-                            if (findUser) {
-                                connection.send("200");
-                            } else {
-                                connection.send("404");
                             }
                         }
                     });

@@ -4,37 +4,41 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Binder;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.os.StrictMode;
+import android.os.*;
 import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import context.Context;
 import fr.esir.context.dataPackage.EnvironmentData;
 import fr.esir.context.dataPackage.StudentData;
-import fr.esir.context.webSocket.WebSocketHandler;
 import fr.esir.resources.FilterString;
 import knx.SensorType;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
 import org.kevoree.modeling.api.Callback;
 import org.kevoree.modeling.api.KObject;
-import org.webbitserver.WebServer;
-import org.webbitserver.WebServers;
 import tsen.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Context_service extends Service {
 
-    public static final int TSEN_WS_PORT = 8081;
+    private WebSocketClient mWebSocketClient;
+    private Context _ctx;
+
     private final static String TAG = Context_service.class.getSimpleName();
     private final IBinder mBinder = new LocalBinder();
-    private WebServer _wss;
 
     private Context ctx;
     private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
@@ -85,12 +89,12 @@ public class Context_service extends Service {
                             }
                         }
                     });
-
+                    displayAll(System.currentTimeMillis());
                     break;
 
             }
 
-            displayAll(System.currentTimeMillis());
+
         }
 
 
@@ -120,14 +124,14 @@ public class Context_service extends Service {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        _wss = WebServers.createWebServer(TSEN_WS_PORT).add("", new WebSocketHandler(_wss, this));
+
         InputStream file = null;
         try {
             file = getAssets().open("knxGroup.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ctx = new Context(new TsenUniverse(), file);
+        _ctx = new Context(new TsenUniverse(), file);
         registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
 
         return true;
@@ -140,7 +144,7 @@ public class Context_service extends Service {
     }
 
     private void addStudent(long start, long end, String studentId, double consigne, String lesson) {
-        TsenView startView = ctx.getDimension().time(start);
+        TsenView startView = _ctx.getDimension().time(start);
 
         User user = startView.createUser();
         user.setId(studentId);
@@ -157,7 +161,7 @@ public class Context_service extends Service {
                 }
             }
         });
-        TsenView endView = ctx.getDimension().time(end);
+        TsenView endView = _ctx.getDimension().time(end);
 
         startView.select("/", new Callback<KObject[]>() {
             @Override
@@ -171,7 +175,7 @@ public class Context_service extends Service {
     }
 
     public Context getContext() {
-        return ctx;
+        return _ctx;
     }
 
     // get student data for time (in milliseconde) with 3h step
@@ -180,7 +184,7 @@ public class Context_service extends Service {
 
         for (long i = System.currentTimeMillis() - time; i < System.currentTimeMillis(); i += 3 * 60 * 60) {
             final long CURRENT_TIMESTAMP = i;
-            TsenView view = ctx.getDimension().time(i);
+            TsenView view = _ctx.getDimension().time(i);
             view.select("/", new Callback<KObject[]>() {
                 @Override
                 public void on(KObject[] kObjects) {
@@ -215,7 +219,7 @@ public class Context_service extends Service {
         EnvironmentData data = new EnvironmentData(ts);
 
 
-        TsenView view = ctx.getDimension().time(ts);
+        TsenView view = _ctx.getDimension().time(ts);
 
         view.select("/", new Callback<KObject[]>() {
             @Override
@@ -260,7 +264,7 @@ public class Context_service extends Service {
             }
         });
 
-        ctx.getDimension().save(new Callback<Throwable>() {
+        _ctx.getDimension().save(new Callback<Throwable>() {
             @Override
             public void on(Throwable throwable) {
                 if (throwable != null) {
@@ -283,7 +287,7 @@ public class Context_service extends Service {
 
     public void displayAll(long ts){
 
-        TsenView view = ctx.getDimension().time(ts);
+        TsenView view = _ctx.getDimension().time(ts);
 
         view.select("/", new Callback<KObject[]>() {
             @Override
@@ -312,6 +316,60 @@ public class Context_service extends Service {
             }
         });
 
+    }
+
+    private void connectWebSocket() {
+        URI uri;
+        try {
+            uri = new URI("ws://tsen.uion.fr:8055");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        mWebSocketClient = new WebSocketClient(uri) {
+            @Override
+            public void onOpen(ServerHandshake serverHandshake) {
+                Log.i("Websocket", "Opened");
+
+                _ctx.getDimension().time(System.currentTimeMillis()).select("/", new Callback<KObject[]>() {
+                    @Override
+                    public void on(KObject[] kObjects) {
+                        if(kObjects!=null && kObjects.length!=0){
+                            mWebSocketClient.send(((Room)kObjects[0]).getName());
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onMessage(String s) {
+                JsonNode jsonRpc;
+                try {
+                    jsonRpc = new ObjectMapper().readTree(s);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+                         Date dt = simpleDateFormat.parse(jsonRpc.get("ts").asText());
+                    Log.i(TAG,"TIME ON MESSAGE : " + new Date(jsonRpc.get("ts").asLong()));
+                    _ctx.setVote(jsonRpc.get("id").asText(), jsonRpc.get("vote").asText(),dt.getTime());
+                    System.out.println("web socket server has received a message : " + s);
+                }catch (IOException e) {
+                    System.out.println("message :" + s + " is not a json");
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onClose(int i, String s, boolean b) {
+                Log.i("Websocket", "Closed " + s);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.i("Websocket", "Error " + e.getMessage());
+            }
+        };
+        mWebSocketClient.connect();
     }
 
 }
