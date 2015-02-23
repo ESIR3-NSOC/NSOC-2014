@@ -100,7 +100,7 @@ public class DatabaseRegression implements Prevision {
                 arff.generateArff(result.getString(1));
 
                 //get information from context -> addDataCustom
-                StudentData sd = MyActivity.mContext_service.getStudentData(user, 31 * 24 * 60 * 60 * 1000); //24 days...
+                StudentData sd = MyActivity.mContext_service.getStudentData(user, 3 * 31 * 24 * 60 * 60 * 1000); //24 days...
                 Map<Long, EnvironmentData> hashi = sd.get_environmentDatas();
                 //if a student has not enough data (vote)
                 if (hashi.size() < 11)

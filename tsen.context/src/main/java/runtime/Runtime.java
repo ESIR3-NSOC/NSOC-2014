@@ -13,7 +13,7 @@ import tsen.TsenView;
  */
 public class Runtime {
 
-    public static void main (String[] args){
+    /*public static void main (String[] args){
 
         Context ctx = ContextMethod.initContext("Salle 928");
 
@@ -49,5 +49,5 @@ public class Runtime {
 
         ctx.stopContext();
 
-    }
+    }*/
 }

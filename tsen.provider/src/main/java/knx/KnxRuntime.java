@@ -9,7 +9,7 @@ import org.json.JSONObject;
 public class KnxRuntime {
 
     public static void main (String[] args){
-        JsonNode node = Utility.importGroup();
+        //JsonNode node = Utility.importGroup();
         //KnxManager manager = new KnxManager();
     }
 }
