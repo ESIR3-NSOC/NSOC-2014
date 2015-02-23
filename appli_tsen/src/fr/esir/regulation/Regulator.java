@@ -6,13 +6,13 @@ import android.util.Log;
 import fr.esir.fragments.MainFragment;
 import fr.esir.maintasks.MyActivity;
 import fr.esir.maintasks.R;
+import tuwien.auto.calimero.exception.KNXException;
 
 public class Regulator extends AsyncTask<Void, Void, Void> {
 
     // recuperer valeur capteur sur contexte
-    double temp_int = MyActivity.lastTemp_in; // temperature interieur, fixée pour test
-    // récuperer valeur consigne sur contexte ou optimisateur directement
     double temp_cons = 21; // temperature de consigne, fixée pour test
+    double temp_int = MyActivity.lastTemp_in;
     private double Kp; // coefficient proportionnel
     private double Ki; // coefficient integrateur
     private double Kd; // coefficient dérivateur
@@ -54,6 +54,10 @@ public class Regulator extends AsyncTask<Void, Void, Void> {
         // erreur précédente
         boolean on = false;
         while (!this.isCancelled()) {
+            temp_int = MyActivity.lastTemp_in; // temperature interieur, fixée pour test
+            // récuperer valeur consigne sur contexte ou optimisateur directement
+            Log.e("CONSIGNE", temp_cons + "");
+            Log.e("TEMPIN", temp_int + "");
             somme_erreurs = somme_erreurs + diff_temp; // calcule la nouvelle somme des erreurs
             variation_erreur = temp_cons - temp_int - diff_temp; // calcule la différence entre la nouvelle erreur et la précédente
             diff_temp = temp_cons - temp_int; // calcul la nouvelle erreur
@@ -68,11 +72,18 @@ public class Regulator extends AsyncTask<Void, Void, Void> {
             }
             // envoyer valeur de sortie vers KNX
 
-            double newValue = valeur_sortie;
+            Double newValue = valeur_sortie;
             if (newValue > 100)
-                newValue = 100;
+                newValue = 100d;
             else if (newValue < 0)
-                newValue = 0;
+                newValue = 0d;
+            Log.d("VALUE REGUL", newValue + "");
+
+            try {
+                MyActivity.mKnx_service.getKnxManager().setVanne(Integer.valueOf(newValue.intValue()),"0/0/1");
+            } catch (KNXException e) {
+                e.printStackTrace();
+            }
 
             Fragment currentFragment = MyActivity.act.getFragmentManager().findFragmentById(R.id.containerMain);
             if (currentFragment instanceof MainFragment) {

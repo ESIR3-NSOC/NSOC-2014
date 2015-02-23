@@ -1,3 +1,4 @@
+/*
 package webSocketServer;
 
 import context.Context;
@@ -48,4 +49,4 @@ public class WebSocketHandler extends BaseWebSocketHandler {
         //Log.w(TAG,"web socket server has received a message : " + message);
     }
 
-}
+}*/

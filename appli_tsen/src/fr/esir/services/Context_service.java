@@ -4,7 +4,10 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.*;
+import android.os.Binder;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.os.StrictMode;
 import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import context.Context;
@@ -25,7 +28,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Time;
-import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,12 +37,10 @@ import java.util.Map;
 
 public class Context_service extends Service {
 
-    private WebSocketClient mWebSocketClient;
-    private Context _ctx;
-
     private final static String TAG = Context_service.class.getSimpleName();
     private final IBinder mBinder = new LocalBinder();
-
+    private WebSocketClient mWebSocketClient;
+    private Context _ctx;
     private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(android.content.Context context, Intent intent) {
@@ -89,7 +89,7 @@ public class Context_service extends Service {
                             }
                         }
                     });
-                    
+
                     break;
 
             }
@@ -132,7 +132,7 @@ public class Context_service extends Service {
         }
         _ctx = new Context(new TsenUniverse(), file);
         registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
-
+        connectWebSocket();
         return true;
     }
 
@@ -175,27 +175,27 @@ public class Context_service extends Service {
         _ctx.getDimension().save(new Callback<Throwable>() {
             @Override
             public void on(Throwable throwable) {
-                if(throwable!=null){
-                    Log.e(TAG,throwable.toString());
+                if (throwable != null) {
+                    Log.e(TAG, throwable.toString());
                 }
             }
         });
 
-        long lessonTime = start + (start- end)/2;
+        long lessonTime = start + (start - end) / 2;
 
         TsenView lessonView = _ctx.getDimension().time(lessonTime);
 
         lessonView.select("/", new Callback<KObject[]>() {
             @Override
             public void on(KObject[] kObjects) {
-                if(kObjects!=null && kObjects.length!=0){
+                if (kObjects != null && kObjects.length != 0) {
                     Room room = (Room) kObjects[0];
 
                     room.eachMember(new Callback<User[]>() {
                         @Override
                         public void on(User[] users) {
-                            for(User user : users){
-                                Log.d(TAG,"user " + user.getId() + "has been registered in this classroom between" + new Date(start) + " and" + new Date(end));
+                            for (User user : users) {
+                                Log.d(TAG, "user " + user.getId() + "has been registered in this classroom between" + new Date(start) + " and" + new Date(end));
                             }
                         }
                     });
@@ -309,27 +309,21 @@ public class Context_service extends Service {
         return data;
     }
 
-    public class LocalBinder extends Binder {
-        public Context_service getService() {
-            return Context_service.this;
-        }
-    }
-
-    public void displayAll(long ts){
+    public void displayAll(long ts) {
 
         TsenView view = _ctx.getDimension().time(ts);
-        Log.d(TAG,"displaying all context Data");
+        Log.d(TAG, "displaying all context Data");
 
         view.select("/", new Callback<KObject[]>() {
             @Override
             public void on(KObject[] kObjects) {
-                if(kObjects!=null && kObjects.length!=0){
+                if (kObjects != null && kObjects.length != 0) {
                     Room room = (Room) kObjects[0];
                     room.eachMeasurement(new Callback<Sensor[]>() {
                         @Override
                         public void on(Sensor[] sensors) {
-                            for(Sensor s : sensors){
-                                Log.d(TAG,s.toJSON().toString());
+                            for (Sensor s : sensors) {
+                                Log.d(TAG, s.toJSON().toString());
                             }
                         }
                     });
@@ -337,8 +331,8 @@ public class Context_service extends Service {
                     room.eachMember(new Callback<User[]>() {
                         @Override
                         public void on(User[] users) {
-                            for(User user : users){
-                                Log.d(TAG,user.toJSON().toString());
+                            for (User user : users) {
+                                Log.d(TAG, user.toJSON().toString());
                             }
 
                         }
@@ -352,7 +346,7 @@ public class Context_service extends Service {
     private void connectWebSocket() {
         URI uri;
         try {
-            uri = new URI("ws://tsen.uion.fr:8055");
+            uri = new URI("ws://192.168.1.164:8080/tsen/chat/cequejeveux");
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
@@ -366,8 +360,8 @@ public class Context_service extends Service {
                 _ctx.getDimension().time(System.currentTimeMillis()).select("/", new Callback<KObject[]>() {
                     @Override
                     public void on(KObject[] kObjects) {
-                        if(kObjects!=null && kObjects.length!=0){
-                            mWebSocketClient.send(((Room)kObjects[0]).getName());
+                        if (kObjects != null && kObjects.length != 0) {
+                            mWebSocketClient.send(((Room) kObjects[0]).getName());
                         }
                     }
                 });
@@ -379,11 +373,11 @@ public class Context_service extends Service {
                 try {
                     jsonRpc = new ObjectMapper().readTree(s);
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
-                         Date dt = simpleDateFormat.parse(jsonRpc.get("ts").asText());
-                    Log.i(TAG,"TIME ON MESSAGE : " + new Date(jsonRpc.get("ts").asLong()));
-                    _ctx.setVote(jsonRpc.get("id").asText(), jsonRpc.get("vote").asText(),dt.getTime());
+                    Date dt = simpleDateFormat.parse(jsonRpc.get("ts").asText());
+                    Log.i(TAG, "TIME ON MESSAGE : " + new Date(jsonRpc.get("ts").asLong()));
+                    _ctx.setVote(jsonRpc.get("id").asText(), jsonRpc.get("vote").asText(), dt.getTime());
                     System.out.println("web socket server has received a message : " + s);
-                }catch (IOException e) {
+                } catch (IOException e) {
                     System.out.println("message :" + s + " is not a json");
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -401,6 +395,12 @@ public class Context_service extends Service {
             }
         };
         mWebSocketClient.connect();
+    }
+
+    public class LocalBinder extends Binder {
+        public Context_service getService() {
+            return Context_service.this;
+        }
     }
 
 }

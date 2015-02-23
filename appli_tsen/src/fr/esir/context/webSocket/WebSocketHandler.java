@@ -1,3 +1,4 @@
+/*
 package fr.esir.context.webSocket;
 
 import android.util.Log;
@@ -67,4 +68,4 @@ public class WebSocketHandler extends BaseWebSocketHandler {
         //Log.w(TAG,"web socket server has received a message : " + message);
     }
 
-}
+}*/

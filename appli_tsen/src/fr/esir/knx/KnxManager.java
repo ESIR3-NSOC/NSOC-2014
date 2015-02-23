@@ -60,7 +60,6 @@ public class KnxManager {
 
         if (_netLinkIp != null) {
             try {
-                Log.i("ICI", "JE SUIS PASSE PAR ICI");
                 pc = new ProcessCommunicatorImpl(_netLinkIp);
                 //createKNXListener();
                 return true;
@@ -98,6 +97,7 @@ public class KnxManager {
                 whatIsTheDptOfTheSensor(addDest.toString());
                 _dpt.setData(arg0.getFrame().getPayload());
                 displayData(addDest.toString(), _dpt.getAllValues()[1]);
+                Log.i("SENSOR VALUE", _dpt.getAllValues()[1]);
             }
 
             public void linkClosed(CloseEvent arg0) {
@@ -132,16 +132,14 @@ public class KnxManager {
                 break;
             case "0/0/5": //indoor humidity
                 try {
-                    _dpt = new DPTXlator8BitUnsigned(DPTXlator8BitUnsigned.DPT_PERCENT_U8);
-                    //_dpt = new DPTXlator2ByteFloat(DPTXlator2ByteFloat.DPT_HUMIDITY);
+                    _dpt = new DPTXlator8BitUnsigned(DPTXlator8BitUnsigned.DPT_SCALING);
                 } catch (KNXFormatException e) {
                     e.printStackTrace();
                 }
                 break;
             case "0/1/2": //outdoor humidity
                 try {
-                    _dpt = new DPTXlator8BitUnsigned(DPTXlator8BitUnsigned.DPT_PERCENT_U8);
-                    //_dpt = new DPTXlator2ByteFloat(DPTXlator2ByteFloat.DPT_HUMIDITY);
+                    _dpt = new DPTXlator8BitUnsigned(DPTXlator8BitUnsigned.DPT_SCALING);
                 } catch (KNXFormatException e) {
                     e.printStackTrace();
                 }

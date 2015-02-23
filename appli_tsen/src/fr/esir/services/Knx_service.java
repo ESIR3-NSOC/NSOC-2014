@@ -45,6 +45,11 @@ public class Knx_service extends Service implements Service_knx {
         sendBroadcast(intent);
     }
 
+    @Override
+    public KnxManager getKnxManager() {
+        return km;
+    }
+
     private void broadcastUpdate(final String action) {
         final Intent intent = new Intent(action);
         sendBroadcast(intent);

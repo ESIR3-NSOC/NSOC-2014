@@ -7,4 +7,6 @@ public interface Service_knx {
     boolean initialize();
 
     void sendDisplayData(String add, String data);
+
+    KnxManager getKnxManager();
 }

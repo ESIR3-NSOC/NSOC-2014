@@ -56,9 +56,13 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
         long howMany = c.getTimeInMillis() - System.currentTimeMillis();
         Log.w("DELAY", sh.getLong("DELAY", howMany) + "");
         rt = new RepetetiveTask(sh.getLong("DELAY", howMany));
-        
-        predict();
 
+        wf = new WeatherForecast(this);
+        try {
+            weatherSearch();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 
