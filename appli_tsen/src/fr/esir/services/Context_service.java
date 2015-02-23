@@ -58,8 +58,6 @@ public class Context_service extends Service {
                         }
                     }
                     break;
-
-
                 case FilterString.RECEIVE_DATA_KNX:
                     Log.i(TAG, "Updating value in context");
                     String value = intent.getStringExtra("DATA");
@@ -91,13 +89,18 @@ public class Context_service extends Service {
                     break;
 
             }
+
+            displayAll(System.currentTimeMillis());
         }
+
+
     };
 
     private static IntentFilter makeServicesUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
         //students of the day, coming from oep
         intentFilter.addAction((FilterString.OEP_DATA_STUDENTS_OF_DAY));
+        intentFilter.addAction(FilterString.RECEIVE_DATA_KNX);
 
         return intentFilter;
     }
@@ -257,6 +260,18 @@ public class Context_service extends Service {
             }
         });
 
+        ctx.getDimension().save(new Callback<Throwable>() {
+            @Override
+            public void on(Throwable throwable) {
+                if (throwable != null) {
+                    throwable.printStackTrace();
+                } else {
+                    System.out.println("updated value");
+                }
+
+            }
+        });
+
         return data;
     }
 
@@ -264,6 +279,39 @@ public class Context_service extends Service {
         public Context_service getService() {
             return Context_service.this;
         }
+    }
+
+    public void displayAll(long ts){
+
+        TsenView view = ctx.getDimension().time(ts);
+
+        view.select("/", new Callback<KObject[]>() {
+            @Override
+            public void on(KObject[] kObjects) {
+                if(kObjects!=null && kObjects.length!=0){
+                    Room room = (Room) kObjects[0];
+                    room.eachMeasurement(new Callback<Sensor[]>() {
+                        @Override
+                        public void on(Sensor[] sensors) {
+                            for(Sensor s : sensors){
+                                Log.d(TAG,s.toJSON().toString());
+                            }
+                        }
+                    });
+
+                    room.eachMember(new Callback<User[]>() {
+                        @Override
+                        public void on(User[] users) {
+                            for(User user : users){
+                                Log.d(TAG,user.toJSON().toString());
+                            }
+
+                        }
+                    });
+                }
+            }
+        });
+
     }
 
 }
