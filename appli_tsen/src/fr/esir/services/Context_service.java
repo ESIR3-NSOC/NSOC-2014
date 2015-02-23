@@ -41,7 +41,6 @@ public class Context_service extends Service {
     private final static String TAG = Context_service.class.getSimpleName();
     private final IBinder mBinder = new LocalBinder();
 
-    private Context ctx;
     private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(android.content.Context context, Intent intent) {
@@ -68,7 +67,7 @@ public class Context_service extends Service {
                     String value = intent.getStringExtra("DATA");
                     String address = intent.getStringExtra("ADDRESS");
 
-                    TsenView view = ctx.getDimension().time(System.currentTimeMillis());
+                    TsenView view = _ctx.getDimension().time(System.currentTimeMillis());
 
                     view.select("/", new Callback<KObject[]>() {
                         @Override
@@ -173,10 +172,10 @@ public class Context_service extends Service {
             }
         });
 
-        ctx.getDimension().save(new Callback<Throwable>() {
+        _ctx.getDimension().save(new Callback<Throwable>() {
             @Override
             public void on(Throwable throwable) {
-                if(throwable==null){
+                if(throwable!=null){
                     Log.e(TAG,throwable.toString());
                 }
             }
@@ -184,7 +183,7 @@ public class Context_service extends Service {
 
         long lessonTime = start + (start- end)/2;
 
-        TsenView lessonView = ctx.getDimension().time(lessonTime);
+        TsenView lessonView = _ctx.getDimension().time(lessonTime);
 
         lessonView.select("/", new Callback<KObject[]>() {
             @Override
@@ -318,7 +317,7 @@ public class Context_service extends Service {
 
     public void displayAll(long ts){
 
-        TsenView view = ctx.getDimension().time(ts);
+        TsenView view = _ctx.getDimension().time(ts);
         Log.d(TAG,"displaying all context Data");
 
         view.select("/", new Callback<KObject[]>() {
