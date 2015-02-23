@@ -40,7 +40,8 @@ public class GroupEvent {
                     _dpt = new DPTXlator2ByteFloat(DPTXlator2ByteFloat.DPT_AIRQUALITY);
                     break;
                 case "5.001":
-                    _dpt = new DPTXlator8BitUnsigned(DPTXlator8BitUnsigned.DPT_PERCENT_U8);
+                    //_dpt = new DPTXlator8BitUnsigned(DPTXlator8BitUnsigned.DPT_PERCENT_U8);
+                    _dpt = new DPTXlator2ByteFloat(DPTXlator2ByteFloat.DPT_HUMIDITY);
                     break;
                 case "9.004":
                     _dpt = new DPTXlator2ByteFloat(DPTXlator2ByteFloat.DPT_INTENSITY_OF_LIGHT);
