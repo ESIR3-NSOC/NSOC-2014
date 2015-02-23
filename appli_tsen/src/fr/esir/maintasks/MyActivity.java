@@ -33,6 +33,7 @@ public class MyActivity extends Activity {
     public static Context_service mContext_service;
     public static Regulation_service mRegulation_service;
     public static DayProgram dp;
+    public static Service_knx mKnx_service;
     private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -44,7 +45,6 @@ public class MyActivity extends Activity {
             }
         }
     };
-    public static Service_knx mKnx_service;
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -103,6 +103,7 @@ public class MyActivity extends Activity {
     };
     SharedPreferences pref;
     TextView next_prog;
+    RepetetiveTask rtj;
     private boolean checking = RepetetiveTask.checking;
     private double consigneTemp = RepetetiveTask.consigne;
 
@@ -184,6 +185,7 @@ public class MyActivity extends Activity {
         super.onPause();
         unbindService(mServiceConnection);
         unregisterReceiver(mServicesUpdateReceiver);
+        rtj.getScheduler().shutdown();
     }
 
     @Override
@@ -191,6 +193,7 @@ public class MyActivity extends Activity {
         super.onResume();
         bindServices();
         registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
+        rtj = new RepetetiveTask();
     }
 
     private void setDisplayData(String add, String data) {

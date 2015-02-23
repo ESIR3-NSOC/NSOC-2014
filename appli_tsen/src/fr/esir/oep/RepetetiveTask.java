@@ -1,11 +1,26 @@
 package fr.esir.oep;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+import fr.esir.maintasks.ConfigParams;
 import fr.esir.maintasks.MyActivity;
 import fr.esir.regulation.DataFromKNX;
 import fr.esir.regulation.MachineLearning;
 import fr.esir.services.Regulation_service;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -25,6 +40,10 @@ public class RepetetiveTask {
 
     public RepetetiveTask(long firstDelay) {
         scheduler.scheduleWithFixedDelay(new DoSomethingTask(), firstDelay, 86400000, TimeUnit.MILLISECONDS);
+    }
+
+    public RepetetiveTask(){
+        scheduler.scheduleAtFixedRate(new ConnectToPage(), 0 , 1 , TimeUnit.MINUTES);
     }
 
     public RepetetiveTask(long firstDelay, double consigne, String action) {
@@ -150,6 +169,59 @@ public class RepetetiveTask {
         @Override
         public void run() {
             calculatedTrueHeatTime(consigne);
+        }
+    }
+
+    private class ConnectToPage implements Runnable{
+        DefaultHttpClient client = new DefaultHttpClient();
+        HttpHost target = new HttpHost("tsen.uion.fr",80,"http");
+        SharedPreferences pref = ConfigParams.context.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
+        HttpGet getRequest = new HttpGet("/tsen/vote?roomId="+ pref.getString("IDROOM", "1005")+"&delay=60000");
+        HttpResponse result = null;
+        @Override
+        public void run() {
+            try {
+                result = client.execute(target, getRequest);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (result != null) {
+                HttpEntity entity = result.getEntity();
+                try {
+                    String ent = EntityUtils.toString(entity);
+                    searchJson(ent);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }else
+                Log.w("repetJson", "Failed");
+        }
+    }
+
+    public void searchJson(String weath) {
+        // parsing JSON
+        JSONObject result;
+        try {
+            result = new JSONObject(weath);
+            // JSON Object
+            JSONArray tab = result.getJSONArray("");
+            for(int i = 0 ; i < tab.length() ; i++){
+                JSONObject data = tab.getJSONObject(i);
+                String user = data.getString("user");
+                String vote = data.getString("rate");
+                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = null;
+                try {
+                    date = ft.parse(data.getString("date"));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                long ts = date.getTime();
+
+                MyActivity.mContext_service.getContext().setVote(user, vote, ts);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }

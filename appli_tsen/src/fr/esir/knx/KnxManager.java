@@ -93,11 +93,13 @@ public class KnxManager {
                 System.out.println("srcadress " + arg0.getSource());
                 System.out.println("targetadress " + addDest);
                 System.out.println("CEMILData " + ((tuwien.auto.calimero.cemi.CEMILData) arg0.getFrame()).toString());
-
                 whatIsTheDptOfTheSensor(addDest.toString());
-                _dpt.setData(arg0.getFrame().getPayload());
-                displayData(addDest.toString(), _dpt.getAllValues()[1]);
-                Log.i("SENSOR VALUE", _dpt.getAllValues()[1]);
+                if (_dpt != null) {
+                    _dpt.setData(arg0.getFrame().getPayload());
+                    displayData(addDest.toString(), _dpt.getAllValues()[1]);
+                    Log.i("SENSOR VALUE", _dpt.getAllValues()[1]);
+                }
+                _dpt = null;
             }
 
             public void linkClosed(CloseEvent arg0) {
@@ -107,7 +109,7 @@ public class KnxManager {
         });
     }
 
-    private DPTXlator whatIsTheDptOfTheSensor(String address) {
+    private void whatIsTheDptOfTheSensor(String address) {
         switch (address) {
             case "0/0/4": //CO2
                 try {
@@ -152,7 +154,6 @@ public class KnxManager {
                 }
                 break;
         }
-        return _dpt;
     }
 
     private void displayData(String add, String data) {
@@ -192,7 +193,7 @@ public class KnxManager {
     public void setVanne(int percent, String address) throws KNXException {
 
         ProcessCommunicator processCommunicator = new ProcessCommunicatorImpl(_netLinkIp);
-        processCommunicator.write(new GroupAddress(address), percent,"5.001");
+        processCommunicator.write(new GroupAddress(address), percent, "5.001");
     }
 
 

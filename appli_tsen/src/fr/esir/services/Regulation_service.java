@@ -162,7 +162,7 @@ public class Regulation_service extends Service {
         registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
         regulator = new Regulator();
         regulator.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        regulator.setConsigne(18);
+        regulator.setConsigne(27);
         //regulator.execute();
         //regulator.run();
 
