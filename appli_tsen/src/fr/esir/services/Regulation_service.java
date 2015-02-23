@@ -187,16 +187,16 @@ public class Regulation_service extends Service {
             nb = 1;
         switch (vote) {
             case "++":
-                val = val - (1 / nb);
+                val = val + (1.5 / nb);
                 break;
             case "+":
-                val = val - (0.5 / nb);
+                val = val + (0.75 / nb);
                 break;
             case "-":
-                val = val + (0.5 / nb);
+                val = val - (0.75 / nb);
                 break;
             case "--":
-                val = val + (1 / nb);
+                val = val - (1.5 / nb);
                 break;
         }
         regulator.setConsigne(val);
