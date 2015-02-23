@@ -43,7 +43,7 @@ public class RepetetiveTask {
     }
 
     public RepetetiveTask() {
-        scheduler.scheduleAtFixedRate(new ConnectToPage(), 0, 1, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(new ConnectToPage(), 0, 5, TimeUnit.MINUTES);
     }
 
     public RepetetiveTask(long firstDelay, double consigne, String action) {

@@ -8,15 +8,15 @@ import org.kevoree.modeling.api.KObject;
 import tsen.*;
 
 import java.io.*;
+import java.util.Date;
 import java.util.UUID;
 
 public class Context {
 
+    private static InputStream file;
     private final String TAG = "ContextObject";
-
     private TsenUniverse _universe;
     private TsenDimension _dim0;
-    private static InputStream file;
 
 
     public Context(TsenUniverse universe, InputStream file) {
@@ -24,7 +24,7 @@ public class Context {
         _dim0 = _universe.dimension(0L);
         this.file = file;
 
-        ContextMethod.createRoom(_dim0,"104");
+        ContextMethod.createRoom(_dim0, "104");
 
 
         initSensors(importGroup());
@@ -185,7 +185,7 @@ public class Context {
     public void setVote(String id, String vote, long ts) {
 
         TsenView view = _dim0.time(ts);
-
+        System.out.println("ADDING VOTE : " + vote + " at " + new Date(ts));
         view.select("/", new Callback<KObject[]>() {
             @Override
             public void on(KObject[] kObjects) {
@@ -201,6 +201,7 @@ public class Context {
                                 if (user.getId().compareTo(id) == 0) {
                                     user.setVote(vote);
                                     findUser = true;
+                                    System.out.println(user.toJSON());
                                 }
                             }
                         }
