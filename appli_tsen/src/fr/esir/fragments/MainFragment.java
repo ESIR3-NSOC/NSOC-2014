@@ -20,6 +20,7 @@ import fr.esir.maintasks.R;
  * Created by Nicolas on 22/02/2015.
  */
 public class MainFragment extends Fragment {
+    public static ImageActivity iaf;
     TextView hum_out;
     TextView hum_in;
     TextView temp_ou;
@@ -32,7 +33,7 @@ public class MainFragment extends Fragment {
     Button vote;
     View v;
     FragmentManager fm;
-    public static ImageActivity iaf;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.main_fragment, container, false);
@@ -47,7 +48,7 @@ public class MainFragment extends Fragment {
         etuser = (EditText) v.findViewById(R.id.etuser);
         etvote = (EditText) v.findViewById(R.id.etvote);
 
-
+        setDisplayInit();
         InputFilter[] filters = new InputFilter[1];
         filters[0] = new InputFilter() {
             @Override
@@ -94,7 +95,7 @@ public class MainFragment extends Fragment {
         return v;
     }
 
-    private void setDisplayInit(){
+    private void setDisplayInit() {
         co2.setText(String.valueOf(MyActivity.lastCO2));
         temp_ou.setText(String.valueOf(MyActivity.lastTemp_out));
         temp_in.setText(String.valueOf(MyActivity.lastTemp_in));
