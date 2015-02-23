@@ -10,7 +10,7 @@ public class Reference {
     public static final int KNX_PORT = KNXnetIPConnection.IP_PORT;
     public static final int DISCOVERER_TIMEOUT = 30;
     public static final String KNX_ADDRESS = "192.168.1.100";
-    public static final String HOST_ADDRESS = "192.168.1.168";
+    public static final String HOST_ADDRESS = "192.168.1.171";
 
 
 }

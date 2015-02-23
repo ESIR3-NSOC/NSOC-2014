@@ -133,6 +133,7 @@ public class KnxManager {
             case "0/0/5": //indoor humidity
                 try {
                     _dpt = new DPTXlator8BitUnsigned(DPTXlator8BitUnsigned.DPT_PERCENT_U8);
+                    //_dpt = new DPTXlator2ByteFloat(DPTXlator2ByteFloat.DPT_HUMIDITY);
                 } catch (KNXFormatException e) {
                     e.printStackTrace();
                 }
@@ -140,6 +141,7 @@ public class KnxManager {
             case "0/1/2": //outdoor humidity
                 try {
                     _dpt = new DPTXlator8BitUnsigned(DPTXlator8BitUnsigned.DPT_PERCENT_U8);
+                    //_dpt = new DPTXlator2ByteFloat(DPTXlator2ByteFloat.DPT_HUMIDITY);
                 } catch (KNXFormatException e) {
                     e.printStackTrace();
                 }

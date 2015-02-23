@@ -71,6 +71,7 @@ public class Regulator extends AsyncTask<Void, Void, Void> {
             if (currentFragment instanceof MainFragment) {
                 if (valeur_sortie > 0 && !on) {
                     MainFragment.iaf.setImage(true);
+                    log.i("Valeur regulation", valeur_sortie);
                 } else if (valeur_sortie < 0 && on)
                     MainFragment.iaf.setImage(false);
             }

@@ -24,8 +24,6 @@
         <c:if test="${!empty sessionScope.user}">
                 <div class="message info">Vous êtes connecté(e) avec le login : ${sessionScope.user.name}</div>
         </c:if>
-<!--        <div class="message error">wrong password</div>
--->
         <c:if test="${!empty form.errors}">
                 <div class="message error">${form.errors['username']}${form.errors['password']}</div>
         </c:if>
