@@ -5,7 +5,6 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kevoree.modeling.api.Callback;
 import org.kevoree.modeling.api.KObject;
-import org.webbitserver.WebSocketConnection;
 import tsen.*;
 
 import java.io.*;
