@@ -1,5 +1,6 @@
 package context;
 
+import ContextUtility.ContextMethod;
 import knx.SensorType;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -24,6 +25,8 @@ public class Context {
         _universe = universe;
         _dim0 = _universe.dimension(0L);
         this.file = file;
+
+        ContextMethod.createRoom(_dim0,"104");
 
 
         initSensors(importGroup());
@@ -74,14 +77,17 @@ public class Context {
     public void initSensors(JsonNode groups) {
 
         String result = "";
+        System.out.println(groups.toString());
         System.out.println("sensor initialisation ...");
-        for (JsonNode node : groups) {
+        for (JsonNode node : groups.get("groups")) {
+            System.out.println("node : => " + node);
             TsenView view = _dim0.time(System.currentTimeMillis());
             view.select("/", new Callback<KObject[]>() {
                 @Override
                 public void on(KObject[] kObjects) {
                     if (kObjects != null && kObjects.length != 0) {
                         Room room = (Room) kObjects[0];
+                        System.out.println("Sensor Type" + node.get("sensorsType").asText());
                         switch (node.get("sensorsType").asText()) {
                             case SensorType.CO2_SENSOR:
                                 System.out.println("Adding C02 sensor");

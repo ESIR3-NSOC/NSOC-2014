@@ -25,6 +25,7 @@ import tsen.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Time;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +78,7 @@ public class Context_service extends Service {
                                         for (Sensor sensor : sensors) {
                                             if (sensor.getGroupAddress().compareTo(address) == 0) {
                                                 sensor.setValue(value);
-                                                Log.i(TAG,"updating" + sensor.toJSON());
+                                                Log.i(TAG, "updating context with " + sensor.getSensorType() + " : " + sensor.getValue());
                                             }
                                         }
                                     }
@@ -85,7 +86,6 @@ public class Context_service extends Service {
                             }
                         }
                     });
-                    displayAll(System.currentTimeMillis());
                     break;
 
             }
@@ -119,6 +119,8 @@ public class Context_service extends Service {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         _wss = WebServers.createWebServer(TSEN_WS_PORT).add("", new WebSocketHandler(_wss, this));
+        _wss.start();
+        Log.i(TAG,"opening websocket server => uri : " + _wss.getUri()+ " port => "+  _wss.getPort());
         InputStream file = null;
         try {
             file = getAssets().open("knxGroup.txt");
@@ -138,6 +140,7 @@ public class Context_service extends Service {
     }
 
     private void addStudent(long start, long end, String studentId, double consigne, String lesson) {
+
         TsenView startView = ctx.getDimension().time(start);
 
         User user = startView.createUser();
@@ -163,6 +166,37 @@ public class Context_service extends Service {
                 if (kObjects != null && kObjects.length != 0) {
                     Room room = (Room) kObjects[0];
                     room.removeMember(user);
+                }
+            }
+        });
+
+        ctx.getDimension().save(new Callback<Throwable>() {
+            @Override
+            public void on(Throwable throwable) {
+                if(throwable==null){
+                    Log.e(TAG,throwable.toString());
+                }
+            }
+        });
+
+        long lessonTime = start + (start- end)/2;
+
+        TsenView lessonView = ctx.getDimension().time(lessonTime);
+
+        lessonView.select("/", new Callback<KObject[]>() {
+            @Override
+            public void on(KObject[] kObjects) {
+                if(kObjects!=null && kObjects.length!=0){
+                    Room room = (Room) kObjects[0];
+
+                    room.eachMember(new Callback<User[]>() {
+                        @Override
+                        public void on(User[] users) {
+                            for(User user : users){
+                                Log.d(TAG,"user " + user.getId() + "has been registered in this classroom between" + new Date(start) + " and" + new Date(end));
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -282,6 +316,7 @@ public class Context_service extends Service {
     public void displayAll(long ts){
 
         TsenView view = ctx.getDimension().time(ts);
+        Log.d(TAG,"displaying all context Data");
 
         view.select("/", new Callback<KObject[]>() {
             @Override
