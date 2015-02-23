@@ -11,6 +11,7 @@ import org.webbitserver.WebSocketConnection;
 import org.webbitserver.WebServer;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -45,8 +46,18 @@ public class WebSocketHandler extends BaseWebSocketHandler {
         JsonNode jsonRpc;
         try {
             jsonRpc = new ObjectMapper().readTree(message);
-            Log.i(TAG,"TIME ON MESSAGE : " + new Date(jsonRpc.get("ts").asLong()));
-            _ctx.setVote(jsonRpc.get("id").asText(), jsonRpc.get("vote").asText(), new Date(jsonRpc.get("ts").asText()).getTime(), connection);
+
+            SimpleDateFormat s = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+
+            try {
+                Date dt = s.parse(jsonRpc.get("ts").asText());
+                Log.i(TAG,"TIME ON MESSAGE : " + new Date(jsonRpc.get("ts").asLong()));
+                _ctx.setVote(jsonRpc.get("id").asText(), jsonRpc.get("vote").asText(),dt.getTime(), connection);
+            }catch (Exception e){
+                Log.e(TAG, e.toString());
+            }
+
+
 
         } catch (IOException e) {
             System.out.println("message :" + message + " is not a json");
