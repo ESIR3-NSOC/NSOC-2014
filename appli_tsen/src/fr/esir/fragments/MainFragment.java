@@ -100,7 +100,7 @@ public class MainFragment extends Fragment {
         temp_ou.setText(String.valueOf(MyActivity.lastTemp_out + " °C"));
         temp_in.setText(String.valueOf(MyActivity.lastTemp_in + " °C"));
         hum_in.setText(String.valueOf(MyActivity.lastHum_in + " %"));
-        hum_out.setText(String.valueOf(MyActivity.lastHum_out + "%"));
+        hum_out.setText(String.valueOf(MyActivity.lastHum_out + " %"));
         lum_ou.setText(String.valueOf(MyActivity.lastLum_out + " lx"));
     }
 

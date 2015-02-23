@@ -85,12 +85,10 @@ public class Context_service extends Service {
                             }
                         }
                     });
-
+                    displayAll(System.currentTimeMillis());
                     break;
 
             }
-
-            displayAll(System.currentTimeMillis());
         }
 
 
