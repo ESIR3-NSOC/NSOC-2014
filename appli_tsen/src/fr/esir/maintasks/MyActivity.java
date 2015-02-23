@@ -44,7 +44,7 @@ public class MyActivity extends Activity {
             }
         }
     };
-    public Service_knx mKnx_service;
+    public static Service_knx mKnx_service;
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {

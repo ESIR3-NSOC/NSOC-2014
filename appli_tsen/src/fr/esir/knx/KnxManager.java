@@ -1,6 +1,7 @@
 package fr.esir.knx;
 
 import android.util.Log;
+import fr.esir.maintasks.MyActivity;
 import org.codehaus.jackson.JsonNode;
 import tuwien.auto.calimero.CloseEvent;
 import tuwien.auto.calimero.FrameEvent;
@@ -36,7 +37,7 @@ public class KnxManager {
     private Queue<GroupEvent> _eventBuffer;
     private JsonNode _knxConf;
     private DPTXlator _dpt = null;
-    private Service_knx sk;
+    private Service_knx sk = MyActivity.mKnx_service;
     private Thread _bufferReader;
 
     public KnxManager(InputStream file) {
@@ -50,9 +51,6 @@ public class KnxManager {
     }
 
     public boolean initConnection() {
-
-        KNXNetworkLinkIP netLinkIp = null;
-
         try {
             _netLinkIp = Utility.openKnxConnection(InetAddress.getByName(Reference.KNX_ADDRESS));
         } catch (UnknownHostException e) {
@@ -60,10 +58,10 @@ public class KnxManager {
             e.printStackTrace();
         }
 
-        if (netLinkIp != null) {
+        if (_netLinkIp != null) {
             try {
                 Log.i("ICI", "JE SUIS PASSE PAR ICI");
-                pc = new ProcessCommunicatorImpl(netLinkIp);
+                pc = new ProcessCommunicatorImpl(_netLinkIp);
                 //createKNXListener();
                 return true;
             } catch (KNXLinkClosedException e) {
@@ -76,7 +74,7 @@ public class KnxManager {
     }
 
     public void CloseConnection() {
-        if(_netLinkIp != null)
+        if (_netLinkIp != null)
             _netLinkIp.close();
         System.out.println("KNX connection has been closed");
     }
@@ -158,6 +156,7 @@ public class KnxManager {
     }
 
     private void displayData(String add, String data) {
+        Log.e("DATA", add + " AND " + data);
         sk.sendDisplayData(add, data);
     }
 

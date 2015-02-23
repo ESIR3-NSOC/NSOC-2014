@@ -1,5 +1,6 @@
 package fr.esir.knx;
 
+import android.util.Log;
 import fr.esir.services.Context_service;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -29,6 +30,8 @@ public class Utility {
             System.out.println("Unknown host connection");
             e.printStackTrace();
         }
+        if(netLinkIp == null)
+            Log.i("NETLINKIP", "JE SUIS NULL");
         return netLinkIp;
     }
 
