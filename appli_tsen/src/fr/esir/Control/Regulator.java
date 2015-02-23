@@ -1,4 +1,4 @@
-package fr.esir.regulation;
+package fr.esir.control;
 
 import android.app.Fragment;
 import android.os.AsyncTask;

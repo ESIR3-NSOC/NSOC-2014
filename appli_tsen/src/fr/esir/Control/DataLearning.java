@@ -1,4 +1,4 @@
-package fr.esir.regulation;
+package fr.esir.control;
 
 import android.os.Environment;
 import com.example.esir.nsoc2014.tsen.lob.objects.ArffGenerated;
@@ -6,14 +6,31 @@ import com.example.esir.nsoc2014.tsen.lob.objects.ArffGenerated;
 import java.io.File;
 import java.io.IOException;
 
-public class MachineLearning {
-    private DataFromKNX dfk;
+/**
+ * Created by Nicolas on 06/02/2015.
+ */
+public class DataLearning {
+    private DataFromKNX mknx;
+    private long heat_time;
 
-    public MachineLearning(DataFromKNX dfk) {
-        this.dfk = dfk;
+    public DataLearning(DataFromKNX mknx) {
+        this.mknx = mknx;
+        this.heat_time = 0;
     }
 
-    public long setDataInArff() {
+    public DataFromKNX getMknx() {
+        return mknx;
+    }
+
+    public long getHeat_time() {
+        return heat_time;
+    }
+
+    public void setHeat_time(long start, long end) {
+        heat_time = end - start;
+    }
+
+    public void setInArff() {
         String externalStorage = Environment.getExternalStorageDirectory().getAbsolutePath();
         String path = externalStorage + File.separator + "DCIM" + File.separator + "arffRegul.arff";
 
@@ -29,15 +46,7 @@ public class MachineLearning {
                 e.printStackTrace();
             }
         }
-
-        arff.addInstance(dfk.getI_temp(), dfk.getO_temp(), dfk.getI_hum(), dfk.getO_hum(), dfk.getO_lum(), dfk.getCons(), dfk.getNb_pers());
-
-        try {
-            return (long) arff.executeModel();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
+        arff.addDataCustomRegul(mknx.getI_temp(), mknx.getO_temp(), mknx.getI_hum(), mknx.getO_hum(),
+                mknx.getO_lum(), mknx.getCons(), mknx.getNb_pers(), heat_time);
     }
-
 }

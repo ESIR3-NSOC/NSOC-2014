@@ -1,4 +1,4 @@
-package fr.esir.regulation;
+package fr.esir.control;
 
 /**
  * Created by Nicolas on 21/02/2015.

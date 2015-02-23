@@ -16,7 +16,7 @@
         </activity>
         <activity android:name=".MyActivity"/>
         <service android:name="fr.esir.services.Oep_service"/>
-        <service android:name="fr.esir.services.Regulation_service"/>
+        <service android:name="fr.esir.services.Control_service"/>
         <service android:name="fr.esir.services.Knx_service"/>
         <service android:name="fr.esir.services.Context_service"/>
         <!--<receiver android:name="fr.esir.oep.PredictBroadcastReceiver">

@@ -1,4 +1,4 @@
-package fr.esir.regulation;
+package fr.esir.control;
 
 import fr.esir.maintasks.MyActivity;
 

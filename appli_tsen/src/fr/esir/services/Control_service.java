@@ -16,10 +16,10 @@ import fr.esir.fragments.DayProgram;
 import fr.esir.maintasks.MyActivity;
 import fr.esir.maintasks.R;
 import fr.esir.oep.RepetetiveTask;
-import fr.esir.regulation.DataFromKNX;
-import fr.esir.regulation.DataLearning;
-import fr.esir.regulation.NbPerson;
-import fr.esir.regulation.Regulator;
+import fr.esir.control.DataFromKNX;
+import fr.esir.control.DataLearning;
+import fr.esir.control.NbPerson;
+import fr.esir.control.Regulator;
 import fr.esir.resources.FilterString;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -30,8 +30,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class Regulation_service extends Service {
-    private final static String TAG = Regulation_service.class.getSimpleName();
+public class Control_service extends Service {
+    private final static String TAG = Control_service.class.getSimpleName();
     public static ArrayList<DatesInterval> list;
     public static Regulator regulator;
     private final IBinder mBinder = new LocalBinder();
@@ -215,8 +215,8 @@ public class Regulation_service extends Service {
     }
 
     public class LocalBinder extends Binder {
-        public Regulation_service getService() {
-            return Regulation_service.this;
+        public Control_service getService() {
+            return Control_service.this;
         }
     }
 }

@@ -77,7 +77,7 @@ public class MainFragment extends Fragment {
                 //add in context
 
                 String vote = etvote.getText().toString();
-                MyActivity.mRegulation_service.executeVote(MyActivity.lastTemp_in, vote);
+                MyActivity.mControl_service.executeVote(MyActivity.lastTemp_in, vote);
             }
         });
 

@@ -17,7 +17,7 @@ import fr.esir.resources.FilterString;
 import fr.esir.services.Context_service;
 import fr.esir.services.Knx_service;
 import fr.esir.services.Oep_service;
-import fr.esir.services.Regulation_service;
+import fr.esir.services.Control_service;
 
 public class MyActivity extends Activity {
     private final static String TAG = MyActivity.class.getSimpleName();
@@ -31,7 +31,7 @@ public class MyActivity extends Activity {
     public static Context ct;
     public static Activity act;
     public static Context_service mContext_service;
-    public static Regulation_service mRegulation_service;
+    public static Control_service mControl_service;
     public static DayProgram dp;
     public static Service_knx mKnx_service;
     private final BroadcastReceiver mServicesUpdateReceiver = new BroadcastReceiver() {
@@ -66,8 +66,8 @@ public class MyActivity extends Activity {
                     Log.w(TAG, "Oep initialized");
                     break;
                 case "fr.esir.services.Regulation_service":
-                    mRegulation_service = ((Regulation_service.LocalBinder) service).getService();
-                    if (!mRegulation_service.initialize()) {
+                    mControl_service = ((Control_service.LocalBinder) service).getService();
+                    if (!mControl_service.initialize()) {
                         Log.e(TAG, "Unable to initialize the regulation");
                         finish();
                     }
@@ -93,7 +93,7 @@ public class MyActivity extends Activity {
                     mOep_service = null;
                     break;
                 case "fr.esir.services.Regulation_service":
-                    mRegulation_service = null;
+                    mControl_service = null;
                     break;
                 case "fr.esir.services.Knx_service":
                     mKnx_service = null;
@@ -165,7 +165,7 @@ public class MyActivity extends Activity {
         bindService(oepServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // start the service regulation_service
-        Intent regulationServiceIntent = new Intent(this.getApplicationContext(), Regulation_service.class);
+        Intent regulationServiceIntent = new Intent(this.getApplicationContext(), Control_service.class);
         bindService(regulationServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // start the service knx_service

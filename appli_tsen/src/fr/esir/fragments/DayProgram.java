@@ -15,7 +15,7 @@ import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
 import fr.esir.maintasks.MyActivity;
 import fr.esir.maintasks.R;
 import fr.esir.resources.MySimpleArrayAdapter;
-import fr.esir.services.Regulation_service;
+import fr.esir.services.Control_service;
 
 import java.util.ArrayList;
 
@@ -44,7 +44,7 @@ public class DayProgram extends Fragment {
         v = inflater.inflate(R.layout.day_program, container, false);
 
         lv = (ListView) v.findViewById(R.id.list);
-        listD = Regulation_service.list;
+        listD = Control_service.list;
         tvprog = (TextView) v.findViewById(R.id.tvProg);
         setProg();
 

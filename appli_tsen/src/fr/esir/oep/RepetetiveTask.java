@@ -5,9 +5,9 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import fr.esir.maintasks.ConfigParams;
 import fr.esir.maintasks.MyActivity;
-import fr.esir.regulation.DataFromKNX;
-import fr.esir.regulation.MachineLearning;
-import fr.esir.services.Regulation_service;
+import fr.esir.control.DataFromKNX;
+import fr.esir.control.MachineLearning;
+import fr.esir.services.Control_service;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -115,7 +115,7 @@ public class RepetetiveTask {
         //check i_temp sensor value and wait the temp is "consigne"
         //calculate the difference between the start and end dates -> DataLearning
         //add the values to the arff file
-        Regulation_service.regulator.setConsigne(consigneTemp);
+        Control_service.regulator.setConsigne(consigneTemp);
         checking = true;
         consigne = consigneTemp;
         timeStart = System.currentTimeMillis();
