@@ -1,12 +1,10 @@
 package fr.esir.oep;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
-import fr.esir.maintasks.ConfigParams;
-import fr.esir.maintasks.MyActivity;
 import fr.esir.control.DataFromKNX;
 import fr.esir.control.MachineLearning;
+import fr.esir.knx.Reference;
+import fr.esir.maintasks.MyActivity;
 import fr.esir.services.Control_service;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -204,9 +202,8 @@ public class RepetetiveTask {
 
     private class ConnectToPage implements Runnable {
         DefaultHttpClient client = new DefaultHttpClient();
-        HttpHost target = new HttpHost("tsen.uion.fr", 80, "http");
-        SharedPreferences pref = ConfigParams.context.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
-        HttpGet getRequest = new HttpGet("/tsen/vote?roomId=" + pref.getString("IDROOM", "1005") + "&delay=60000");
+        HttpHost target = new HttpHost(Reference.TARGET_HOST, Reference.TARGET_PORT, Reference.TARGET_PROTOCOL);
+        HttpGet getRequest = new HttpGet(Reference.TARGET_REQUEST);
         HttpResponse result = null;
 
         @Override

@@ -11,6 +11,7 @@ import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.OnSearchCompleted;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Prevision;
 import com.example.esir.nsoc2014.tsen.lob.interfaces.Service_oep;
+import fr.esir.knx.Reference;
 import fr.esir.maintasks.ConfigParams;
 import fr.esir.oep.*;
 import fr.esir.resources.FilterString;
@@ -18,7 +19,6 @@ import fr.esir.resources.FilterString;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.ResultSet;
-import java.util.Calendar;
 
 public class Oep_service extends Service implements OnSearchCompleted, Service_oep {
     private final IBinder mBinder = new LocalBinder();
@@ -46,16 +46,8 @@ public class Oep_service extends Service implements OnSearchCompleted, Service_o
         //oep alarm manager
         //create new calendar instance
         Log.w("predictinitalarm", "ok");
-
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DAY_OF_MONTH, 1);
-        c.set(Calendar.HOUR_OF_DAY, 1);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
-        long howMany = c.getTimeInMillis() - System.currentTimeMillis();
-        Log.w("DELAY", sh.getLong("DELAY", howMany) + "");
-        rt = new RepetetiveTask(sh.getLong("DELAY", howMany));
+        Log.w("DELAY", sh.getLong("DELAY", Reference.timeBefore()) + "");
+        rt = new RepetetiveTask(sh.getLong("DELAY", Reference.timeBefore()));
 
         wf = new WeatherForecast(this);
         try {

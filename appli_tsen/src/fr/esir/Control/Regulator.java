@@ -80,7 +80,7 @@ public class Regulator extends AsyncTask<Void, Void, Void> {
             Log.d("VALUE REGUL", newValue + "");
 
             try {
-                MyActivity.mKnx_service.getKnxManager().setVanne(Integer.valueOf(newValue.intValue()),"0/0/1");
+                MyActivity.mKnx_service.setVanne(Integer.valueOf(newValue.intValue()),"0/0/1");
             } catch (KNXException e) {
                 e.printStackTrace();
             }

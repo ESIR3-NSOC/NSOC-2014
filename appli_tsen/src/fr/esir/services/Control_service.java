@@ -12,14 +12,15 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import com.example.esir.nsoc2014.tsen.lob.objects.DatesInterval;
-import fr.esir.fragments.DayProgram;
-import fr.esir.maintasks.MyActivity;
-import fr.esir.maintasks.R;
-import fr.esir.oep.RepetetiveTask;
 import fr.esir.control.DataFromKNX;
 import fr.esir.control.DataLearning;
 import fr.esir.control.NbPerson;
 import fr.esir.control.Regulator;
+import fr.esir.fragments.DayProgram;
+import fr.esir.knx.Reference;
+import fr.esir.maintasks.MyActivity;
+import fr.esir.maintasks.R;
+import fr.esir.oep.RepetetiveTask;
 import fr.esir.resources.FilterString;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -145,10 +146,10 @@ public class Control_service extends Service {
             if (l.indexOf(entry) == 0)
                 nb_users = entry.getNbPerson();
             if (l.indexOf(entry) == l.size() - 1)
-                setAlarmEndLesson(entry.getEndDate(), 15);
+                setAlarmEndLesson(entry.getEndDate(), Reference.END_OF_DAY_TEMPERATURE);
             else {
-                if (entry.getStartDate().getTime() - previousEndDate > 35 * 60000)
-                    setAlarmEndLesson(entry.getEndDate(), 20);
+                if (entry.getStartDate().getTime() - previousEndDate > Reference.TIME_MIN_TO_CONSIDERE_A_LONG_PAUSE)
+                    setAlarmEndLesson(entry.getEndDate(), Reference.PAUSE_BTW_LESSONS_TEMPERATURE);
             }
             previousEndDate = entry.getEndDate().getTime();
         }
@@ -162,7 +163,7 @@ public class Control_service extends Service {
         registerReceiver(mServicesUpdateReceiver, makeServicesUpdateIntentFilter());
         regulator = new Regulator();
         regulator.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        regulator.setConsigne(27);
+        regulator.setConsigne(20);
         //regulator.execute();
         //regulator.run();
 

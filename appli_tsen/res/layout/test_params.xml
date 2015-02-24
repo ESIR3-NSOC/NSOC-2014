@@ -26,7 +26,7 @@
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:text="@string/delay" android:textSize="18sp" android:layout_marginRight="5dp"/>
         <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/delay"
-                  android:hint="@string/delay_spe" android:textSize="18sp" android:inputType="textMultiLine"/>
+                  android:hint="@string/delay_spe" android:textSize="18sp" android:inputType="textMultiLine|number"/>
     </LinearLayout>
 
     <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"

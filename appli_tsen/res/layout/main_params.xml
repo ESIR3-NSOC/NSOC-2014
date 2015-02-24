@@ -12,7 +12,7 @@
                 android:text="@string/mainParams"
                 android:id="@+id/MainParams"/>
     </LinearLayout>
-    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="match_parent"
                   android:layout_marginTop="70dp" android:layout_centerHorizontal="true">
         <TableLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                 >
@@ -22,7 +22,8 @@
                           android:text="@string/id"/>
                 <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:textSize="18sp"
-                          android:hint="@string/idRoom" android:id="@+id/idRoom"/>
+                          android:hint="@string/idRoom" android:id="@+id/idRoom"
+                          android:inputType="textMultiLine"/>
             </TableRow>
             <TableRow android:layout_marginBottom="20dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -30,7 +31,8 @@
                           android:text="@string/name" android:layout_marginRight="20dp"/>
                 <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:textSize="18sp"
-                          android:hint="@string/nameRoom" android:id="@+id/nameRoom"/>
+                          android:hint="@string/nameRoom" android:id="@+id/nameRoom"
+                          android:inputType="textMultiLine"/>
             </TableRow>
             <TableRow android:layout_marginBottom="20dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -38,7 +40,8 @@
                           android:text="@string/tmini"/>
                 <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:textSize="18sp"
-                          android:hint="@string/ctmin" android:id="@+id/tmin"/>
+                          android:hint="@string/ctmin" android:id="@+id/tmin"
+                          android:inputType="textMultiLine"/>
             </TableRow>
             <TableRow>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -46,7 +49,25 @@
                           android:text="@string/tmaxi" android:layout_marginRight="20dp"/>
                 <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:textSize="18sp"
-                          android:hint="@string/ctmax" android:id="@+id/tmax"/>
+                          android:hint="@string/ctmax" android:id="@+id/tmax"
+                          android:inputType="textMultiLine"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp" android:layout_marginRight="20dp" android:text="@string/KNX_IP"/>
+                <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp"
+                          android:hint="@string/hint_knx" android:id="@+id/knx_ip"
+                          android:inputType="textMultiLine"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:layout_height="wrap_content" android:layout_width="wrap_content"
+                          android:textSize="18sp"
+                          android:layout_marginRight="20dp" android:text="@string/Phone_IP"/>
+                <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textSize="18sp"
+                          android:hint="@string/hint_phone" android:id="@+id/phone_ip"
+                          android:inputType="textMultiLine"/>
             </TableRow>
         </TableLayout>
     </LinearLayout>

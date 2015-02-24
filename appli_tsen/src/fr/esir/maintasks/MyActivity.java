@@ -65,7 +65,7 @@ public class MyActivity extends Activity {
                     }
                     Log.w(TAG, "Oep initialized");
                     break;
-                case "fr.esir.services.Regulation_service":
+                case "fr.esir.services.Control_service":
                     mControl_service = ((Control_service.LocalBinder) service).getService();
                     if (!mControl_service.initialize()) {
                         Log.e(TAG, "Unable to initialize the regulation");

@@ -1,7 +1,9 @@
 package fr.esir.knx;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
-import fr.esir.services.Context_service;
+import fr.esir.maintasks.ConfigParams;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import tuwien.auto.calimero.exception.KNXException;
@@ -17,7 +19,8 @@ public class Utility {
     public static KNXNetworkLinkIP openKnxConnection(InetAddress destination) {
         KNXNetworkLinkIP netLinkIp = null;
         try {
-            InetAddress source = InetAddress.getByName(Reference.HOST_ADDRESS);
+            SharedPreferences pref = ConfigParams.context.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
+            InetAddress source = InetAddress.getByName(pref.getString("PHONE_IP", Reference.HOST_ADDRESS));
             InetSocketAddress socketSource = new InetSocketAddress(source, 8060);
             System.out.println("address ip local :" + source.toString() + " on port 8060 ");
             InetSocketAddress socketDestination = new InetSocketAddress(destination, Reference.KNX_PORT);
@@ -30,7 +33,7 @@ public class Utility {
             System.out.println("Unknown host connection");
             e.printStackTrace();
         }
-        if(netLinkIp == null)
+        if (netLinkIp == null)
             Log.i("NETLINKIP", "JE SUIS NULL");
         return netLinkIp;
     }

@@ -46,6 +46,10 @@
     <string name="prog_day">Programming of the day</string>
     <string name="none">None</string>
     <string name="heatstate">State of the regulator</string>
+    <string name="KNX_IP">KNX IP Address</string>
+    <string name="Phone_IP">Phone IP Address</string>
+    <string name="hint_knx">Please, enter the ip address of the knx network</string>
+    <string name="hint_phone">Please, enter the ip address of the mobile</string>
 
     <string name="def">Default</string>
 </resources>

@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.EditText;
+import android.widget.Toast;
+import fr.esir.knx.Reference;
 import fr.esir.maintasks.ConfigParams;
 import fr.esir.maintasks.MyActivity;
 import fr.esir.maintasks.R;
@@ -29,6 +31,7 @@ public class TestParams extends Fragment {
     Context context = ConfigParams.context;
     SharedPreferences pref;
     View v;
+    Context test;
 
     EditText idr;
     CalendarView calendar;
@@ -42,6 +45,7 @@ public class TestParams extends Fragment {
         //final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), android.R.style.Theme_Holo_);
         //LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
         v = inflater.inflate(R.layout.test_params, container, false);
+        test = this.getActivity();
         pref = context.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
         calendar = (CalendarView) v.findViewById(R.id.calendarView);
         idr = (EditText) v.findViewById(R.id.delay);
@@ -51,9 +55,14 @@ public class TestParams extends Fragment {
         v.findViewById(R.id.button_start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSharedPref();
-                Intent intent = new Intent(context, MyActivity.class);
-                startActivity(intent);
+                if (idr.getText().toString().equals(""))
+                    Toast.makeText(test, "Please, enter the delay between now and " +
+                            "the beginning of the first temperature set prevision", Toast.LENGTH_SHORT).show();
+                else {
+                    setSharedPref();
+                    Intent intent = new Intent(context, MyActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -67,9 +76,14 @@ public class TestParams extends Fragment {
         v.findViewById(R.id.button_main).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSharedPref();
-                MainParams mp = new MainParams();
-                fm.beginTransaction().replace(R.id.container, mp).commit();
+                if (idr.getText().toString().equals(""))
+                    Toast.makeText(test, "Please, enter the delay between now and " +
+                            "the beginning of the first temperature set prevision", Toast.LENGTH_SHORT).show();
+                else {
+                    setSharedPref();
+                    MainParams mp = new MainParams();
+                    fm.beginTransaction().replace(R.id.container, mp).commit();
+                }
             }
         });
 
@@ -77,35 +91,18 @@ public class TestParams extends Fragment {
     }
 
     private void setTv() {
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DAY_OF_MONTH, 1);
-        c.set(Calendar.HOUR_OF_DAY, 1);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
-        long howMany = c.getTimeInMillis() - System.currentTimeMillis();
-        long d = pref.getLong("DELAY", howMany);
+        long d = pref.getLong("DELAY", Reference.timeBefore());
         String st = String.format("%d",
                 TimeUnit.MILLISECONDS.toMinutes(d)
         );
         idr.setText(st);
-
-        Date dt = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
-        String datenow = ft.format(dt);
-        //nr.setText(pref.getString("DATE",datenow));
     }
 
+
+
     private void setDefault() {
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DAY_OF_MONTH, 1);
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
-        long howMany = c.getTimeInMillis() - System.currentTimeMillis();
         String s = String.format("%d",
-                TimeUnit.MILLISECONDS.toMinutes(howMany)
+                TimeUnit.MILLISECONDS.toMinutes(Reference.timeBefore())
         );
         idr.setText(s);
 

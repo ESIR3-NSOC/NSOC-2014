@@ -1,6 +1,9 @@
 package fr.esir.knx;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
+import fr.esir.maintasks.ConfigParams;
 import fr.esir.maintasks.MyActivity;
 import org.codehaus.jackson.JsonNode;
 import tuwien.auto.calimero.CloseEvent;
@@ -39,6 +42,7 @@ public class KnxManager {
     private DPTXlator _dpt = null;
     private Service_knx sk = MyActivity.mKnx_service;
     private Thread _bufferReader;
+    private SharedPreferences pref = ConfigParams.context.getSharedPreferences("APPLI_TSEN", Context.MODE_PRIVATE);
 
     public KnxManager(InputStream file) {
 
@@ -52,7 +56,7 @@ public class KnxManager {
 
     public boolean initConnection() {
         try {
-            _netLinkIp = Utility.openKnxConnection(InetAddress.getByName(Reference.KNX_ADDRESS));
+            _netLinkIp = Utility.openKnxConnection(InetAddress.getByName(pref.getString("KNX_IP", Reference.KNX_ADDRESS)));
         } catch (UnknownHostException e) {
             System.out.println("Could not open KNX connection");
             e.printStackTrace();
