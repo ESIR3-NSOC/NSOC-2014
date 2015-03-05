@@ -6,6 +6,24 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tsen.webapp</artifactId>
     <name>TSEN :: WebApp</name>
+    <packaging>war</packaging>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactid>maven-compiler-plugin</artifactid>
+                <configuration>
+                    <source>1.8
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactid>maven-war-plugin</artifactid>
+                <version>2.0</version>
+            </plugin>
+        </plugins>
+    </build>
 
     <parent>
         <artifactId>tsen.root</artifactId>
