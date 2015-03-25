@@ -1,5 +1,6 @@
 package fr.esir.nsoc.tsen.ade.database;
 
+import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,5 +33,7 @@ public interface DataBase {
 	public boolean addCorrespondence(Event event, TreeObject treeObject);
 	public boolean fillCorrespondence(HashSet<Event> events, TreeObject treeObject);
 	public HashSet<TreeObject> getTreeObjectSession(String UID, Project projet);
+
+    public ResultSet executeQuery(String query);
 
 }

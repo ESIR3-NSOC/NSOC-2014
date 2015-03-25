@@ -52,21 +52,24 @@ public class Main {
 		scope.addChildrenToScope(new TreeObject(project, -1, "", "1149", "", "branch")); // scelva prof
 		scope.addChildrenToScope(new TreeObject(project, -1, "", "4217", "", "branch")); // istic prof
 		//Salles
-		scope.addChildrenToScope(new TreeObject(project, -1, "",  "346", "", "branch")); // Esir	
-		scope.addChildrenToScope(new TreeObject(project, -1, "", "3635", "", "branch")); // Bat.5
-		scope.addChildrenToScope(new TreeObject(project, -1, "", "3636", "", "branch")); // Bat.6
-		scope.addChildrenToScope(new TreeObject(project, -1, "", "3865", "", "branch")); // Istic Anglais
-		scope.addChildrenToScope(new TreeObject(project, -1, "", "3972", "", "branch")); // Istic CM/TD
-		scope.addChildrenToScope(new TreeObject(project, -1, "", "3806", "", "branch")); // Istic Projet
-		scope.addChildrenToScope(new TreeObject(project, -1, "", "3820", "", "branch")); // Istic Projets avec code
-		scope.addChildrenToScope(new TreeObject(project, -1, "", "3809", "", "branch")); // Istic TEEO
-		scope.addChildrenToScope(new TreeObject(project, -1, "", "3935", "", "branch")); // Istic TP
-		scope.addChildrenToScope(new TreeObject(project, -1, "", "3839", "", "branch")); // Istic TP priorité aux L1-L2 (LINUX)
-		scope.addChildrenToScope(new TreeObject(project, -1, "", "3805", "", "branch")); // Istic TP spéciaux
-		scope.addChildrenToScope(new TreeObject(project, -1, "", "1695", "", "branch")); // Bat.28 Amphis
+        scope.addChildrenToScope(new TreeObject(project, -1, "", "4086", "", "branch")); // Istic TP LINUX
+        scope.addChildrenToScope(new TreeObject(project, -1, "", "5607", "", "branch")); // Istic TP Windows autres
+
+//		scope.addChildrenToScope(new TreeObject(project, -1, "",  "346", "", "branch")); // Esir
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3635", "", "branch")); // Bat.5
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3636", "", "branch")); // Bat.6
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3865", "", "branch")); // Istic Anglais
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3972", "", "branch")); // Istic CM/TD
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3806", "", "branch")); // Istic Projet
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3820", "", "branch")); // Istic Projets avec code
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3809", "", "branch")); // Istic TEEO
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3935", "", "branch")); // Istic TP
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3839", "", "branch")); // Istic TP priorité aux L1-L2 (LINUX)
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "3805", "", "branch")); // Istic TP spéciaux
+//		scope.addChildrenToScope(new TreeObject(project, -1, "", "1695", "", "branch")); // Bat.28 Amphis
 
 		
-		/*
+        System.out.println("------------");
 		if (DEBUG) {
 			HashSet<TreeObject> tos = scope.getScope();
 			Iterator<TreeObject> i = tos.iterator();
@@ -78,13 +81,13 @@ public class Main {
 			}
 		}
 
-		scope.setStartPoint(parseDate("02/02/2015"));
-		scope.setEndPoint(parseDate("14/02/2015"));
+		scope.setStartPoint(parseDate("01/09/2014"));
+		scope.setEndPoint(parseDate("01/07/2015"));
 
 		// retrieve planning
 		ADE_Planning planning = new ADE_Planning(db, scope);
 		planning.retrieve(30);
-*/
+
 		// exit
 		System.out.println("terminated !");
 		System.exit(0);

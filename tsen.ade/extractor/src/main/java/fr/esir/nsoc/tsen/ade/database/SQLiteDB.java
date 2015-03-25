@@ -15,8 +15,12 @@ import fr.esir.nsoc.tsen.ade.object.Project;
 import fr.esir.nsoc.tsen.ade.object.TreeObject;
 
 public class SQLiteDB implements DataBase {
+    @Override
+    public ResultSet executeQuery(String query) {
+        return null;
+    }
 
-	private final static boolean DEBUG = true;
+    private final static boolean DEBUG = true;
 
 	private Connection _connection = null;
 	private boolean _connected = false;

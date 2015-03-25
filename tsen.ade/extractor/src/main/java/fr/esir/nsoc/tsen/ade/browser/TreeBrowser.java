@@ -46,7 +46,8 @@ public class TreeBrowser {
 			httpResp = httpReq.sendGet(ADE_TREE_PATH, null);
 			TreeParser tp = new TreeParser(httpResp.getContent(), treeObject.getProject());
 			HashSet<TreeObject> treeObjects = tp.Parse();
-			
+			int size = treeObjects.size();
+            int j=0;
 			Iterator<TreeObject> i = treeObjects.iterator();
 			while (i.hasNext()) {
 				TreeObject to = i.next();
@@ -60,6 +61,7 @@ public class TreeBrowser {
 					new TreeBrowser(to, this).browse();
 					
 				}
+                j++;
 			}
 		} else if (treeObject.getLevel() == 0) {
 			// open
@@ -74,6 +76,8 @@ public class TreeBrowser {
 			TreeParser tp = new TreeParser(httpResp.getContent(), treeObject.getProject());
 			HashSet<TreeObject> treeObjects = tp.Parse();
 			Iterator<TreeObject> i = treeObjects.iterator();
+            int size = treeObjects.size();
+            int j=0;
 			while (i.hasNext()) {
 				TreeObject to = i.next();
 				if (to.getLevel() == (treeObject.getLevel() + 1))
@@ -81,11 +85,12 @@ public class TreeBrowser {
 					// set parent id
 					to.setParentId(treeObject.getId());
 					// display if debug
-					if (DEBUG) System.out.println(to.getType() + ": \"" + to.getName() + "\", id: \"" + to.getId() + "\", parent id: \"" + to.getParentId() + "\", level:" + to.getLevel());
+					if (DEBUG) System.out.println("("+j+"/"+size +")"+ to.getType() + ": \"" + to.getName() + "\", id: \"" + to.getId() + "\", parent id: \"" + to.getParentId() + "\", level:" + to.getLevel());
 					// store
 					to.store(db);
 					// browse
 					if (!to.getType().equals("leaf")) new TreeBrowser(to, this).browse();
+                    j++;
 				}
 			}
 			// close
@@ -102,6 +107,8 @@ public class TreeBrowser {
 			
 			TreeParser tp = new TreeParser(httpResp.getContent(), treeObject.getProject());
 			HashSet<TreeObject> treeObjects = tp.Parse();
+            int size = treeObjects.size();
+            int j=0;
 			Iterator<TreeObject> i = treeObjects.iterator();
 			while (i.hasNext()) {
 				TreeObject to = i.next();
@@ -110,11 +117,13 @@ public class TreeBrowser {
 					// set parent id
 					to.setParentId(treeObject.getId());
 					// display if debug
-					if (DEBUG) System.out.println(to.getType() + ": \"" + to.getName() + "\", id: \"" + to.getId() + "\", parent id: \"" + to.getParentId() + "\", level:" + to.getLevel());
+					if (DEBUG) System.out.println("("+j+"/"+size +")"+ to.getType() + ": \"" + to.getName() + "\", id: \"" + to.getId() + "\", parent id: \"" + to.getParentId() + "\", level:" + to.getLevel());
 					// store
 					to.store(db);
 					// browse
 					if (!to.getType().equals("leaf")) new TreeBrowser(to, this).browse();
+
+                    j++;
 				}
 			}
 			// close

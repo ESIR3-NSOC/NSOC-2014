@@ -30,6 +30,8 @@ public class ADE_Tree {
 		super();
 		this.dataBase = dataBase;
 		this.project = null;
+        this.dataBase.createProjectTable();
+
 	}
 
 	public boolean browseTree() {
@@ -90,7 +92,7 @@ public class ADE_Tree {
 				}
 			} while (loop);
 		}
-		
+
 
 
 		// select an ADE project
@@ -110,14 +112,14 @@ public class ADE_Tree {
 		
 		
 		// start browsing ADE tree
-		
+       /*
 		if (_continue)
 		{
 			dataBase.createTreeObjectTable(project.getId());
 			TreeBrowser tb = new TreeBrowser(new TreeObject(project, -1, "root", "", "root"), httpReq, dataBase);
 			_continue = tb.browse();
 		}
-	
+         */
 		 
 		// close
 		stdin.close();

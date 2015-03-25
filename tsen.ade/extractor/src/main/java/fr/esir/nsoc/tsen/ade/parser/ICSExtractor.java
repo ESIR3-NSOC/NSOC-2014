@@ -44,8 +44,6 @@ public class ICSExtractor implements Callable<Boolean> {
 		boolean statut = false;
 		//Récupération de l'ICS
 		Cal cal = new Cal(getICS());
-				
-
 
 		// Get a set of the entries
 		HashSet<Event> _ADE_Events = cal.parse();
@@ -75,10 +73,12 @@ public class ICSExtractor implements Callable<Boolean> {
 		parameters.add(new HTTP_Parameter("login", "cal"));
 		parameters.add(new HTTP_Parameter("password", "visu"));
 		parameters.add(new HTTP_Parameter("projectId", Integer.toString(treeObject.getProject().getId())));
+
+        System.out.println("before HTTP Request ADEID = " + treeObject.getId());
 		HTTP_Response httpResp = httpReq.sendGet("ade/custom/modules/plannings/direct_cal.jsp", parameters);
 		
 		if (DEBUG) System.out.println(httpResp.getCode()==200 ? httpResp.getCode() : "err");
-		System.out.println("ADEID = " + treeObject.getId());
+        System.out.println("After HTTP request ADEID = " + treeObject.getId());
 		return httpResp.getContent();
 	}
 

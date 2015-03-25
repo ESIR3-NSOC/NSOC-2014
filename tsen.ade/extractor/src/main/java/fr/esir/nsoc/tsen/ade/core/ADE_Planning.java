@@ -70,7 +70,7 @@ public class ADE_Planning {
 			for (Callable<Boolean> t : taches) {
 				futures.add(completionService.submit(t));
 			}
-
+            int size = taches.size();
 			for (int i = 0; i < taches.size(); ++i) {
 
 				try {
@@ -82,7 +82,7 @@ public class ADE_Planning {
 					if (res != null) {
 
 						// On affiche le resultat de la tâche
-						System.out.println("Resultat : " + res);
+						System.out.println("Resultat (" + i + "/" + size + ") : " + res);
 					}
 				} catch (ExecutionException ignore) {
 				}

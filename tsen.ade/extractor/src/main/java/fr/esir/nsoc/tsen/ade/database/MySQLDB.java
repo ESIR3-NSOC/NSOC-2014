@@ -29,11 +29,13 @@ public class MySQLDB implements DataBase {
 	public MySQLDB(String name) {
 		String driver = "com.mysql.jdbc.Driver";
 
-		String url="jdbc:mysql://tsen.uion.fr:3306/" + name;
+		String url="jdbc:mysql://localhost:3306/" + name;
 		//String url="jdbc:mysql://localhost:3306/" + name;
-		readFiletext("./Data/login MySQL.txt");
+		readFiletext("./Data/login_MySQL.txt");
 		System.out.println(_login +" " +_password);
-
+        // TODO remove the next 2 lines the login file is ok!
+        _login = "root";
+        _password = "test";
 			try {
 				Class.forName(driver);
 				_connection = DriverManager.getConnection(url, _login, _password);
@@ -337,12 +339,12 @@ public class MySQLDB implements DataBase {
 			try {
 				stmt = _connection.createStatement();
 				ResultSet rs = stmt
-						.executeQuery("SELECT * FROM correspondence_"+Integer.toString(project.getId())+" WHERE UID=" + uid +";");
+						.executeQuery("SELECT * FROM correspondence_"+Integer.toString(project.getId())+" WHERE EVENT_ID = " + uid +";");
 				
 				while(rs.next()){
 					
 					ResultSet rs2 = stmt
-							.executeQuery("SELECT * FROM tree_object_" + Integer.toString(project.getId()) + " WHERE ID=" + rs.getString(1)+";");
+							.executeQuery("SELECT * FROM tree_object_" + Integer.toString(project.getId()) + " WHERE ID = " + rs.getString(1)+";");
 					
 					while(rs2.next()){
 						id=rs.getString(1);
@@ -428,6 +430,20 @@ public class MySQLDB implements DataBase {
 		}
 		return project;
 	}
+
+    public ResultSet executeQuery(String query){
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+
+            stmt = _connection.createStatement();
+            rs = stmt.executeQuery(query);
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rs;
+    }
 
 	@Override
 	public synchronized boolean addEvent(Event event, Project project) {
